@@ -5,8 +5,8 @@ public class Player {
 	
 	private int id;
 	private String name;
-	private byte[] shields;
-	private LinkedList cards;
+	private Shield shields;
+	private LinkedList<Card> cards;
 	/**
 	 * @param name
 	 * @param shields
@@ -19,7 +19,7 @@ public class Player {
 	public String getName() {
 		return name;
 	}
-	public byte[] getShields() {
+	public Shield getShields() {
 		return shields;
 	}
 	
