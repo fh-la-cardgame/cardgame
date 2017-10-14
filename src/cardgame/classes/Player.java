@@ -5,7 +5,6 @@ public class Player {
 	
 	private int id;
 	private String name;
-	private Deck deck;
 	private byte[] shields;
 	private LinkedList cards;
 	/**
