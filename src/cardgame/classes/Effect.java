@@ -13,7 +13,9 @@ public class Effect {
 		this.id = id;
 		this.description = description;
 	}
-	
+	public void useEffect(GameCard c){
+		
+	}
 	public int getId() {
 		return id;
 	}

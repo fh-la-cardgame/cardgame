@@ -2,11 +2,14 @@ package cardgame.classes;
 
 public class GameCard extends Card {
 	
+
+
+
 	private short atk;
 	private Shield collectorShields;
 	private Shield shields;
 	private GameCard evolution;
-	private byte[] effects;
+	private Effect[] effects;
 	
 	/**Constructor
 	 * 
@@ -17,51 +20,40 @@ public class GameCard extends Card {
 	 * @param collectorShields
 	 * @param shields
 	 * @param evolution
+	 * @param effects
 	 */
-	
-	private GameCard (int id, String name, short atk, String description, byte collectorShields, byte shields, GameCard evolution){
-		
+	public GameCard(int id, String name, String description, Type type, short atk, Shield collectorShields, Shield shields, GameCard evolution, Effect[] effects) {
+		super(id, name, description,type);
+		this.atk=atk;
+		this.collectorShields=collectorShields;
+		this.shields=shields;
+		this.evolution=evolution;
+		this.effects=effects.clone();
 	}
+	
+	
 	
 	
 	public short getAtk() {
 		return atk;
 	}
-	public byte[]getCollectorShields() {
+	public Shield getCollectorShields() {
 		return collectorShields;
 	}
-	public byte[]getShields(){
+	public Shield getShields(){
 		return shields;
 	}
 	public GameCard getEvolution(){
 		return evolution;
 	}
-	public byte[] getEffects(){
+	public Effect[] getEffects(){
 		return effects;
 	}
 
-	@Override
-	public void getId() {
-		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public void getName() {
-		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public void getDescription() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void getType() {
-		// TODO Auto-generated method stub
-		
+	public void setAtk(short atk) {
+		this.atk = atk;
 	}
 	
 	
