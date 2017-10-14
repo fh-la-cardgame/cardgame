@@ -3,8 +3,8 @@ package cardgame.classes;
 public class GameCard extends Card {
 	
 	private short atk;
-	private byte[] collectorShields;
-	private byte[] shields;
+	private Shield collectorShields;
+	private Shield shields;
 	private GameCard evolution;
 	private byte[] effects;
 	
@@ -24,8 +24,6 @@ public class GameCard extends Card {
 	}
 	
 	
-	
-
 	public short getAtk() {
 		return atk;
 	}
