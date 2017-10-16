@@ -1,20 +1,39 @@
 package cardgame.classes;
-
+/**
+ * Bildet eine Struktur eines Effektes ab.
+ * @author BishaThan
+ */
 public class Effect {
-	private int id;
-	private String description;
+    
+        /** Identifikationsnummer des Effekts. **/
+	private final int id;
+        /** Effektbeschreibung. **/
+	private final String description;
 	
 	
 	/**
-	 * @param id
-	 * @param description
-	 */
-	public Effect(int id, String description) {
+         * Konstruktor
+         * @param id Identifikationsnummer
+         * @param description Effektbeschreibung
+         */
+	public Effect(final int id, final String description) {
 		this.id = id;
 		this.description = description;
 	}
+        
+        /**
+         * Copy-Konstruktor
+         * @param e 
+         */
+        public Effect(final Effect e){
+            this(e.id, e.description);
+        }
+        /**
+         * Anwendung des Effekts.
+         * @param c Spielkarte
+         */
 	public void useEffect(GameCard c){
-		
+		//Logik
 	}
 	public int getId() {
 		return id;

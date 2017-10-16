@@ -1,19 +1,26 @@
 package cardgame.classes;
 /**
- * 
- */
-
-/**
- * @author shinzoabe
- *
+ * Klasse zur Ausfuehrung von Effekten anhand ihres identifizierten Typs.
+ * @author BishaThan
  */
 public class EffectsAssignment {	
 	
-	public static void useEffect (EffectType type, short effectValue, GameCard c){
-		
-	}
+    /**
+     *
+     * @param type Effekttyp
+     * @param effectValue Effektwert
+     * @param c Spielkarte
+     */
+    public static void useEffect (final EffectType type, final int effectValue, GameCard c){
+	//Logik	
+    }
 
-	public static void basicOperation(GameCard c, short effectValue){
-		
-	}
+    /**
+     * Verminderungs- bzw. Erhoehungseffekt
+     * @param c Spielkarte
+     * @param effectValue Effektwert
+     */
+    public static void basicOperation(GameCard c, final int effectValue){
+	//Logik	
+    }
 }

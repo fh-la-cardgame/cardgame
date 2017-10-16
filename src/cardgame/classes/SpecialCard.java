@@ -1,21 +1,41 @@
 package cardgame.classes;
 import java.util.LinkedList;
-
+import java.util.List;
+/**
+ * Klasse zur Abbildung der Struktur einer Spezialkarte.
+ * @author BishaThan
+ */
 public class SpecialCard extends Card{
 	
-	private LinkedList<Effect> effects;
+        /** Liste der Effekte der Spezialkarte. **/
+	private List<Effect> effects;
 
-	
-	public SpecialCard(int id, String name, String description, Type type, LinkedList<Effect> effects) {
+	/**
+         * Konstruktor
+         * @param id Indentifikationsnummer
+         * @param name Name der Spezialkarte
+         * @param description Beschriebung
+         * @param type Typ
+         * @param effects Effekte der Spezialkarte
+         */
+	public SpecialCard(final int id, final String name, final String description, final Type type, final List<Effect> effects) {
 		super(id, name, description, type);
-		this.effects = effects;
-	}	
+		this.effects = new LinkedList<>(effects);
+	}
+        
+        /**
+         * Copy-Konstruktor
+         * @param s Spezialkarte
+         */
+        public SpecialCard(final SpecialCard s){
+            this(s.id, s.name, s.description, s.type, s.effects);
+        }
 
 	/**
 	 * @return the effects
 	 */
-	public LinkedList<Effect> getEffects() {
-		return effects;
+	public List<Effect> getEffects() {
+		return effects; // ?? Frage offen: ob Kopie noetig
 	}
 
 	

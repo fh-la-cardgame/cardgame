@@ -1,6 +1,13 @@
 package cardgame.classes;
 
+/**
+ * Aufzaehlungstyp fuer Effekte.
+ * @author BishaThan
+ */
 public enum EffectType {
-	subtraction, addition
+        /** Verminderungseffekt. **/
+	subtraction,
+        /** Erhoehungseffekt. **/
+        addition
 
 }

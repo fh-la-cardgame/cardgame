@@ -1,6 +1,16 @@
 package cardgame.classes;
-
+/**
+ * Aufzaehlungstyp fuer Kartentyp
+ * @author BishaThan
+ */
 public enum Type {
-	orc,fairy,human,dragon
+        /** Ork **/
+	orc,
+        /** Fee **/
+        fairy,
+        /** Mensch **/
+        human,
+        /** Drache **/
+        dragon
 
 }

@@ -9,7 +9,7 @@ public abstract class Card {
 	protected final int id;
         /** Name der Karte. **/
 	protected final String name;
-        /** Beschreibung der Karte. Zusammensetzung aus der Kartenbeschreibung und Effektbeschreibungen. **/
+        /** Kartenbeschreibung. Zusammensetzung aus der Kartenbeschreibung und den Effektbeschreibungen. **/
 	protected final String description;
         /** Typ einer Karte. **/
 	protected final Type type;
@@ -21,7 +21,7 @@ public abstract class Card {
          * @param description Kartenbeschreibung
          * @param type Typ der Karte
          */
-        public Card(int id, String name, String description, Type type) {
+        public Card(final int id, final String name, final String description, final Type type) {
 		this.id = id;
 		this.name = name;
 		this.description = description;

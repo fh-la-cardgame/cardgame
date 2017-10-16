@@ -1,38 +1,62 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cardgame.classes;
 
 /**
- *
- * @author HortensiaX
+ * Klasse zur Abbildung der aktuellen und max. Schilder.
+ * @author BishaThan
  */
 public class Shield {
-    private short maxShields;
-    private short currentShields;
+    /** Maximale Anzahl an Schildern. **/
+    private final int maxShields;
+    /** Aktuelle Anzahl an Schildern. **/
+    private int currentShields;
 
-    public short getMaxShields() {
-        return maxShields;
-    }
-
-    public short getCurrentShields() {
-        return currentShields;
-    }
-
-    public void setCurrentShields(short currentShields) {
-        this.currentShields = currentShields;
-    }
-    
-    Shield(byte max){
+    /**
+     * Konstruktor
+     * @param max Maximale/Aktuelle Schilderanzahl
+     */
+    public Shield(final int max){
         this(max, max);
     }
     
-    Shield(byte current, byte max){
-        
+    /**
+     * Konstruktor
+     * @param current Aktuelle Schilderanzahl
+     * @param max Maximale Schilderanzahl
+     */
+    public Shield(final int current, final int max){        
         this.currentShields = current;
-        this.maxShields = max;
-        
+        this.maxShields = max;        
     }
+    
+    /**
+     * Konstruktor
+     * @param s Schilder
+     */
+    public Shield(final Shield s){        
+        this(s.currentShields, s.maxShields);        
+    }
+    
+    
+    public int getMaxShields() {
+        return maxShields;
+    }
+
+    public int getCurrentShields() {
+        return currentShields;
+    }
+
+    /**
+     * Reduzierung der Schilder.
+     */
+    public void dropShield() {
+        currentShields = currentShields > 0 ? currentShields-- : currentShields;
+    }
+    
+    /**
+     * Erhoehung der Schilder.
+     */
+    public void addShield() {
+        currentShields = currentShields < maxShields ? currentShields++ : currentShields;
+    }
+    
 }

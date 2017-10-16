@@ -6,7 +6,7 @@ package cardgame.classes;
 public class Battlefield {
          
         /** Feste Zeilendefinierung der Matrizen.**/
-	private final static int ROW=2;
+	private final static int ROW = 2;
     
         /** Spielseite des 1. Spielers. **/
 	private final Playground side1;
