@@ -1,24 +1,50 @@
 package cardgame.classes;
+/**
+ * Bildet die Sturktur zur Abbildung des gesammten Spielfeldes.
+ * @author BishaThan
+ */
 public class Battlefield {
-	private Playground side1;
-	private Playground side2;
-	private GameCard[][] battlegroundMonster;
-	private SpecialCard[][] battlegroundSpecials;
-	private static final int ROW=2;
+         
+        /** Feste Zeilendefinierung der Matrizen.**/
+	private final static int ROW=2;
+    
+        /** Spielseite des 1. Spielers. **/
+	private final Playground side1;
+        /** Spielseite des 2. Spielers. **/
+	private final Playground side2;
+        /** Stellt eine Matrix fuer die Monsterkarten auf beiden Seiten dar.**/
+	private final GameCard[][] battlegroundMonster;        
+        /** Matrix fuer die Zauber- bzw. Fallenkarten auf beiden Seiten dar.**/
+	private final SpecialCard[][] battlegroundSpecials;   
 	
-	
-	public Battlefield(Playground side1, Playground side2) {
+    /**
+     * Konstruktor
+     * @param side1 Spielseite des 1. Spielers
+     * @param side2 Spielseite des 2. Spielers
+     */
+    public Battlefield(final Playground side1, final Playground side2) {
 		this.side1 = side1;
 		this.side2 = side2;
-		this.battlegroundMonster = new GameCard[ROW][ROW*2];
-		this.battlegroundSpecials = new SpecialCard[ROW][ROW*2];
+		this.battlegroundMonster = new GameCard[ROW][ROW * 2];
+		this.battlegroundSpecials = new SpecialCard[ROW][ROW * 2];
 	}
 
-	public int removeCard(int row, int col){
-		return 0;};
+    /**
+     * Entfernen einer Karte auf dem Spielfeld.
+     * @param row Zeile
+     * @param col Spalte
+     */
+    public void removeCard(final int row, final int col){
+           //Logik
+    }
 		
-	public int addCard(int row, int col){
-		return 0;
-	}
+    /**
+     * Hinzufuegen einer Karte auf dem Spielfeld.
+     * @param row Zeile
+     * @param col Spalte 
+    */
+    public void addCard(final int row, final int col){
+            //Logik
+    }
 
 }
