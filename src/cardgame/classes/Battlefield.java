@@ -12,9 +12,9 @@ public class Battlefield {
 	private final Playground side1;
         /** Spielseite des 2. Spielers. **/
 	private final Playground side2;
-        /** Stellt eine Matrix fuer die Monsterkarten auf beiden Seiten dar.**/
+        /** Matrix fuer  Monsterkarten auf beiden Seiten.**/
 	private final GameCard[][] battlegroundMonster;        
-        /** Matrix fuer die Zauber- bzw. Fallenkarten auf beiden Seiten dar.**/
+        /** Matrix fuer die Zauber- bzw. Fallenkarten auf beiden Seiten.**/
 	private final SpecialCard[][] battlegroundSpecials;   
 	
     /**
