@@ -42,7 +42,7 @@ public class GameCard extends Card {
          * @param c Spielkarte
          */
         public GameCard(final GameCard c){
-            this(c.id, c.name, c.description, c.type, c.atk, c.evolutionShields, c.shields, c.evolution, c.effects);
+            this(c.getId(), c.getName(), c.getDescription(), c.getType(), c.getAtk(), c.getEvolutionShields(), c.getShields(), c.getEvolution(), c.getEffects());
         }
 
 	public int getAtk() {

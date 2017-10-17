@@ -6,13 +6,13 @@ package cardgame.classes;
 public abstract class Card {
 	
 	/** Identifikationsnummer der Karte. **/
-	protected final int id;
+	private final int id;
         /** Name der Karte. **/
-	protected final String name;
+	private final String name;
         /** Kartenbeschreibung. Zusammensetzung aus der Kartenbeschreibung und den Effektbeschreibungen. **/
-	protected final String description;
+	private final String description;
         /** Typ einer Karte. **/
-	protected final Type type;
+	private final Type type;
         
         /**
          * Konstruktor

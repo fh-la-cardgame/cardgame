@@ -28,7 +28,7 @@ public class SpecialCard extends Card{
          * @param s Spezialkarte
          */
         public SpecialCard(final SpecialCard s){
-            this(s.id, s.name, s.description, s.type, s.effects);
+            this(s.getId(), s.getName(), s.getDescription(), s.getType(), s.getEffects());
         }
 
 	/**
