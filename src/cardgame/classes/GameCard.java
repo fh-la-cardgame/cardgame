@@ -60,8 +60,8 @@ public class GameCard extends Card {
 	public Effect[] getEffects(){
 		return effects; // Offene Frage: Clonen ?
 	}
-	public void setAtk(short atk) {
-		this.atk = atk >= atk ? atk : this.atk;
+	public void setAtk(int atk) {
+		this.atk = atk;
 	}
 	
 }
