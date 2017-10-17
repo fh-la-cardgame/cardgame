@@ -6,7 +6,7 @@ import java.util.LinkedList;
  */
 public class Player {
     
-        /** Maximale Anzahl der Schutzschilder. **/
+        /** Maximale Anzahl der Schutzschilder.  **/
 	private static final int MAX_SHIELD = 3;
         
 	/** Identifikationsnummer des Spielers. **/
