@@ -9,16 +9,20 @@ public class Effect {
 	private final int id;
         /** Effektbeschreibung. **/
 	private final String description;
+        /** Effekttyp (z.B. Verminderung) **/
+        private final EffectType effectType;
 	
 	
 	/**
          * Konstruktor
          * @param id Identifikationsnummer
          * @param description Effektbeschreibung
+         * @param effectType Effekttyp (Verminderung, Erhöhung)
          */
-	public Effect(final int id, final String description) {
+	public Effect(final int id, final String description, final EffectType effectType) {
 		this.id = id;
 		this.description = description;
+                this.effectType = effectType;
 	}
         
         /**
@@ -26,7 +30,7 @@ public class Effect {
          * @param e 
          */
         public Effect(final Effect e){
-            this(e.id, e.description);
+            this(e.id, e.description, e.effectType);
         }
         /**
          * Anwendung des Effekts.
@@ -41,6 +45,11 @@ public class Effect {
 	public String getDescription() {
 		return description;
 	}
+
+        public EffectType getEffectType() {
+            return effectType;
+        }
+        
 	
 
 }
