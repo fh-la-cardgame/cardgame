@@ -5,17 +5,28 @@
  */
 package cardgame.console;
 
+import cardgame.db.DbCard;
+import cardgame.db.DbConnection;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author HortensiaX
  */
 public class Cardgame {
 
-    /**
-     * @param args the command line arguments
-     */
+
+    
     public static void main(String[] args) {
-        System.out.println(":D");
-    }
+        
+        DbCard d = new DbCard();
+        d.selectAll();
+                
+   }
+    
     
 }
