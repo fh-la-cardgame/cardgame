@@ -10,8 +10,8 @@ public class Playground {
 	
     /** Spieler. **/
     private final Player player;
-    /** Karten im Deck / Maindeck. **/
-    private final List<Card> cards;
+    /** Deck mit Karten **/
+    private final Deck deck;
     /** Karten auf der Hand. **/
     private final List<Card> cardsOnHand;
 	
@@ -20,10 +20,10 @@ public class Playground {
      * @param player
      * @param cards
      */
-    public Playground(final Player player, final List<Card> cards) {
+    public Playground(final Player player, final Deck deck) {
 		this.player = player;
-		this.cards = new LinkedList<>(cards); 
-		this.cardsOnHand = new LinkedList<>(cards); //LOGIK: Shuffle, 5 Karten aus dem Deck zu weisen
+		this.deck = deck; 
+		this.cardsOnHand = new LinkedList<>(); //LOGIK: Shuffle, 5 Karten aus dem Deck zu weisen
     }
 
 
