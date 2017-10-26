@@ -40,6 +40,10 @@ public abstract class Card {
 	public Type getType() {
 		return type;
 	}
+	@Override
+	public String toString(){
+		return getId()+" "+getName()+" "+getDescription()+" "+getType().toString();
+	}
 	
 
 }

@@ -46,10 +46,16 @@ public class Effect {
 		return description;
 	}
 
-        public EffectType getEffectType() {
-            return effectType;
-        }
+    public EffectType getEffectType() {
+        return effectType;
+    }
+    
+    @Override
+    public String toString(){
+    	return getId()+" "+getDescription();
+    }
         
+    
 	
 
 }

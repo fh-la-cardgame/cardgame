@@ -5,12 +5,17 @@ package cardgame.classes;
  */
 public enum Type {
         /** Ork **/
-	orc,
+		orc,
         /** Fee **/
         fairy,
         /** Mensch **/
         human,
         /** Drache **/
-        dragon
+        dragon,
+        /** Daemon**/
+        daemon,
+        /**Pflanze**/
+        pflanze
+        	
 
 }

@@ -1,4 +1,7 @@
 package cardgame.classes;
+
+import java.util.Arrays;
+
 /**
  * Klasse zur Abbildung der Struktur einer Spielkarte.
  * @author BishaThan
@@ -62,6 +65,10 @@ public class GameCard extends Card {
 	}
 	public void setAtk(int atk) {
 		this.atk = atk;
+	}
+	@Override
+	public String toString(){
+		return super.toString() +" "+getAtk()+" "+getEvolutionShields()+" "+getShields()+" "+getEvolution()+" "+Arrays.toString(getEffects())+"\n";
 	}
 	
 }

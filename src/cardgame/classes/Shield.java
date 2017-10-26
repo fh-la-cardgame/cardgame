@@ -59,4 +59,9 @@ public class Shield {
         currentShields = currentShields < maxShields ? currentShields++ : currentShields;
     }
     
+    @Override
+    public String toString(){
+    	return getMaxShields()+" "+getCurrentShields();
+    }
+    
 }

@@ -5,11 +5,15 @@
  */
 package cardgame.console;
 
+import cardgame.classes.Card;
+import cardgame.classes.GameCard;
 import cardgame.db.DbCard;
 import cardgame.db.DbConnection;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,9 +26,12 @@ public class Cardgame {
 
     
     public static void main(String[] args) {
-        
+        /*
+         * Exemplarische Ausfuehrung von "getAllCards()"
+         */
         DbCard d = new DbCard();
-        d.selectAll();
+        List<Card> list = d.getAllCards();
+        System.out.println(list);
                 
    }
     
