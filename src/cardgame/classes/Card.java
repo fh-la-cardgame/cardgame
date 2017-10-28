@@ -42,7 +42,7 @@ public abstract class Card {
 	}
 	@Override
 	public String toString(){
-		return getId()+" "+getName()+" "+getDescription()+" "+getType().toString();
+		return getId()+" "+getName()+" "+getDescription()+"\nWerte: "+getType().toString();
 	}
 	
 

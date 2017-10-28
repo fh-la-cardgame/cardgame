@@ -41,7 +41,7 @@ public class DbCard {
             c = DbConnection.getPostgresConnection();
              //Ausfuehren des Selects um alle notwendigen Infos aus Gamecard zu beziehen.
             pst = c.prepareStatement("Select g.\"gid\", g.\"name\", g.\"description\", g.\"monster_type\", g.\"atk\", g.\"shield_curr\","+" "
-            		+ "g.\"shield_max\", g.\"evo_shield_curr\", g.\"evo_shield_max\" from public.\"Gamecard\" g order by g.\"gid\"");
+            		+ "g.\"shield_max\", g.\"evo_shield_curr\", g.\"evo_shield_max\", g.\"evo\" from public.\"Gamecard\" g order by g.\"gid\"");
             rs = pst.executeQuery();
             
             while(rs.next()){
@@ -68,10 +68,11 @@ public class DbCard {
                 	i++;
                 }
                 
+                GameCard evo = null;
                 l.add(new GameCard(rs.getInt(1), rs.getString(2), rs.getString(3), type, rs.getInt(5), 
-                		new Shield(rs.getShort(6), rs.getShort(7)), new Shield(rs.getShort(8), rs.getShort(9)), null, effects));
-            }
+                		new Shield(rs.getShort(6), rs.getShort(7)), new Shield(rs.getShort(8), rs.getShort(9)), evo, effects));
             
+        	}
         } catch (SQLException ex) {
             Logger.getLogger(DbCard.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
@@ -81,9 +82,10 @@ public class DbCard {
      }
     
     
-    /** Ordnet einem String einen Enum zu
-     * @return Type Gibt den zum String gehoerenden Enum zurueck
-     * @throws new IllegalArgumentException Wenn der String keinem Enum zugeordnet werden kann
+    /** Ordnet einem String einen Enum zu.
+     * @param string Der String der als Enum zurueckgegeben werden soll.
+     * @return Type Gibt den zum String gehoerenden Enum zurueck.
+     * @throws new IllegalArgumentException Wenn der String keinem Enum zugeordnet werden kann.
      */
     private Type stringToType(String string){
     	Type type = null;
@@ -99,9 +101,10 @@ public class DbCard {
     	return type;
     }
     
-    /** Ordnet einem String einen Enum zu
-     * @return EffectType Gibt den zum String gehoerenden Enum zurueck 
-     * @throws new IllegalArgumentException Wenn der String keinem Enum zugeordnet werden kann
+    /** Ordnet einem String einen Enum zu.
+     * @param string Der String der als Enum zurueckgegeben werden soll.
+     * @return EffectType Gibt den zum String gehoerenden Enum zurueck .
+     * @throws new IllegalArgumentException Wenn der String keinem Enum zugeordnet werden kann.
      */
     private EffectType stringToEffectType(String string){
     	EffectType effect = null;
@@ -114,5 +117,40 @@ public class DbCard {
         default: throw new IllegalArgumentException("Kein existenter EffectType(Enum)");
         }
     	return effect;
+    }
+    
+   
+    /** Fuegt neue Beziehungen zwischen Effekte und Cards in die Tabelle ein.
+     * Um Redundanz zu vermeiden verhindert diese Funktion doppelte Eintraege.
+     * @param gid Die Id der GameCard.
+     * @param eid Die Id des Effects.
+     * @param shield Der Shield bei dem der Effekt ausgeloest wird.
+     * @return boolean true, falls der Eintrag noch nicht vorhanden war, false, falls der Eintrag schon existiert.
+     */
+    public boolean insert_Card_Effect(int gid, int eid, int shield){
+    	PreparedStatement pst, pst2;
+    	int length_old = 0, length_new = 0;
+    	ResultSet result;
+    	try{
+    		c = DbConnection.getPostgresConnection();
+    		pst = c.prepareStatement("select count(*) from \"Card_Effect\"");
+    		result = pst.executeQuery();
+    		result.next();
+    		length_old = result.getInt(1);
+    		pst2 = c.prepareStatement("insert into \"Card_Effect\" (gid, eid, shield) select "
+    				+ ""+gid+", "+eid+", "+shield+" where not exists (select gid, eid, shield from \"Card_Effect\" where gid = "
+    				+ ""+gid+" and eid = "+eid+" and shield = "+shield+")");
+    		pst2.executeUpdate();
+    		pst = c.prepareStatement("select count(*) from \"Card_Effect\"");
+    		result = pst.executeQuery();
+    		result.next();
+    		length_new = result.getInt(1);
+    		
+    	}catch (SQLException ex) {
+            Logger.getLogger(DbCard.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(DbCard.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    	return length_old < length_new;
     }
 }

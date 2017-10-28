@@ -68,7 +68,7 @@ public class GameCard extends Card {
 	}
 	@Override
 	public String toString(){
-		return super.toString() +" "+getAtk()+" "+getEvolutionShields()+" "+getShields()+" "+getEvolution()+" "+Arrays.toString(getEffects())+"\n";
+		return super.toString() +" "+getAtk()+" "+getEvolutionShields()+" "+getShields()+" \nEvo: "+getEvolution()+"\nEffects: "+Arrays.toString(getEffects())+"\n";
 	}
 	
 }
