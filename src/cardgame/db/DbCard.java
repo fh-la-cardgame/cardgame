@@ -66,6 +66,9 @@ public class DbCard {
                 }
                 
                 GameCard evo = null;
+                if(rs.getInt(10) != 0){
+                    evo = integerToGamecard(rs.getInt(10));
+                }
                 l.add(new GameCard(rs.getInt(1), rs.getString(2), rs.getString(3), type, rs.getInt(5), 
                 		new Shield(rs.getShort(6), rs.getShort(7)), new Shield(rs.getShort(8), rs.getShort(9)), evo, effects));
             
@@ -115,6 +118,54 @@ public class DbCard {
         default: throw new IllegalArgumentException("Kein existenter EffectType(Enum)");
         }
     	return effect;
+    }
+    /**
+     * Weist der id der Gamecard(integer) eine Gamecard zu
+     * @param id Id der Gamecard die Evolution ist
+     * @return
+     */
+    private GameCard integerToGamecard(int id){
+    	GameCard result = null;
+    	ResultSet rs, rs2;
+    	PreparedStatement pst;
+    	try{
+    		c = DbConnection.getPostgresConnection();
+	         //Ausfuehren des Selects um alle notwendigen Infos aus Gamecard zu beziehen.
+	        pst = c.prepareStatement("Select g.\"gid\", g.\"name\", g.\"description\", g.\"monster_type\", g.\"atk\", g.\"shield_curr\","+" "
+	        		+ "g.\"shield_max\", g.\"evo_shield_curr\", g.\"evo_shield_max\" from public.\"Gamecard\" g where g.gid = "+id);
+	        rs = pst.executeQuery();
+	        rs.next();
+            // Da das ResultSet nur Strings statt Enums liefert, werden die Strings mittels switch - Anweisung
+            // in der Hilfsmethode StringToType dem zugehoerigem Enum zugeordnet.
+           Type type = null;
+           type = stringToType(rs.getString(4));
+           
+           PreparedStatement join = c.prepareStatement("select e.eid, e.description, e.effect_type, e.effect_number, c_e.shield"+""
+           		+ " from \"Effecte\" e, \"Card_Effect\" c_e, \"Gamecard\" g where g.gid = c_e.gid and c_e.eid = e.eid and g.gid = "
+           		+ rs.getInt(1));
+           rs2 = join.executeQuery();
+           
+	        EffectType effect = null;
+	        Effect[] effects = new Effect[MAX_EFFEKTS];
+	        int i = 0;
+
+	        while(rs2.next()){
+	            //Da das ResultSet nur Strings statt Enums liefert, werden die Strings mittels switch - Anweisung
+	            // in der Hilfsmethode stringToEffectType dem zugehoerigem Enum zugeordnet.
+	        	effect = stringToEffectType(rs2.getString(3));
+	        	effects[i] = new Effect(rs2.getInt(1), rs2.getString(2), effect);
+	        	i++;
+	        }
+        	result = new GameCard(rs.getInt(1), rs.getString(2), rs.getString(3), type, rs.getInt(5), 
+                		new Shield(rs.getShort(6), rs.getShort(7)), new Shield(rs.getShort(8), rs.getShort(9)), null, effects);
+        
+    	} catch (SQLException ex) {
+            Logger.getLogger(DbCard.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(DbCard.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+        return result;
+    
     }
     
    
