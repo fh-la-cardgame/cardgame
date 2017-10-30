@@ -32,6 +32,7 @@ public class Cardgame {
         DbCard d = new DbCard();
         List<Card> list = d.getAllCards();
         System.out.println(list);
+       
         
         
                 

@@ -23,10 +23,6 @@ import java.util.logging.Logger;
 public class DbCard {
     /** Die Connection zur DB **/
     private static Connection c;
-    /** Eine Variable zur Verarbeitung von Querys**/
-    private PreparedStatement pst;
-    /** Die Ergebnismenge, die ein Query liefert**/
-    private ResultSet rs;
     /** Die maximale Anzahl an Effekten die eine Karte haben kann**/
     public static final int MAX_EFFEKTS = 5;
 
@@ -36,7 +32,8 @@ public class DbCard {
      */
     public List<Card> getAllCards(){
         List<Card> l = new LinkedList<>();
-        
+        PreparedStatement pst, join;
+        ResultSet rs, rs2;
         try {
             c = DbConnection.getPostgresConnection();
              //Ausfuehren des Selects um alle notwendigen Infos aus Gamecard zu beziehen.
@@ -51,10 +48,10 @@ public class DbCard {
                 type = stringToType(rs.getString(4));
                 
                  //Ausfuerung des Joins(ueber Card_Effekt) um die Effekte einer Karte auszulesen.
-                PreparedStatement join = c.prepareStatement("select e.eid, e.description, e.effect_type, e.effect_number, c_e.shield"+""
+                join = c.prepareStatement("select e.eid, e.description, e.effect_type, e.effect_number, c_e.shield"+""
                 		+ " from \"Effecte\" e, \"Card_Effect\" c_e, \"Gamecard\" g where g.gid = c_e.gid and c_e.eid = e.eid and g.gid = "
                 		+ rs.getInt(1));
-                ResultSet rs2 = join.executeQuery();
+                rs2 = join.executeQuery();
                 
                 EffectType effect = null;
                 Effect[] effects = new Effect[MAX_EFFEKTS];
@@ -73,6 +70,7 @@ public class DbCard {
                 		new Shield(rs.getShort(6), rs.getShort(7)), new Shield(rs.getShort(8), rs.getShort(9)), evo, effects));
             
         	}
+            c.close();
         } catch (SQLException ex) {
             Logger.getLogger(DbCard.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
@@ -145,7 +143,7 @@ public class DbCard {
     		result = pst.executeQuery();
     		result.next();
     		length_new = result.getInt(1);
-    		
+    		c.close();
     	}catch (SQLException ex) {
             Logger.getLogger(DbCard.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
