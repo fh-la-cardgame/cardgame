@@ -15,9 +15,9 @@ public class DbConnection {
      * @throws SQLException 
      */
     public static Connection getPostgresConnection() throws SQLException, ClassNotFoundException{
-        String user = "";
-        String pw = "";
-        String host = "";
+        String user = "david";
+        String pw = "Vw49-1-";
+        String host = "193.175.38.198:80/cardgame";
         Class.forName("org.postgresql.Driver");
         return DriverManager
             .getConnection("jdbc:postgresql://" + host,

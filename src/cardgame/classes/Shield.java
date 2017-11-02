@@ -61,7 +61,7 @@ public class Shield {
     
     @Override
     public String toString(){
-    	return getMaxShields()+" "+getCurrentShields();
+    	return getCurrentShields()+" "+getMaxShields();
     }
     
 }

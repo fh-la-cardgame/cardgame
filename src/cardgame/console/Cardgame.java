@@ -12,6 +12,7 @@ import cardgame.db.DbConnection;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -30,11 +31,11 @@ public class Cardgame {
          * Exemplarische Ausfuehrung von "getAllCards()"
          */
         DbCard d = new DbCard();
-        List<Card> list = d.getAllCards();
+        //List<Card> list = d.getAllCards();
+        //System.out.println(list);
+       //System.out.println(d.insert_Card_Effect(8, 9, -1));
+        List<Card> list = d.getDeck("civitas diaboli");
         System.out.println(list);
-       
-        
-        
                 
    }
     

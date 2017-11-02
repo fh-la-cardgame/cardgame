@@ -1,4 +1,5 @@
 package cardgame.classes;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 /**
@@ -30,12 +31,18 @@ public class SpecialCard extends Card{
         public SpecialCard(final SpecialCard s){
             this(s.getId(), s.getName(), s.getDescription(), s.getType(), s.getEffects());
         }
+        
 
 	/**
 	 * @return the effects
 	 */
 	public List<Effect> getEffects() {
 		return effects; // ?? Frage offen: ob Kopie noetig
+	}
+	
+	@Override
+	public String toString(){
+		return super.toString()+" "+effects.toString()+" \n";
 	}
 
 	

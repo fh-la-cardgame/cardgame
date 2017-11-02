@@ -10,7 +10,9 @@ public class Effect {
         /** Effektbeschreibung. **/
 	private final String description;
         /** Effekttyp (z.B. Verminderung) **/
-        private final EffectType effectType;
+      private final EffectType effectType;
+      	/** Angabe der St‰rke **/
+      private final int effectNumber;
 	
 	
 	/**
@@ -19,10 +21,12 @@ public class Effect {
          * @param description Effektbeschreibung
          * @param effectType Effekttyp (Verminderung, Erh√∂hung)
          */
-	public Effect(final int id, final String description, final EffectType effectType) {
+	public Effect(final int id, final String description, final EffectType effectType, final int effectNumber) {
 		this.id = id;
 		this.description = description;
-                this.effectType = effectType;
+        this.effectType = effectType;
+        this.effectNumber = effectNumber;
+                
 	}
         
         /**
@@ -30,7 +34,7 @@ public class Effect {
          * @param e 
          */
         public Effect(final Effect e){
-            this(e.id, e.description, e.effectType);
+            this(e.id, e.description, e.effectType, e.effectNumber);
         }
         /**
          * Anwendung des Effekts.
@@ -50,9 +54,13 @@ public class Effect {
         return effectType;
     }
     
+    public int getEffectNumber(){
+    	return effectNumber;
+    }
+    
     @Override
     public String toString(){
-    	return getId()+" "+getDescription();
+    	return getId()+" "+getDescription() +" "+ getEffectType()+"::"+getEffectNumber();
     }
         
     
