@@ -25,7 +25,7 @@ public class DbConnection {
             try (Writer w = new FileWriter(fileData)) {
                 String user = JOptionPane.showInputDialog("Username");
                 String p = JOptionPane.showInputDialog("PW");
-                String ip = JOptionPane.showInputDialog("IP");
+                String ip = JOptionPane.showInputDialog("IP:Port");
                 String datenbank = JOptionPane.showInputDialog("Datenbankname");
                 w.write(user + "\n" + p + "\n" + ip + "\n" + datenbank);
                 w.close();
