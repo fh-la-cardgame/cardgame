@@ -30,7 +30,8 @@ public class DbCard {
     public static final int MAX_EFFEKTS = 5;
 
     
-    /** Gibt eine Liste aller Karten zurueck
+    /**VERALTET!!! 
+     * Gibt eine Liste aller Karten zurueck
      * @return List<Card> Eine Liste aller Karten, ausgelesen aus der DB
      */
     public List<Card> getAllCards(){
@@ -196,11 +197,14 @@ public class DbCard {
     }
     
     
-    
+    /**
+     * Liest alle Karten und Specialcards in eine Liste ein
+     * @param deckName Name des Decks
+     * @return Gibt eine List aller Karten zurück
+     */
     public List<Card> getDeck(String deckName){
     	PreparedStatement pst1, pst2;
     	ResultSet rs1, rs2;
-    	//EffectType effect;
     	Effect[] effects = null;
     	//deckName = deckName.toLowerCase();
     	List<Card> deck = new ArrayList<>();
@@ -214,7 +218,6 @@ public class DbCard {
     				+"and d.name = '"+deckName+"'");
 	    	rs1 = pst1.executeQuery();
 	    	while(rs1.next()){
-	    		System.out.println("KONTROLLE: "+rs1.getInt(8)+" "+rs1.getInt(9));
 	    		pst2 = c.prepareStatement("select e.eid, e.description, effect_type, effect_number, shield "
 	    				+"from \"Effecte\" e, \"Card_Effect\" c_e, \"Gamecard\" g "
 	    				+"where e.eid = c_e.eid "
@@ -229,8 +232,8 @@ public class DbCard {
 	             }
 	           
 	             deck.add(new GameCard(rs1.getInt(1), rs1.getString(2), rs1.getString(3), 
-	            		 stringToType(rs1.getString(4)), rs1.getInt(5), new Shield(rs1.getShort(6), 
-	            		rs1.getShort(7)), new Shield(rs1.getShort(8), rs1.getShort(9)), evo, effects.clone()));
+	            		 stringToType(rs1.getString(4)), rs1.getInt(5), new Shield(rs1.getShort(8), 
+	            		rs1.getShort(9)), new Shield(rs1.getShort(6), rs1.getShort(7)), evo, effects.clone()));
 	    	}
 	    	pst1 = c.prepareStatement("select sc.sid, sc.name, description, type "
 	    			+"from \"Specialcard\" sc, \"Deck_Cards\" dc, \"Deck\" d "

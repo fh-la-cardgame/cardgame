@@ -28,12 +28,9 @@ public class Cardgame {
     
     public static void main(String[] args) {
         /*
-         * Exemplarische Ausfuehrung von "getAllCards()"
+         * Exemplarische Ausfuehrung von "getDeck(String deckName)"
          */
         DbCard d = new DbCard();
-        //List<Card> list = d.getAllCards();
-        //System.out.println(list);
-       //System.out.println(d.insert_Card_Effect(8, 9, -1));
         List<Card> list = d.getDeck("civitas diaboli");
         System.out.println(list);
                 
