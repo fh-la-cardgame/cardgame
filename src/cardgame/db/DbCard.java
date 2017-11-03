@@ -28,6 +28,7 @@ public class DbCard {
     private static Connection c;
     /** Die maximale Anzahl an Effekten die eine Karte haben kann**/
     public static final int MAX_EFFEKTS = 5;
+    public static final int EVO_OBERGRENZE = 10;
 
     
     /**VERALTET!!! 
@@ -135,14 +136,14 @@ public class DbCard {
     	EffectType effect = null;
     	Effect[] effects = null;
     	try{
-	        effects = new Effect[rs.getShort(7)];
+	        effects = new Effect[rs.getShort(7)-1];
 	        while(rs2.next()){	
 				effect = stringToEffectType(rs2.getString(3));
 				if(rs2.getShort(5) != -1){
 	        	effects[rs2.getShort(5)] = new Effect(rs2.getInt(1), rs2.getString(2), effect, rs2.getInt(4));
 				}else{
 					int i = 0;
-					while(i<rs.getShort(7)){
+					while(i<rs.getShort(7)-1){
 						effects[i]= new Effect(rs2.getInt(1), rs2.getString(2), effect, rs2.getInt(4));
 						i++;
 					}
@@ -183,7 +184,7 @@ public class DbCard {
            
            effects = getEffects(rs, rs2);
         	result = new GameCard(rs.getInt(1), rs.getString(2), rs.getString(3), type, rs.getInt(5), 
-                		new Shield(rs.getShort(6), rs.getShort(7)), new Shield(rs.getShort(8), rs.getShort(9)),
+                		new Shield(rs.getShort(8), rs.getShort(9)), new Shield(rs.getShort(6), rs.getShort(7)),
                 		null, effects.clone());
         
     	} catch (SQLException ex) {
@@ -272,16 +273,15 @@ public class DbCard {
     	return deck;
     }
     
-   
     /** Fuegt neue Beziehungen zwischen Effekte und Cards in die Tabelle ein.
-     * Um Redundanz zu vermeiden verhindert diese Funktion doppelte Eintraege.
+     * Um Redundanz zu vermeiden, verhindert diese Funktion doppelte als auch unlogische Eintraege.
      * @param gid Die Id der GameCard.
      * @param eid Die Id des Effects.
-     * @param shield Der Shield bei dem der Effekt ausgeloest wird.
+     * @param evoShield Der EvoShield bei dem der Effekt ausgeloest wird.
+     * @throws IllegalArgumentException Wenn die Anzahl der Schilder in einem ungültigen Wertebereich liegen.
      * @return boolean true, falls der Eintrag noch nicht vorhanden war, false, falls der Eintrag schon existiert.
      */
-    public boolean insert_Card_Effect(int gid, int eid, int shield){
-    	
+    public boolean insert_Card_Effect_EvoShields(int gid, int eid, int evoShield){
     	PreparedStatement pst, pst2;
     	int length_old = 0, length_new = 0;
     	ResultSet result;
@@ -291,16 +291,99 @@ public class DbCard {
     		result = pst.executeQuery();
     		result.next();
     		length_old = result.getInt(1);
-    		if(shield == -1){
-    			pst2 = c.prepareStatement("insert into \"Card_Effect\" (gid, eid, shield) select "
-        				+ ""+gid+", "+eid+", -1 where not exists (select gid, eid, shield from \"Card_Effect\" where gid = "
-        				+ ""+gid+" and (shield > -1 or shield = -1))");
-    		}else if(shield > -1){
-    		pst2 = c.prepareStatement("insert into \"Card_Effect\" (gid, eid, shield) select "
-    				+ ""+gid+", "+eid+", "+shield+" where not exists (select gid, eid, shield from \"Card_Effect\" where gid = "
-    				+ ""+gid+" and (shield = "+shield+" or shield = -1))");
+    		if(evoShield > EVO_OBERGRENZE || evoShield == 0){
+    			throw new IllegalArgumentException("Ungueltiger Wertebereich");
+    		}
+    		
+    		
+    		if(evoShield == -1){
+    			pst2 = c.prepareStatement("insert into \"Card_Effect\" (gid, eid, shield, evo_shield) select "
+        				+ "?,?, NULL, -1 where not exists (select gid, eid, evo_shield from \"Card_Effect\" where gid = "
+        				+ "? and (evo_shield > -1 or evo_shield = -1))");
+    			pst2.setInt(1, gid);
+    			pst2.setInt(2, eid);
+    			pst2.setInt(3, gid);
+    		}else if(evoShield > -1){
+	    		pst2 = c.prepareStatement("insert into \"Card_Effect\" (gid, eid, shield, evo_shield) select "
+	    				+ "?,?, NULL, ? where not exists (select gid, eid, evo_shield from \"Card_Effect\" where gid = "
+	    				+ "? and (evo_shield = ? or evo_shield = -1))");
+	    		pst2.setInt(1, gid);
+				pst2.setInt(2, eid);
+				pst2.setInt(3, evoShield);
+				pst2.setInt(4, gid);
+				pst2.setInt(5, evoShield);
     		}else{
-    			throw new IllegalArgumentException("Wertebereich fuer Shield: [-1,"+MAX_EFFEKTS+"]");
+    			throw new IllegalArgumentException("Wertebereich fuer EvoShield: [-1,"+MAX_EFFEKTS+"]");
+    		}
+    		pst2.executeUpdate();
+    		pst = c.prepareStatement("select count(*) from \"Card_Effect\"");
+    		result = pst.executeQuery();
+    		result.next();
+    		length_new = result.getInt(1);
+    		c.close();
+    	}catch (SQLException ex) {
+            Logger.getLogger(DbCard.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(DbCard.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    	finally{
+    		try{
+    		c.close();
+    		}catch(SQLException ex){
+    			Logger.getLogger(DbCard.class.getName()).log(Level.SEVERE, null, ex);
+    		}
+    	}
+    	return length_old < length_new;
+    }
+    
+    
+   
+    /** Fuegt neue Beziehungen zwischen Effekte und Cards in die Tabelle ein.
+     * Um Redundanz zu vermeiden verhindert diese Funktion doppelte Eintraege.
+     * @param gid Die Id der GameCard.
+     * @param eid Die Id des Effects.
+     * @param shield Der Shield bei dem der Effekt ausgeloest wird.
+     * @throws IllegalArgumentException Wenn die Anzahl der Schilder nicht im Wertebereich liegt.
+     * @return boolean true, falls der Eintrag noch nicht vorhanden war, false, falls der Eintrag schon existiert.
+     */
+    public boolean insert_Card_Effect_Shields(int gid, int eid, int shield){
+    	
+    	PreparedStatement pst, pst2, pst3;
+    	int length_old = 0, length_new = 0;
+    	ResultSet result, result2;
+    	try{
+    		c = DbConnection.getPostgresConnection();
+    		pst = c.prepareStatement("select count(*) from \"Card_Effect\"");
+    		result = pst.executeQuery();
+    		result.next();
+    		length_old = result.getInt(1);
+    		pst3 = c.prepareStatement("select shield_max from \"Gamecard\" "
+    				+"where gid = ?");
+    		pst3.setInt(1, gid);
+    		result2 = pst3.executeQuery();
+    		result2.next();
+    		if(shield >= result2.getInt(1)-1){
+    			throw new IllegalArgumentException("Die Karte hat nicht so viele Schilder");
+    		}
+    		
+    		if(shield == -1){
+    			pst2 = c.prepareStatement("insert into \"Card_Effect\" (gid, eid, shield, evo_shield) select "
+        				+ "?,?, -1, NULL where not exists (select gid, eid, shield from \"Card_Effect\" where gid = "
+        				+ "? and (shield > -1 or shield = -1))");
+    			pst2.setInt(1, gid);
+    			pst2.setInt(2, eid);
+    			pst2.setInt(3, gid);
+    		}else if(shield > -1){
+	    		pst2 = c.prepareStatement("insert into \"Card_Effect\" (gid, eid, shield, evo_shield) select "
+	    				+ "?, ?, ? ,NULL where not exists (select gid, eid, shield from \"Card_Effect\" where gid = "
+	    				+ "? and (shield = ? or shield = -1))");
+	    		pst2.setInt(1, gid);
+	    		pst2.setInt(2, eid);
+	    		pst2.setInt(3, shield);
+	    		pst2.setInt(4, gid);
+	    		pst2.setInt(5, shield);
+    		}else{
+    			throw new IllegalArgumentException("Ungueltiger Wertebereich");
     		}
     		pst2.executeUpdate();
     		pst = c.prepareStatement("select count(*) from \"Card_Effect\"");
