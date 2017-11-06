@@ -261,7 +261,7 @@ public class DbCard {
      * @return Gibt eine List aller Karten zurueck
      */
     public List<Card> getDeck(String deckName){
-    	PreparedStatement pst1, pst2, pst3;
+    	PreparedStatement pst1, selectGamecard, pst3, selectSpecialcard, selectSpecialcardEffect;
     	ResultSet rs1, rs2, rs3;
     	Effect[] effects = null;
     	Effect[] evoEffects = null;
@@ -274,25 +274,35 @@ public class DbCard {
     				+"from \"Gamecard\" g , \"Deck_Cards\" dc, \"Deck\" d "
     				+"where g.gid = dc.gid "
     				+"and d.did = dc.did "
-    				+"and d.name = '?'");
+    				+"and d.name = ?");
     		pst1.setString(1, deckName);
 	    	rs1 = pst1.executeQuery();
 	    	while(rs1.next()){
-	    		pst2 = c.prepareStatement("select e.eid, e.description, effect_type, effect_number, shield "
+	    		int gId = rs1.getInt(1);
+	    		String gName = rs1.getString(2);
+	    		String gDescription = rs1.getString(3);
+	    		String gType = rs1.getString(4);
+	    		int gAtk = rs1.getInt(5);
+	    		short gShield_curr = rs1.getShort(6);
+	    		short gShield_max = rs1.getShort(7);
+	    		short gEvo_shield_curr = rs1.getShort(8);
+	    		short gEvo_shield_max = rs1.getShort(9);
+	    		
+	    		selectGamecard = c.prepareStatement("select e.eid, e.description, effect_type, effect_number, shield "
 	    				+"from \"Effecte\" e, \"Card_Effect\" c_e, \"Gamecard\" g "
 	    				+"where e.eid = c_e.eid "
 	    				+"and c_e.gid = g.gid "
 	    				+"and shield is not null "
 	    				+"and g.gid = ?");
-	    		pst2.setInt(1, rs1.getInt(1));
-	    		rs2 = pst2.executeQuery();
+	    		selectGamecard.setInt(1, gId);
+	    		rs2 = selectGamecard.executeQuery();
 	    		pst3 = c.prepareStatement("select e.eid, e.description, effect_type, effect_number, c_e.evo_shield "
 	    				+"from \"Effecte\" e, \"Card_Effect\" c_e, \"Gamecard\" g "
 	    				+"where e.eid = c_e.eid "
 	    				+"and c_e.gid = g.gid "
 	    				+"and evo_shield is not null "
 	    				+"and g.gid = ?");
-	    		pst3.setInt(1, rs1.getInt(1));
+	    		pst3.setInt(1, gId);
 	    		rs3 = pst3.executeQuery();
 	    		
 	    		
@@ -305,32 +315,32 @@ public class DbCard {
 	                 evo = integerToGamecard(rs1.getInt(10));
 	             }
 	           
-	             deck.add(new GameCard(rs1.getInt(1), rs1.getString(2), rs1.getString(3), 
-	            		 stringToType(rs1.getString(4)), rs1.getInt(5), new Shield(rs1.getShort(8), 
-	            		rs1.getShort(9)), new Shield(rs1.getShort(6), rs1.getShort(7)), evo, effects.clone(), evoEffects.clone()));
+	             deck.add(new GameCard(gId, gName, gDescription, 
+	            		 stringToType(gType), gAtk, new Shield(gEvo_shield_curr, 
+	            		gEvo_shield_max), new Shield(gShield_curr, gShield_max), evo, effects.clone(), evoEffects.clone()));
 	    	}
 	    	
 	    	//Ab hier kommen die Specialcards:
-	    	pst1 = c.prepareStatement("select sc.sid, sc.name, description, type "
+	    	selectSpecialcard = c.prepareStatement("select sc.sid, sc.name, description, type "
 	    			+"from \"Specialcard\" sc, \"Deck_Cards\" dc, \"Deck\" d "
-	    			+" where d.name = '?'"
+	    			+" where d.name = ?"
 	    			+" and sc.sid = dc.sid"
 	    			+" and dc.did = d.did"
 	    			+" order by sc.sid");
-	    	pst1.setString(1, deckName);
-	    	rs1 = pst1.executeQuery();
+	    	selectSpecialcard.setString(1, deckName);
+	    	rs1 = selectSpecialcard.executeQuery();
 	    	
 	    	
 	    	while(rs1.next()){
 	    		
 	    		List<Effect> effects_list = new ArrayList<>();
-	    		pst2 = c.prepareStatement("select e.eid, e.description, e.effect_type, e.effect_number "
+	    		selectSpecialcardEffect = c.prepareStatement("select e.eid, e.description, e.effect_type, e.effect_number "
 	    				+"from \"Effecte\" e, \"Specialcard_Effect\" ce, \"Specialcard\" "
 	    				+"where sid = ?"
 	    				+"and e.eid = ce.eid "
 	    				+"and scid = sid");
-	    		pst2.setInt(1, rs1.getInt(1));
-	    		rs2 = pst2.executeQuery();
+	    		selectSpecialcardEffect.setInt(1, rs1.getInt(1));
+	    		rs2 = selectSpecialcardEffect.executeQuery();
 	    		while(rs2.next())
 	    		effects_list.add(new Effect(rs2.getInt(1), rs2.getString(2), stringToEffectType(rs2.getString(3)), rs2.getInt(4)));
 	    		deck.add(new SpecialCard(rs1.getInt(1), rs1.getString(2), rs1.getString(3), stringToType(rs1.getString(4)), effects_list));
