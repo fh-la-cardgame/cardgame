@@ -31,9 +31,9 @@ public class Cardgame {
          * Exemplarische Ausfuehrung von "getDeck(String deckName)"
          */
         DbCard d = new DbCard();
-//        List<Card> list = d.getDeck("civitas diaboli");
-//        System.out.println(list);
-        System.out.println( d.insert_Card_Effect_Shields(3, 2, 4));
+        List<Card> list = d.getDeck("civitas diaboli");
+        System.out.println(list);
+//        System.out.println( d.insert_Card_Effect_Shields(3, 2, 4));
                 
    }
     

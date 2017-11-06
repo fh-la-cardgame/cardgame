@@ -28,6 +28,7 @@ public class DbCard {
     private static Connection c;
     /** Die maximale Anzahl an Effekten die eine Karte haben kann**/
     public static final int MAX_EFFEKTS = 5;
+    
     public static final int EVO_OBERGRENZE = 10;
 
     
@@ -74,8 +75,9 @@ public class DbCard {
                 if(rs.getInt(10) != 0){
                     evo = integerToGamecard(rs.getInt(10));
                 }
-                l.add(new GameCard(rs.getInt(1), rs.getString(2), rs.getString(3), type, rs.getInt(5), 
-                		new Shield(rs.getShort(6), rs.getShort(7)), new Shield(rs.getShort(8), rs.getShort(9)), evo, effects));
+                //Veralteter Ctor!
+//                l.add(new GameCard(rs.getInt(1), rs.getString(2), rs.getString(3), type, rs.getInt(5), 
+//                		new Shield(rs.getShort(6), rs.getShort(7)), new Shield(rs.getShort(8), rs.getShort(9)), evo, effects));
             
         	}
             c.close();
@@ -132,10 +134,16 @@ public class DbCard {
     	return effect;
     }
     
+    /** Liefert ein Array mit Effekten zurueck.
+     * Dieses Array laesst sich dann einer Gamecard zuordnen.
+     * @param rs Resultset das Infos ueber die jeweilige Karte enthaelt.
+     * @param rs2 Resultset das Infos ueber die Effekte liefert.
+     * @return ein Array mit Effekten.
+     */
     private Effect[] getEffects(ResultSet rs, ResultSet rs2){
     	EffectType effect = null;
     	Effect[] effects = null;
-    	try{
+    	try{					//shield_max -1
 	        effects = new Effect[rs.getShort(7)-1];
 	        while(rs2.next()){	
 				effect = stringToEffectType(rs2.getString(3));
@@ -155,6 +163,37 @@ public class DbCard {
         }
         return effects;
     }
+    /** Liefert eine Array auf EvoEffekten zurueck.
+     * Dieses Array laesst sich dann einer Gamecard zuordnen.
+     * @param rs3 Resultset mit ausgelesen Infos auf DB hinsichlich der Evo_Effekte.
+     * @return ein Array aus Effekten.
+     */
+    private Effect[] getEvoEffects(ResultSet rs3){
+    	EffectType effect = null;
+    	Effect[] effects = null;
+    	try{					//shield_max -1
+	        effects = new Effect[EVO_OBERGRENZE];
+	        while(rs3.next()){			//effectType
+				effect = stringToEffectType(rs3.getString(3));
+					//evo_shield
+				if(rs3.getShort(5) != -1){
+	        	effects[rs3.getShort(5)-1] = new Effect(rs3.getInt(1), rs3.getString(2), effect, rs3.getInt(4));
+				}else{
+					int i = 0;
+					while(i<EVO_OBERGRENZE){
+						effects[i]= new Effect(rs3.getInt(1), rs3.getString(2), effect, rs3.getInt(4));
+						i++;
+					}
+						
+				}
+	        }
+    	}catch(SQLException ex){
+            Logger.getLogger(DbCard.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return effects;
+    }
+    
+    
     /**
      * Weist der id der Gamecard(integer) eine Gamecard zu
      * @param id Id der Gamecard die Evolution
@@ -162,14 +201,16 @@ public class DbCard {
      */
     private GameCard integerToGamecard(int id){
     	GameCard result = null;
-    	ResultSet rs, rs2;
+    	ResultSet rs, rs2, rs3;
     	PreparedStatement pst;
     	Effect[] effects = null;
+    	Effect[] evoEffects = null;
     	try{
     		c = DbConnection.getPostgresConnection();
 	         //Ausfuehren des Selects um alle notwendigen Infos aus Gamecard zu beziehen.
 	        pst = c.prepareStatement("Select g.\"gid\", g.\"name\", g.\"description\", g.\"monster_type\", g.\"atk\", g.\"shield_curr\","+" "
-	        		+ "g.\"shield_max\", g.\"evo_shield_curr\", g.\"evo_shield_max\" from public.\"Gamecard\" g where g.gid = "+id);
+	        		+ "g.\"shield_max\", g.\"evo_shield_curr\", g.\"evo_shield_max\" from public.\"Gamecard\" g where g.gid = ?");
+	        pst.setInt(1, id);
 	        rs = pst.executeQuery();
 	        rs.next();
             // Da das ResultSet nur Strings statt Enums liefert, werden die Strings mittels switch - Anweisung
@@ -178,14 +219,30 @@ public class DbCard {
            type = stringToType(rs.getString(4));
            
            PreparedStatement join = c.prepareStatement("select e.eid, e.description, e.effect_type, e.effect_number, c_e.shield"+""
-           		+ " from \"Effecte\" e, \"Card_Effect\" c_e, \"Gamecard\" g where g.gid = c_e.gid and c_e.eid = e.eid and g.gid = "
-           		+ rs.getInt(1));
+           		+ " from \"Effecte\" e, \"Card_Effect\" c_e, \"Gamecard\" g "
+           		+ "where g.gid = c_e.gid "
+           		+ "and c_e.eid = e.eid "
+           		+ "and c_e.shield is not null "
+           		+ "and g.gid = "
+           		+ "?");
+           join.setInt(1, rs.getInt(1));
            rs2 = join.executeQuery();
-           
+           PreparedStatement evoEffectsQuery = c.prepareStatement("select e.eid, e.description, e.effect_type, e.effect_number, c_e.evo_shield"+""
+              		+ " from \"Effecte\" e, \"Card_Effect\" c_e, \"Gamecard\" g "
+              		+ "where g.gid = c_e.gid "
+              		+ "and c_e.eid = e.eid "
+              		+ "and c_e.evo_shield is not null "
+              		+ "and g.gid = "
+              		+ "?");
+           evoEffectsQuery.setInt(1, rs.getInt(1));
+              rs3 = evoEffectsQuery.executeQuery();
+              
            effects = getEffects(rs, rs2);
+           evoEffects = getEvoEffects(rs3);
+           
         	result = new GameCard(rs.getInt(1), rs.getString(2), rs.getString(3), type, rs.getInt(5), 
                 		new Shield(rs.getShort(8), rs.getShort(9)), new Shield(rs.getShort(6), rs.getShort(7)),
-                		null, effects.clone());
+                		null, effects.clone(), evoEffects.clone());
         
     	} catch (SQLException ex) {
             Logger.getLogger(DbCard.class.getName()).log(Level.SEVERE, null, ex);
@@ -201,12 +258,13 @@ public class DbCard {
     /**
      * Liest alle Karten und Specialcards in eine Liste ein
      * @param deckName Name des Decks
-     * @return Gibt eine List aller Karten zurück
+     * @return Gibt eine List aller Karten zurueck
      */
     public List<Card> getDeck(String deckName){
-    	PreparedStatement pst1, pst2;
-    	ResultSet rs1, rs2;
+    	PreparedStatement pst1, pst2, pst3;
+    	ResultSet rs1, rs2, rs3;
     	Effect[] effects = null;
+    	Effect[] evoEffects = null;
     	//deckName = deckName.toLowerCase();
     	List<Card> deck = new ArrayList<>();
     	try{
@@ -216,17 +274,32 @@ public class DbCard {
     				+"from \"Gamecard\" g , \"Deck_Cards\" dc, \"Deck\" d "
     				+"where g.gid = dc.gid "
     				+"and d.did = dc.did "
-    				+"and d.name = '"+deckName+"'");
+    				+"and d.name = '?'");
+    		pst1.setString(1, deckName);
 	    	rs1 = pst1.executeQuery();
 	    	while(rs1.next()){
 	    		pst2 = c.prepareStatement("select e.eid, e.description, effect_type, effect_number, shield "
 	    				+"from \"Effecte\" e, \"Card_Effect\" c_e, \"Gamecard\" g "
 	    				+"where e.eid = c_e.eid "
 	    				+"and c_e.gid = g.gid "
-	    				+"and g.gid = "+rs1.getInt(1));
-	    		
+	    				+"and shield is not null "
+	    				+"and g.gid = ?");
+	    		pst2.setInt(1, rs1.getInt(1));
 	    		rs2 = pst2.executeQuery();
+	    		pst3 = c.prepareStatement("select e.eid, e.description, effect_type, effect_number, c_e.evo_shield "
+	    				+"from \"Effecte\" e, \"Card_Effect\" c_e, \"Gamecard\" g "
+	    				+"where e.eid = c_e.eid "
+	    				+"and c_e.gid = g.gid "
+	    				+"and evo_shield is not null "
+	    				+"and g.gid = ?");
+	    		pst3.setInt(1, rs1.getInt(1));
+	    		rs3 = pst3.executeQuery();
+	    		
+	    		
 	    		effects = getEffects(rs1, rs2);
+	    		evoEffects = getEvoEffects(rs3);
+	 
+	    		
 	    		 GameCard evo = null;
 	             if(rs1.getInt(10) != 0){
 	                 evo = integerToGamecard(rs1.getInt(10));
@@ -234,14 +307,17 @@ public class DbCard {
 	           
 	             deck.add(new GameCard(rs1.getInt(1), rs1.getString(2), rs1.getString(3), 
 	            		 stringToType(rs1.getString(4)), rs1.getInt(5), new Shield(rs1.getShort(8), 
-	            		rs1.getShort(9)), new Shield(rs1.getShort(6), rs1.getShort(7)), evo, effects.clone()));
+	            		rs1.getShort(9)), new Shield(rs1.getShort(6), rs1.getShort(7)), evo, effects.clone(), evoEffects.clone()));
 	    	}
+	    	
+	    	//Ab hier kommen die Specialcards:
 	    	pst1 = c.prepareStatement("select sc.sid, sc.name, description, type "
 	    			+"from \"Specialcard\" sc, \"Deck_Cards\" dc, \"Deck\" d "
-	    			+" where d.name = '"+deckName+"'"
+	    			+" where d.name = '?'"
 	    			+" and sc.sid = dc.sid"
 	    			+" and dc.did = d.did"
 	    			+" order by sc.sid");
+	    	pst1.setString(1, deckName);
 	    	rs1 = pst1.executeQuery();
 	    	
 	    	
@@ -250,9 +326,10 @@ public class DbCard {
 	    		List<Effect> effects_list = new ArrayList<>();
 	    		pst2 = c.prepareStatement("select e.eid, e.description, e.effect_type, e.effect_number "
 	    				+"from \"Effecte\" e, \"Specialcard_Effect\" ce, \"Specialcard\" "
-	    				+"where sid = "+rs1.getInt(1)
+	    				+"where sid = ?"
 	    				+"and e.eid = ce.eid "
 	    				+"and scid = sid");
+	    		pst2.setInt(1, rs1.getInt(1));
 	    		rs2 = pst2.executeQuery();
 	    		while(rs2.next())
 	    		effects_list.add(new Effect(rs2.getInt(1), rs2.getString(2), stringToEffectType(rs2.getString(3)), rs2.getInt(4)));
@@ -278,7 +355,7 @@ public class DbCard {
      * @param gid Die Id der GameCard.
      * @param eid Die Id des Effects.
      * @param evoShield Der EvoShield bei dem der Effekt ausgeloest wird.
-     * @throws IllegalArgumentException Wenn die Anzahl der Schilder in einem ungültigen Wertebereich liegen.
+     * @throws IllegalArgumentException Wenn die Anzahl der Schilder in einem ungueltigen Wertebereich liegen.
      * @return boolean true, falls der Eintrag noch nicht vorhanden war, false, falls der Eintrag schon existiert.
      */
     public boolean insert_Card_Effect_EvoShields(int gid, int eid, int evoShield){

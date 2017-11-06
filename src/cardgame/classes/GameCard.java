@@ -18,6 +18,9 @@ public class GameCard extends Card {
 	private final GameCard evolution;
         /** Karteneffekte. **/
 	private final Effect[] effects;
+		/** EvoEffekte		**/
+	private final Effect[] evoEffects;
+		 
 
         /**
          * Konstruktor
@@ -31,13 +34,14 @@ public class GameCard extends Card {
          * @param evolution Evolutionskarte
          * @param effects Karteneffekte
          */
-	public GameCard(final int id, final String name, final String description, final Type type, final int atk, final Shield evolutionShields, final Shield shields, final GameCard evolution, final Effect[] effects) {
+	public GameCard(final int id, final String name, final String description, final Type type, final int atk, final Shield evolutionShields, final Shield shields, final GameCard evolution, final Effect[] effects, final Effect[] evoEffects) {
 		super(id, name, description,type);
 		this.atk = atk;
 		this.evolutionShields = new Shield(evolutionShields);
 		this.shields = new Shield(shields);
 		this.evolution = evolution;
 		this.effects = effects.clone();
+		this.evoEffects = evoEffects;
 	}
         
         /**
@@ -45,7 +49,7 @@ public class GameCard extends Card {
          * @param c Spielkarte
          */
         public GameCard(final GameCard c){
-            this(c.getId(), c.getName(), c.getDescription(), c.getType(), c.getAtk(), c.getEvolutionShields(), c.getShields(), c.getEvolution(), c.getEffects());
+            this(c.getId(), c.getName(), c.getDescription(), c.getType(), c.getAtk(), c.getEvolutionShields(), c.getShields(), c.getEvolution(), c.getEffects(), c.getEvoEffects());
         }
 
 	public int getAtk() {
@@ -66,9 +70,13 @@ public class GameCard extends Card {
 	public void setAtk(int atk) {
 		this.atk = atk;
 	}
+	
+	public Effect[] getEvoEffects(){
+		return evoEffects;	//Offene Frage: Clonen?
+	}
 	@Override
 	public String toString(){
-		return super.toString() +" "+getAtk()+" "+getEvolutionShields()+" "+getShields()+" \nEvo: "+getEvolution()+"\nEffects: "+Arrays.toString(getEffects())+"\n";
+		return super.toString() +" "+getAtk()+" "+getEvolutionShields()+" "+getShields()+" \nEvo: "+getEvolution()+"\nEffects: "+Arrays.toString(getEffects())+"\nEvoEffects: "+Arrays.toString(evoEffects)+"\n";
 	}
 	
 }
