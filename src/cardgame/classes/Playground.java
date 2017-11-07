@@ -8,12 +8,21 @@ import java.util.List;
  */
 public class Playground {
 	
+    /** Anzahl an Karten der Arrays**/
+	private final static int ROW = 4;
+	
     /** Spieler. **/
     private final Player player;
     /** Deck mit Karten **/
     private final Deck deck;
     /** Karten auf der Hand. **/
     private final List<Card> cardsOnHand;
+    
+    /** Array fuer  Monsterkarten**/
+	private final GameCard[] battlegroundMonster = new GameCard[ROW];        
+    /** Array fuer die Zauber- bzw. Fallenkarten**/
+	private final SpecialCard[] battlegroundSpecials = new SpecialCard[ROW];  
+	
 	
     /**
      * Konstruktor
@@ -53,7 +62,29 @@ public class Playground {
     public void addCard(){
         //Logik
     }
+    
+    /**
+     * Entfernt eine GameCard.
+     * Falls GameCard nicht auf dem Feld wird nichts entfernt.
+     * @param gameCard Karte die entfernt werden soll.
+     */
+    public void removeBattlegroundMonster(GameCard gameCard) {
+    	for(int i = 0; i < ROW; i++) {
+    		if(battlegroundMonster[i] == gameCard) {
+    			battlegroundMonster[i] = null;
+    			//Effektkarten die auf diese Karte wirken entfernen nicht implementiert
+    		}
+    	}
+    }
 
+	public GameCard[] getBattlegroundMonster() {
+		return battlegroundMonster;
+	}
+
+
+	public SpecialCard[] getBattlegroundSpecials() {
+		return battlegroundSpecials;
+	}
 	
 
 }
