@@ -27,7 +27,7 @@ public class Playground {
     /**
      * Konstruktor
      * @param player
-     * @param cards
+     * @param deck
      */
     public Playground(final Player player, final Deck deck) {
 		this.player = player;
@@ -53,7 +53,7 @@ public class Playground {
      * @param c Spiel- bzw. Spezialkarte
      */
     public void removeCard(Card c){
-        //Logik
+        cardsOnHand.remove(c);
     }
 
     /**
@@ -61,6 +61,35 @@ public class Playground {
      */
     public void addCard(){
         //Logik
+    }
+
+    /**
+     * Löscht die Karte aus der Hand und fügt sie als Monsterkarte auf das Feld ein.
+     * @param card Monsterkarte die eingefügt werden soll.
+     */
+    public void addMonsterCard(GameCard card){
+       if(!getCardsOnHand().contains(card)) throw new IllegalArgumentException();
+       removeCard(card);
+       //Karten werden von links nach rechts gelegt Eventuell von mitte aus starten !
+        for(int i=0;i<battlegroundMonster.length;i++){
+            if(battlegroundMonster[i] != null) {
+                battlegroundMonster[i] = card; //Clonen ?
+                return;
+            }
+        }
+        throw new RuntimeException("Feld ist voll !");
+    }
+
+    public void addSpecialCard(SpecialCard card){
+        if(!getCardsOnHand().contains(card)) throw new IllegalArgumentException();
+        removeCard(card);
+        for(int i=0;i<battlegroundSpecials.length;i++){
+            if(battlegroundSpecials[i] != null){
+                battlegroundSpecials[i] = card; //Clonen ?
+                return;
+            }
+        }
+        throw new RuntimeException("Special Card Feld ist voll ! ");
     }
     
     /**
