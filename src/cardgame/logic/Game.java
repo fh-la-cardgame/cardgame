@@ -50,6 +50,30 @@ public class Game {
 		side1 = new Playground(null, null);
 		side2 = new Playground(null, null);
 	}
+	
+	/**
+	 * Fuehrt eine Angriff aus.
+	 * 
+	 * @param id Eigene Spieler Id.
+	 * @param myCardRow Zeilennummer der Karte mit der Angegriffen werden soll.
+	 * @param enemyCardRow Zeilennummer der Karte die angegriffen werden soll (-1 Angriff auf Spieler).
+	 */
+	public void attack(int id, int myCardRow, int enemyCardRow) {
+		GameCard myCard = getMyField(id).getBattlegroundMonster()[myCardRow];
+		if(myCard == null) {
+			throw new RuntimeException("Bei Zeilennummer keine Karte");
+		}
+		if(enemyCardRow == -1) {
+			attack(id, myCard, null);
+		} else {
+			GameCard enemyCard = getEnemyField(id).getBattlegroundMonster()[enemyCardRow];
+			if(enemyCard == null) {
+				throw new RuntimeException("Bei Zeilennummer keine Karte");
+			}
+			attack(id, myCard, enemyCard);
+		}
+		
+	}
 
 	/**
 	 * Fuehrt eine Angriff aus.
