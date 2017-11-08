@@ -20,6 +20,8 @@ public class GameCard extends Card {
 	private final Effect[] effects;
 		/** EvoEffekte		**/
 	private final Effect[] evoEffects;
+		/** Effect der noch ausgefuert werden muss **/
+	private Effect nextEffect = null;
 		 
 
         /**
@@ -88,6 +90,64 @@ public class GameCard extends Card {
 	@Override
 	public String toString(){
 		return super.toString() +" "+getAtk()+" "+getEvolutionShields()+" "+getShields()+" \nEvo: "+getEvolution()+"\nEffects: "+Arrays.toString(getEffects())+"\nEvoEffects: "+Arrays.toString(evoEffects)+"\n";
+	}
+	
+	/**
+	 * Erniedrigt die Schilder um ein Schild.
+	 * Prueft, ob dadurch ein Effect ausgeloest wird.
+	 * Dieser muss mit der Methode getNextEffect geholt und ausgefuehrt werden.
+	 * @return true(wenn Karte noch am Leben) false(falls Karte keine Schilder mehr besitzt)
+	 */
+	public boolean dropShield() {
+		shields.dropShield();
+		int shield = shields.getCurrentShields();
+		if(shield > 0) {
+			if(shield < effects.length) {
+				if(nextEffect != null) {
+					throw new RuntimeException("Alter Effect wurde noch nicht ausgefuert");
+				}
+				nextEffect = effects[shield];
+				return true;
+			}
+		}
+		return false;
+		
+	}
+	
+	/**
+	 * Erhoeht die EvolutionSchilder um eins.
+	 * Prueft, ob dadurch ein Effect ausgeloest wird.
+	 * Dieser muss mit der Methode getNextEffect geholt und ausgefuehrt werden.
+	 * @return true(wenn Karte noch am Leben) false(falls Karte keine Schilder mehr besitzt)
+	 */
+	public GameCard AddEvoShield() {
+		int beforeShield = evolutionShields.getCurrentShields();
+		evolutionShields.addShield();
+		int shield = evolutionShields.getCurrentShields();
+		if(beforeShield != shield) {
+			if(shield < evoEffects.length) {
+				if(nextEffect != null) {
+					throw new RuntimeException("Alter Effect wurde noch nicht ausgefuert");
+				}
+				nextEffect = evoEffects[shield];
+			}
+		}
+		if(shield == evolutionShields.getMaxShields()) {
+			return evolution;
+		}
+		return null;
+		
+	}
+	
+	/**
+	 * Gibt Effect zuruek, der noch ausgefuehrt werden muss.
+	 * Setzt dabei nextEffect wieder auf null.
+	 * @return
+	 */
+	public Effect getNextEffect() {
+		Effect e = nextEffect;
+		nextEffect = null;
+		return e;
 	}
 	
 }

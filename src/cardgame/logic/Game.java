@@ -88,24 +88,33 @@ public class Game {
     public void attack(int id, GameCard myCard, GameCard enemyCard) {
         turn(id);
 
+        //Phase wird in Angriff geaendert
         if (phase == 0) {
             phase = 1;
         }
-        if (phase >= 2) {
-            throw new RuntimeException("Angriffsphase schon beendet");
+        //Illegale Phasen
+        if (phase >= 2 || phase < 0) {
+            throw new RuntimeException("Phase existiert nicht");
         }
+        
+        //Erster Zug kein Angriff moeglich
         if (round <= 0) {
             throw new RuntimeException("Erste Runde Kein Angriff möglich");
         }
 
-        if (CardsHaveAttack.contains(myCard)) {
-            throw new RuntimeException("Mit dieser Karte wurde schon angegriffen");
+        //Abfrage ob mit Karte schon angegriffen wurde
+        for(GameCard g: CardsHaveAttack) {
+        	if(myCard == g) {
+        		throw new RuntimeException("Mit dieser Karte wurde schon angegriffen");
+        	}
         }
 
 
         GameCard[] enemyBattleground = getEnemyField(id).getBattlegroundMonster();
         GameCard[] myBattleground = getMyField(id).getBattlegroundMonster();
 
+        
+        //Abfrage, ob Karte auf dem Feld
         GameCardInField(myCard, myBattleground);
 
 
@@ -136,68 +145,90 @@ public class Game {
 
         //Angriff auf eine Karte
 
+        //Abfrage, ob Karte auf dem Feld
         GameCardInField(enemyCard, enemyBattleground);
 
-        CardsHaveAttack.add(myCard);
-
-
         if (myCard.getAtk() > enemyCard.getAtk()) {
-            Shield shield = enemyCard.getShields();
-            shield.dropShield();
-            //Vorschlag neue Funktion dropShield in GameCard
-            //Effekte ausführen
-
-            //Entferne Karte
-            if (shield.getCurrentShields() == 0) {
-                getEnemyField(id).removeBattlegroundMonster(enemyCard);
+            
+        	//Gegner Schild entfernen
+        	if(!enemyCard.dropShield()) {
+            	getEnemyField(id).removeBattlegroundMonster(enemyCard);
+            } else {
+            	Effect effect = enemyCard.getNextEffect();
+            	if(effect != null) {
+            		//Effect ausfuehren
+            	}
             }
+            
+        	//Eigene Evolutionschilder erhoehen
+        	GameCard evolution = myCard.AddEvoShield();
+        	Effect effect = myCard.getNextEffect();
+        	if(effect != null) {
+        		//Effect ausfuehren
+        	}
+        	if(evolution != null) {
+        		MakeEvolution(myCard, evolution);
+        	}
+            
 
-            //Evolutionsschield hinzufügen
-            myCard.getEvolutionShields().addShield();
-            //Vorschlag neue Funktion addEvoShield in GameCard
-            //Effekte
-
-            return;
-        }
-
-        if (myCard.getAtk() == enemyCard.getAtk()) {
+        } else if (myCard.getAtk() == enemyCard.getAtk()) {
+        	
             //Gegner Schield entfernen
-            Shield enemyShield = enemyCard.getShields();
-            enemyShield.dropShield();
-
-            //Entferne Karte
-            if (enemyShield.getCurrentShields() == 0) {
-                getEnemyField(id).removeBattlegroundMonster(enemyCard);
-            }
-            //Eigens Schield entfernen
-            Shield myShield = myCard.getShields();
-            myShield.dropShield();
-
-            //Entferne Karte
-            if (myShield.getCurrentShields() == 0) {
-                getMyField(id).removeBattlegroundMonster(myCard);
+        	if(!enemyCard.dropShield()) {
+            	getEnemyField(id).removeBattlegroundMonster(enemyCard);
+            } else {
+            	Effect effect = enemyCard.getNextEffect();
+            	if(effect != null) {
+            		//Effect ausfuehren
+            	}
             }
 
-            //Evolutionsschield hinzufügen
-            myCard.getEvolutionShields().addShield();
-            enemyCard.getEvolutionShields().addShield();
+        	//Eigene Schield entfernen
+        	if(!myCard.dropShield()) {
+            	getEnemyField(id).removeBattlegroundMonster(myCard);
+            } else {
+            	Effect effect = myCard.getNextEffect();
+            	if(effect != null) {
+            		//Effect ausfuehren
+            	}
+            }
+        	
+        	//Eigene Evolutionschilder erhoehen
+        	GameCard evolution = myCard.AddEvoShield();
+        	Effect effect = myCard.getNextEffect();
+        	if(effect != null) {
+        		//Effect ausfuehren
+        	}
+        	if(evolution != null) {
+        		MakeEvolution(myCard, evolution);
+        	}
+        	
+        	//Gegnerische Evolutionschilder erhoehen
+        	evolution = enemyCard.AddEvoShield();
+        	effect = enemyCard.getNextEffect();
+        	if(effect != null) {
+        		//Effect ausfuehren
+        	}
+        	if(evolution != null) {
+        		MakeEvolution(enemyCard, evolution);
+        	}
+           
 
-            return;
+        } else if (myCard.getAtk() < enemyCard.getAtk()) {
+
+        	//Eigene Schield entfernen
+        	if(!myCard.dropShield()) {
+            	getEnemyField(id).removeBattlegroundMonster(myCard);
+            } else {
+            	Effect effect = myCard.getNextEffect();
+            	if(effect != null) {
+            		//Effect ausfuehren
+            	}
+            }
+
         }
-
-        if (myCard.getAtk() < enemyCard.getAtk()) {
-
-            //Eigens Schield entfernen
-            Shield myShield = myCard.getShields();
-            myShield.dropShield();
-
-            //Entferne Karte
-            if (myShield.getCurrentShields() == 0) {
-                getMyField(id).removeBattlegroundMonster(myCard);
-            }
-
-            return;
-        }
+        
+        CardsHaveAttack.add(myCard);
 
     }
 
@@ -290,5 +321,28 @@ public class Game {
         }
         throw new RuntimeException("Karte nicht auf dem Feld");
     }
-
+    
+    private void MakeEvolution(GameCard old, GameCard evolution) {
+    	GameCard[] arraySide1 = side1.getBattlegroundMonster();
+    	GameCard[] arraySide2 = side2.getBattlegroundMonster();
+    	GameCard[] array = null;
+    	Playground playground = null;
+    	int i;
+    	for(i = 0; i < arraySide1.length; i++) {
+    		if(arraySide1[i] == old) {
+    			array = arraySide1;
+    			playground = side1;
+    			break;
+    		}
+    		if(arraySide2[i] == old) {
+    			array = arraySide2;
+    			playground = side2;
+    			break;
+    		}
+    	}
+    	playground.removeCard(old);
+    	array[i] = evolution;
+    	
+    }
+    
 }
