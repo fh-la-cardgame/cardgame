@@ -52,6 +52,17 @@ public class GameCard extends Card {
             this(c.getId(), c.getName(), c.getDescription(), c.getType(), c.getAtk(), c.getEvolutionShields(), c.getShields(), c.getEvolution(), c.getEffects(), c.getEvoEffects());
         }
 
+	/**
+	 * Ändert die Atk Punkte um den Wert add.
+	 * @param add Die Atk punkte die hinzugefügt oder abgezogen werden sollen.
+	 */
+	public void changeAtk(int add){
+        	this.atk += add;
+        	if(atk < 0) atk = 0;
+	}
+	public boolean isAlive(){
+		return shields.getCurrentShields() > 0;
+	}
 	public int getAtk() {
 		return atk;
 	}
