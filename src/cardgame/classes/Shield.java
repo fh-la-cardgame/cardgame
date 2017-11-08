@@ -49,14 +49,14 @@ public class Shield {
      * Reduzierung der Schilder.
      */
     public void dropShield() {
-        currentShields = currentShields > 0 ? currentShields-- : currentShields;
+        if(currentShields > 0) currentShields--;
     }
     
     /**
      * Erhoehung der Schilder.
      */
     public void addShield() {
-        currentShields = currentShields < maxShields ? currentShields++ : currentShields;
+        if(currentShields < maxShields) currentShields++;
     }
     
     @Override
