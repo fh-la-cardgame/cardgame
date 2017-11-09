@@ -17,19 +17,20 @@ public class EffectsAssignment {
      * @return Karten die keine Schilder mehr haben.
      */
     public static List<GameCard> useEffect (Effect effect, GameCard... cards){
-        List<GameCard> deathCards;
+        List<GameCard> deathCards = null;
         BiConsumer<GameCard,Integer> function = effect.getEffectType().getFunction();
         int wert = effect.getEffectNumber();
         if(effect.getEffectType().isChangeShields()){
             deathCards = new ArrayList<>();
             for(GameCard card:cards) {
-                function.accept(card,wert);
-                if(!card.isAlive()) deathCards.add(card);
+                if(card != null) {
+                    function.accept(card, wert);
+                    if (!card.isAlive()) deathCards.add(card);
+                }
             }
         }else{
-            deathCards = null;
             for(GameCard card:cards) {
-                function.accept(card,wert);
+                if(card != null) function.accept(card,wert);
             }
         }
         return deathCards;
