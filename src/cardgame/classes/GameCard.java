@@ -1,6 +1,9 @@
 package cardgame.classes;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Klasse zur Abbildung der Struktur einer Spielkarte.
@@ -22,6 +25,8 @@ public class GameCard extends Card {
 	private final Effect[] evoEffects;
 		/** Effect der noch ausgefuert werden muss **/
 	private Effect nextEffect = null;
+	/** Liste aller SpecialCards die auf diese Karte wirken. */
+	private List<SpecialCard> specialCards;
 		 
 
         /**
@@ -44,6 +49,7 @@ public class GameCard extends Card {
 		this.evolution = evolution;
 		this.effects = effects.clone();
 		this.evoEffects = evoEffects;
+		this.specialCards = new ArrayList<>();
 	}
         
         /**
@@ -51,7 +57,8 @@ public class GameCard extends Card {
          * @param c Spielkarte
          */
         public GameCard(final GameCard c){
-            this(c.getId(), c.getName(), c.getDescription(), c.getType(), c.getAtk(), c.getEvolutionShields(), c.getShields(), c.getEvolution(), c.getEffects(), c.getEvoEffects());
+			//TODO Update Copy Ctor for SpecialCard List
+			this(c.getId(), c.getName(), c.getDescription(), c.getType(), c.getAtk(), c.getEvolutionShields(), c.getShields(), c.getEvolution(), c.getEffects(), c.getEvoEffects());
         }
 
 	/**
@@ -62,6 +69,24 @@ public class GameCard extends Card {
         	this.atk += add;
         	if(atk < 0) atk = 0;
 	}
+	public void addSpecialCard(SpecialCard s){
+		for(SpecialCard special:specialCards){
+			if(special == s) return;
+		}
+		specialCards.add(s);
+	}
+
+	public void removeSpecialCard(SpecialCard s){
+		Iterator<SpecialCard> iterator = specialCards.iterator();
+		while(iterator.hasNext()){
+			if(iterator.next() == s) {
+				iterator.remove();
+				return;
+			}
+		}
+	}
+
+	public List<SpecialCard> getSpecialCards(){return specialCards;}
 	public boolean isAlive(){
 		return shields.getCurrentShields() > 0;
 	}

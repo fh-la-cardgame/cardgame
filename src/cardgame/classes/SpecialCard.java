@@ -1,7 +1,6 @@
 package cardgame.classes;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+
 /**
  * Klasse zur Abbildung der Struktur einer Spezialkarte.
  * @author BishaThan
@@ -10,6 +9,9 @@ public class SpecialCard extends Card{
 	
         /** Liste der Effekte der Spezialkarte. **/
 	private List<Effect> effects;
+
+	/**Liste die alle Monsterkarten speichert auf denen der Effekt angewendet wurde.*/
+	private final List<GameCard> gameCards;
 
 	/**
          * Konstruktor
@@ -22,6 +24,7 @@ public class SpecialCard extends Card{
 	public SpecialCard(final int id, final String name, final String description, final Type type, final List<Effect> effects) {
 		super(id, name, description, type);
 		this.effects = new LinkedList<>(effects);
+		this.gameCards = new ArrayList<>();
 	}
         
         /**
@@ -29,15 +32,44 @@ public class SpecialCard extends Card{
          * @param s Spezialkarte
          */
         public SpecialCard(final SpecialCard s){
+        	//TODO Update Copy Ctor for gameCard List
             this(s.getId(), s.getName(), s.getDescription(), s.getType(), s.getEffects());
         }
-        
 
 	/**
 	 * @return the effects
 	 */
 	public List<Effect> getEffects() {
 		return effects; // ?? Frage offen: ob Kopie noetig
+	}
+
+	public void addGameCard(GameCard... cards){
+		for(GameCard card:cards){
+			boolean has = false;
+			if(card != null) {
+				for (GameCard c : gameCards) {
+					if (card == c) {
+						has = true;
+						break;
+					}
+				}
+				if (!has) gameCards.add(card);
+			}
+		}
+	}
+
+	public void removeGameCard(GameCard g){
+		Iterator<GameCard> iterator = gameCards.iterator();
+		while(iterator.hasNext()){
+			if(iterator.next() == g) {
+				iterator.remove();
+				return;
+			}
+		}
+	}
+
+	public boolean hasGameCards(){
+		return !gameCards.isEmpty();
 	}
 	
 	@Override
