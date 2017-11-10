@@ -11,7 +11,7 @@ public class SpecialCard extends Card{
 	private List<Effect> effects;
 
 	/**Liste die alle Monsterkarten speichert auf denen der Effekt angewendet wurde.*/
-	private final List<GameCard> gameCards;
+	private final ArrayList<GameCard> gameCards;
 
 	/**
          * Konstruktor
@@ -26,14 +26,23 @@ public class SpecialCard extends Card{
 		this.effects = new LinkedList<>(effects);
 		this.gameCards = new ArrayList<>();
 	}
+	
+	private SpecialCard(final int id, final String name, final String description, final Type type, final List<Effect> effects, final ArrayList<GameCard> gameCards) {
+		super(id, name, description, type);
+		this.effects = new LinkedList<>(effects);
+		this.gameCards = (ArrayList)gameCards.clone();
+	}
         
         /**
          * Copy-Konstruktor
          * @param s Spezialkarte
          */
         public SpecialCard(final SpecialCard s){
-        	//TODO Update Copy Ctor for gameCard List
-            this(s.getId(), s.getName(), s.getDescription(), s.getType(), s.getEffects());
+            this(s.getId(), s.getName(), s.getDescription(), s.getType(), s.getEffects(), s.getGameCard());
+        }
+        
+        public ArrayList<GameCard> getGameCard(){
+        	return gameCards;
         }
 
 	/**

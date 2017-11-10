@@ -49,7 +49,18 @@ public class GameCard extends Card {
 		this.evolution = evolution;
 		this.effects = effects.clone();
 		this.evoEffects = evoEffects;
-		this.specialCards = new ArrayList<>();
+		this.specialCards = new ArrayList<SpecialCard>();
+	}
+	
+	private GameCard(final int id, final String name, final String description, final Type type, final int atk, final Shield evolutionShields, final Shield shields, final GameCard evolution, final Effect[] effects, final Effect[] evoEffects, final ArrayList<SpecialCard> specialcard) {
+		super(id, name, description,type);
+		this.atk = atk;
+		this.evolutionShields = new Shield(evolutionShields);
+		this.shields = new Shield(shields);
+		this.evolution = evolution;
+		this.effects = effects.clone();
+		this.evoEffects = evoEffects;
+		this.specialCards = (ArrayList) specialcard.clone();
 	}
         
         /**
@@ -57,7 +68,6 @@ public class GameCard extends Card {
          * @param c Spielkarte
          */
         public GameCard(final GameCard c){
-			//TODO Update Copy Ctor for SpecialCard List
 			this(c.getId(), c.getName(), c.getDescription(), c.getType(), c.getAtk(), c.getEvolutionShields(), c.getShields(), c.getEvolution(), c.getEffects(), c.getEvoEffects());
         }
 
@@ -87,6 +97,7 @@ public class GameCard extends Card {
 	}
 
 	public List<SpecialCard> getSpecialCards(){return specialCards;}
+	
 	public boolean isAlive(){
 		return shields.getCurrentShields() > 0;
 	}
