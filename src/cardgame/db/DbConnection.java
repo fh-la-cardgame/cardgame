@@ -1,6 +1,5 @@
 package cardgame.db;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
 
 import javax.swing.*;
 import java.io.*;
@@ -16,7 +15,7 @@ import java.sql.SQLException;
 public class DbConnection {
 
     public static String[] readData() {
-        String fileData = System.getProperty("user.home") + "/daten";
+        String fileData = System.getProperty("user.home") + "\\daten";
         File f = new File(fileData);
         if (f.isDirectory()) {
             throw new IllegalArgumentException("Der File ist eine Directory");
