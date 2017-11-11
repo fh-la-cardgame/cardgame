@@ -135,19 +135,19 @@ public class GameCard extends Card {
 	 * @return true(wenn Karte noch am Leben) false(falls Karte keine Schilder mehr besitzt)
 	 */
 	public boolean dropShield() {
-		shields.dropShield();
-		int shield = shields.getCurrentShields();
-		if(shield > 0) {
-			if(shield < effects.length) {
-				if(nextEffect != null) {
-					throw new RuntimeException("Alter Effect wurde noch nicht ausgefuert");
-				}
-				nextEffect = effects[shield];
+		if(shields.dropShield()) {
+			int shield = shields.getCurrentShields();
+			if(nextEffect != null) {
+				throw new RuntimeException("Alter Effect wurde noch nicht ausgefuert");
+			}
+			nextEffect = effects[shield];
+			if(shield == 0) {
+				return false;
+			} else {
 				return true;
 			}
 		}
 		return false;
-		
 	}
 	
 	/**
@@ -157,16 +157,15 @@ public class GameCard extends Card {
 	 * @return true(wenn Karte noch am Leben) false(falls Karte keine Schilder mehr besitzt)
 	 */
 	public GameCard AddEvoShield() {
-		int beforeShield = evolutionShields.getCurrentShields();
-		evolutionShields.addShield();
-		int shield = evolutionShields.getCurrentShields();
-		if(beforeShield != shield) {
-			if(shield < evoEffects.length) {
-				if(nextEffect != null) {
-					throw new RuntimeException("Alter Effect wurde noch nicht ausgefuert");
-				}
-				nextEffect = evoEffects[shield];
+		int shield;
+		if(evolutionShields.addShield()) {
+			shield = evolutionShields.getCurrentShields();
+			if(nextEffect != null) {
+				throw new RuntimeException("Alter Effect wurde noch nicht ausgefuert");
 			}
+			nextEffect = evoEffects[shield];
+		} else {
+			shield = evolutionShields.getCurrentShields();
 		}
 		if(shield == evolutionShields.getMaxShields()) {
 			return evolution;

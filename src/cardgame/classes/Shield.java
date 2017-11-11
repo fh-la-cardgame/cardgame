@@ -47,16 +47,30 @@ public class Shield {
 
     /**
      * Reduzierung der Schilder.
+     * @return true falls sich Anzahl verändert, sonst false
      */
-    public void dropShield() {
-        if(currentShields > 0) currentShields--;
+    public boolean dropShield() {
+        if(currentShields > 0) {
+        	currentShields--;
+        	return true;
+        } else {
+        	return false;
+        }
+        	
     }
     
     /**
      * Erhoehung der Schilder.
+     * @return true falls sich Anzahl verändert, sonst false
      */
-    public void addShield() {
-        if(currentShields < maxShields) currentShields++;
+    public boolean addShield() {
+        if(currentShields < maxShields) {
+        	currentShields++;
+        	return true;
+        } else {
+        	return false;
+        }
+        
     }
     
     @Override
