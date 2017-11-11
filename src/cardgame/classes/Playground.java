@@ -101,7 +101,6 @@ public class Playground {
     	for(int i = 0; i < ROW; i++) {
     		if(battlegroundMonster[i] == gameCard) {
     			battlegroundMonster[i] = null;
-    			//Effektkarten die auf diese Karte wirken entfernen nicht implementiert
     		}
     	}
     }

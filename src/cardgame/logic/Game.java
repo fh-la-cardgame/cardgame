@@ -341,7 +341,8 @@ public class Game {
      * Entfernt eine GameCard vom Spielfeld.
      * @param g GameCard zum entferen
      */
-    private void removeGamecardFormField(GameCard g) {
+    private void removeGameCardFormField(GameCard g) {
+    	removeGameCardFromSpecialCard(g);
     	side1.removeBattlegroundMonster(g);
     	side2.removeBattlegroundMonster(g);
     }
@@ -357,7 +358,7 @@ public class Game {
     	Effect effect;
     	if (!g.dropShield()) {
     		effect = g.getNextEffect();
-            removeGamecardFormField(g);
+            removeGameCardFormField(g);
         } else {
         	effect = g.getNextEffect();
         }
@@ -378,7 +379,10 @@ public class Game {
         	//destroy Effect wirkt auf die andere Karte
     		//bei null kann Effect nicht ausgefuehrt werden und wird ignoriert
         	if(otherForEffect != null) {
-        		EffectsAssignment.useEffect(effect, otherForEffect);
+        		List<GameCard> list = EffectsAssignment.useEffect(effect, otherForEffect);
+        		for(GameCard gamecard: list) {
+        			removeGameCardFormField(gamecard); 
+        		}
         	}
         } else {
         	//alle anderen wirken auf die eigene Karte
@@ -412,12 +416,12 @@ public class Game {
         GameCard[] arraySide2 = side2.getBattlegroundMonster();
         for (int i = 0; i < arraySide1.length; i++) {
             if (arraySide1[i] == old) {
-            	side1.removeBattlegroundMonster(old);
+            	removeGameCardFormField(old);
                 arraySide1[i] = evolution;
                 return;
             }
             if (arraySide2[i] == old) {
-            	side2.removeBattlegroundMonster(old);
+            	removeGameCardFormField(old);
                 arraySide2[i] = evolution;
                 return;
             }
