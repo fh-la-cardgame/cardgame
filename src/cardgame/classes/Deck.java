@@ -1,5 +1,6 @@
 package cardgame.classes;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,6 +31,18 @@ public class Deck {
             if(c instanceof GameCard) this.cards.add(new GameCard((GameCard) c));
             else this.cards.add(new SpecialCard((SpecialCard) c));
         }
+    }
+
+    public Card popCard(){
+        return cards.remove(0);
+    }
+
+    public boolean hasCards(){
+        return cards.size() > 0;
+    }
+
+    public void shuffle(){
+        Collections.shuffle(cards);
     }
         
     /**
