@@ -392,7 +392,7 @@ public class Game {
      * @param otherForEffect andere fuer destroy Effect
      */
     private void addEvoSchieldAndEffect(GameCard g, GameCard otherForEffect) {
-    	GameCard evolution = g.AddEvoShield();
+    	GameCard evolution = g.addEvoShield();
         Effect effect = g.getNextEffect();
         if (effect != null) {
             useEffect(effect, g, otherForEffect);

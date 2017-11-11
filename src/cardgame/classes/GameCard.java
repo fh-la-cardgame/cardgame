@@ -156,7 +156,7 @@ public class GameCard extends Card {
 	 * Dieser muss mit der Methode getNextEffect geholt und ausgefuehrt werden.
 	 * @return true(wenn Karte noch am Leben) false(falls Karte keine Schilder mehr besitzt)
 	 */
-	public GameCard AddEvoShield() {
+	public GameCard addEvoShield() {
 		int shield;
 		if(evolutionShields.addShield()) {
 			shield = evolutionShields.getCurrentShields();
