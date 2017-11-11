@@ -120,7 +120,7 @@ public class Game {
 
         //Angriff direkt auf den Gegner
         if (enemyCard == null) {
-            //Prüfen ob Gegner noch Karten auf Spielfeld
+            //Pruefen ob Gegner noch Karten auf Spielfeld
             for (GameCard g : enemyBattleground) {
                 if (g != null) {
                     throw new RuntimeException("Kein Angriff direkt auf den Spieler moeglich");
@@ -131,7 +131,7 @@ public class Game {
             Shield shield = getEnemyField(id).getPlayer().getShields();
             shield.dropShield();
 
-            //Überpruefen ob gewonnen ???
+            //Ueberpruefen ob gewonnen ???
             if (shield.getCurrentShields() == 0) {
                 System.out.println("Spieler hat gewonnen");
             }
@@ -205,7 +205,7 @@ public class Game {
     public void playSpecialCard(int id, SpecialCard card, GameCard enemyCard) {
         turn(id);
         if (phase != 0) throw new RuntimeException("Kann nur am Anfang Karten legen !");
-        //Effekt ausführen
+        //Effekt ausfuehren
         List<Effect> allEffects = card.getEffects();
         for (Effect e : allEffects) {
             String[] c = e.getEffectType().toString().split("_");
@@ -270,7 +270,7 @@ public class Game {
 
 
     /**
-     * Gibt die Karten auf der Hand des jeweiligen Spielers zurück.
+     * Gibt die Karten auf der Hand des jeweiligen Spielers zurueck.
      *
      * @param id Id des Spielers
      * @return Die Karten des Spielers.
@@ -370,7 +370,7 @@ public class Game {
     
    /**
     * Teilt die verschiedenen Effecttypen den GameCard g oder otherForEffect zu. 
-    * @param effect Effect der ausgeführt werden soll.
+    * @param effect Effect der ausgefuehrt werden soll.
     * @param g GameCard von der der Effect stammt.
     * @param otherForEffect andere fuer destroy Effect.
     */

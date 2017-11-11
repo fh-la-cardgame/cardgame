@@ -47,7 +47,7 @@ public class Shield {
 
     /**
      * Reduzierung der Schilder.
-     * @return true falls sich Anzahl verändert, sonst false
+     * @return true falls sich Anzahl veaeï¿½ndert, sonst false
      */
     public boolean dropShield() {
         if(currentShields > 0) {
@@ -61,7 +61,7 @@ public class Shield {
     
     /**
      * Erhoehung der Schilder.
-     * @return true falls sich Anzahl verändert, sonst false
+     * @return true falls sich Anzahl veraendert, sonst false
      */
     public boolean addShield() {
         if(currentShields < maxShields) {

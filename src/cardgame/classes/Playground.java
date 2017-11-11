@@ -64,8 +64,8 @@ public class Playground {
     }
 
     /**
-     * Löscht die Karte aus der Hand und fügt sie als Monsterkarte auf das Feld ein.
-     * @param card Monsterkarte die eingefügt werden soll.
+     * Loescht die Karte aus der Hand und fuegt sie als Monsterkarte auf das Feld ein.
+     * @param card Monsterkarte die eingefuegt werden soll.
      */
     public void addMonsterCard(GameCard card){
        if(!getCardsOnHand().contains(card)) throw new IllegalArgumentException();
