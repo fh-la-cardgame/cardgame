@@ -10,6 +10,7 @@ public class Playground {
 	
     /** Anzahl an Karten der Arrays**/
 	private final static int ROW = 4;
+	private final static int CARDSONHANDSTART = 5;
 	
     /** Spieler. **/
     private final Player player;
@@ -33,6 +34,11 @@ public class Playground {
 		this.player = player;
 		this.deck = deck; 
 		this.cardsOnHand = new LinkedList<>(); //LOGIK: Shuffle, 5 Karten aus dem Deck zu weisen
+        deck.shuffle();
+        for(int i=0;i<CARDSONHANDSTART;i++){
+            cardsOnHand.add(deck.popCard());
+        }
+
     }
 
 
@@ -52,7 +58,7 @@ public class Playground {
      * Entfernt Karte aus der Hand.
      * @param c Spiel- bzw. Spezialkarte
      */
-    public void removeCard(Card c){
+    public void removeCardFromHand(Card c){
         cardsOnHand.remove(c);
     }
 
@@ -69,7 +75,7 @@ public class Playground {
      */
     public void addMonsterCard(GameCard card){
        if(!getCardsOnHand().contains(card)) throw new IllegalArgumentException();
-       removeCard(card);
+       removeCardFromHand(card);
        //Karten werden von links nach rechts gelegt Eventuell von mitte aus starten !
         for(int i=0;i<battlegroundMonster.length;i++){
             if(battlegroundMonster[i] != null) {
@@ -82,7 +88,7 @@ public class Playground {
 
     public void addSpecialCard(SpecialCard card){
         if(!getCardsOnHand().contains(card)) throw new IllegalArgumentException();
-        removeCard(card);
+        removeCardFromHand(card);
         for(int i=0;i<battlegroundSpecials.length;i++){
             if(battlegroundSpecials[i] != null){
                 battlegroundSpecials[i] = card; //Clonen ?
@@ -103,6 +109,21 @@ public class Playground {
     			battlegroundMonster[i] = null;
     		}
     	}
+    }
+    /**
+     * Entfernt eine Spezialkarte vom Feld.
+     * Falls Specialcard nicht auf dem Feld wird nichts entfernt.
+     * @param special Karte die entfernt werden soll.
+     * @return gibt True zurueck wenn eine Karte entfernt wurde;
+     */
+    public boolean removeBattlegroundSpecial(SpecialCard special) {
+        for(int i = 0; i < ROW; i++) {
+            if(battlegroundSpecials[i] == special) {
+                battlegroundMonster[i] = null;
+                return true;
+            }
+        }
+        return false;
     }
 
 	public GameCard[] getBattlegroundMonster() {
