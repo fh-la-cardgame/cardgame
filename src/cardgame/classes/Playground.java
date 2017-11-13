@@ -86,7 +86,7 @@ public class Playground {
         throw new RuntimeException("Feld ist voll !");
     }
 
-    public void addSpecialCard(SpecialCard card){
+    public void addSpecialCardToField(SpecialCard card){
         if(!getCardsOnHand().contains(card)) throw new IllegalArgumentException();
         removeCardFromHand(card);
         for(int i=0;i<battlegroundSpecials.length;i++){

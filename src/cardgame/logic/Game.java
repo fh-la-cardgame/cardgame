@@ -208,55 +208,66 @@ public class Game {
         //Effekt ausfuehren
         List<Effect> allEffects = card.getEffects();
         for (Effect e : allEffects) {
-            String[] c = e.getEffectType().toString().split("_");
-            if (c[0].equals("destroy")) {
-                Objects.requireNonNull(enemyCard);
-                EffectsAssignment.useEffect(e, enemyCard);
-            }
-            else if (c[1].equals("one")) {
-                Objects.requireNonNull(enemyCard);
-                card.addGameCard(enemyCard);
-                enemyCard.addSpecialCard(card);
-                EffectsAssignment.useEffect(e,enemyCard);
-                getMyField(id).addSpecialCard(card);
-            } else
-                switch (c[1]) {
-                    case "all":
-                        GameCard[] enemyBattleground = getEnemyField(id).getBattlegroundMonster();
-                        GameCard[] myBattleground = getMyField(id).getBattlegroundMonster();
-                        EffectsAssignment.useEffect(e, enemyBattleground);
-                        EffectsAssignment.useEffect(e, myBattleground);
-                        for(int i=0;i<myBattleground.length;i++){
-                            if(myBattleground[i] != null) myBattleground[i].addSpecialCard(card);
-                            if(enemyBattleground[i] != null) enemyBattleground[i].addSpecialCard(card);
-                        }
-                        card.addGameCard(enemyBattleground);
-                        card.addGameCard(myBattleground);
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Nicht vorhanden !");
+            List<GameCard> cardsEffect = getCardsForEffect(id,e,enemyCard,enemyCard);
+            List<GameCard> cardsDeath =  EffectsAssignment.useEffect(e,(GameCard[])cardsEffect.toArray());
+            if(e.getEffectType() == EffectType.destroy){
+                for(GameCard c:cardsDeath){
+                    removeGameCardFormField(c);
                 }
-            getMyField(id).addSpecialCard(card);
-
+            }else{
+                for(GameCard c:cardsEffect){
+                    c.addSpecialCard(card);
+                }
+                card.addGameCard((GameCard[])cardsEffect.toArray());
+                getMyField(id).addSpecialCardToField(card);
+            }
         }
     }
+
+    /**
+     * Gibt zu einer Effektkarte die Karten zurück auf denen dieser Effekt angewendet wird.
+     * @param id Id des Spielers.
+     * @param effect Effekt der angewendet werden soll.
+     * @param effectTriggered Karte die den Effekt ausgeloest hat.
+     * @param enemyCard Karte die angegriffen worden ist.
+     * @return Liste der GameKarten.
+     */
+    private List<GameCard> getCardsForEffect(int id,Effect effect,GameCard effectTriggered,GameCard enemyCard){
+        List<GameCard> allCards = new ArrayList<>();
+        EffectType type = effect.getEffectType();
+        if(effect.getEffectType() == EffectType.destroy){
+            if(effect.getEffectNumber() > 0) allCards.add(Objects.requireNonNull(effectTriggered));
+            else allCards.add(Objects.requireNonNull(enemyCard));
+            return allCards;
+        }
+        String number  = type.toString().split("_")[1];
+        switch(number){
+            case "one":
+                allCards.add(effectTriggered);
+                break;
+            case "all":
+                GameCard[] enemyBattleground = getEnemyField(id).getBattlegroundMonster();
+                GameCard[] myBattleground = getMyField(id).getBattlegroundMonster();
+                int length = myBattleground.length;
+                for(int i=0;i<length;i++){
+                    if(myBattleground[i] != null) allCards.add(myBattleground[i]);
+                    if(enemyBattleground[i] != null) allCards.add(myBattleground[i]);
+                }
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
+        return allCards;
+    }
+
+
 
     private void removeGameCardFromSpecialCard(GameCard gameCard){
         List<SpecialCard> specialCardGCards = gameCard.getSpecialCards();
         for(SpecialCard sCard:specialCardGCards){
             sCard.removeGameCard(gameCard);
             if(!sCard.hasGameCards()){
-                int length = side1.getBattlegroundSpecials().length;
-                for(int i=0;i<length;i++){
-                    if(side1.getBattlegroundSpecials()[i] == sCard){
-                        side1.getBattlegroundMonster()[i] = null;
-                        break;
-                    }
-                    if(side2.getBattlegroundSpecials()[i] == sCard){
-                        side2.getBattlegroundMonster()[i] = null;
-                        break;
-                    }
-                }
+                removeSpecialCardFromField(sCard);
             }
         }
     }
@@ -346,6 +357,15 @@ public class Game {
     	side1.removeBattlegroundMonster(g);
     	side2.removeBattlegroundMonster(g);
     }
+
+    /**
+     * Entfernt SpecialCard vom Spielfeld.
+     * @param special
+     */
+    private void removeSpecialCardFromField(SpecialCard special){
+        if(!side1.removeBattlegroundSpecial(special));
+            side2.removeBattlegroundSpecial(special);
+    }
     
     /**
      * Entfernt ein Shield von der GameCard und falls diese auf 0 fallen wird diese entfernt.
@@ -426,7 +446,7 @@ public class Game {
                 return;
             }
         }
-        
+
         throw new IllegalArgumentException("GameCard wurde im Playground nicht gefunden");
 
     }
