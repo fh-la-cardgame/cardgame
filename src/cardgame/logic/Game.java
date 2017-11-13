@@ -209,7 +209,7 @@ public class Game {
         List<Effect> allEffects = card.getEffects();
         for (Effect e : allEffects) {
             List<GameCard> cardsEffect = getCardsForEffect(id,e,enemyCard,enemyCard);
-            List<GameCard> cardsDeath =  EffectsAssignment.useEffect(e,(GameCard[])cardsEffect.toArray());
+            List<GameCard> cardsDeath =  EffectsAssignment.useEffect(e,cardsEffect);
             if(e.getEffectType() == EffectType.destroy){
                 for(GameCard c:cardsDeath){
                     removeGameCardFormField(c);
