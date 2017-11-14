@@ -39,70 +39,141 @@ public class DbCard {
      */
     public static final int EVO_OBERGRENZE = 10;
 
-    /**
-     * VERALTET!!! Gibt eine Liste aller Karten zurueck
-     *
+    /** Gibt eine Liste aller Karten zurueck
      * @return List<Card> Eine Liste aller Karten, ausgelesen aus der DB
      */
-    public List<Card> getAllCards() {
-        List<Card> l = new LinkedList<>();
-        PreparedStatement pst, join;
-        ResultSet rs, rs2;
+      public List<Card> getAllCards() {
+        
+        List<Card> cardList = new LinkedList<>();
+        PreparedStatement prepStmt1;
+        PreparedStatement prepStmt2;
+        //PreparedStatement prepStmt3;
+        ResultSet resStmt1;
+        ResultSet resStmt2;
+        ResultSet resStmt3;
+        
         try {
             c = DbConnection.getPostgresConnection();
-            //Ausfuehren des Selects um alle notwendigen Infos aus Gamecard zu beziehen.
-            pst = c.prepareStatement("Select g.\"gid\", g.\"name\", g.\"description\", g.\"monster_type\", g.\"atk\", g.\"shield_curr\"," + " "
-                    + "g.\"shield_max\", g.\"evo_shield_curr\", g.\"evo_shield_max\", g.\"evo\" from public.\"Gamecard\" g order by g.\"gid\"");
-            rs = pst.executeQuery();
-
-            while (rs.next()) {
-                // Da das ResultSet nur Strings statt Enums liefert, werden die Strings mittels switch - Anweisung
-                // in der Hilfsmethode StringToType dem zugehoerigem Enum zugeordnet.
-                Type type = null;
-                type = stringToType(rs.getString(4));
-
-                //Ausfuerung des Joins(ueber Card_Effekt) um die Effekte einer Karte auszulesen.
-                join = c.prepareStatement("select e.eid, e.description, e.effect_type, e.effect_number, c_e.shield" + ""
-                        + " from \"Effecte\" e, \"Card_Effect\" c_e, \"Gamecard\" g where g.gid = c_e.gid and c_e.eid = e.eid and g.gid = "
-                        + rs.getInt(1));
-                rs2 = join.executeQuery();
-
-                EffectType effect = null;
-                Effect[] effects = new Effect[MAX_EFFEKTS];
-                int i = 0;
-
-                while (rs2.next()) {
-                    //Da das ResultSet nur Strings statt Enums liefert, werden die Strings mittels switch - Anweisung
-                    // in der Hilfsmethode stringToEffectType dem zugehoerigem Enum zugeordnet.
-                    effect = stringToEffectType(rs2.getString(3));
-                    effects[i] = new Effect(rs2.getInt(1), rs2.getString(2), effect, rs2.getInt(4));
-                    i++;
-                }
-
+            
+           /** Ausfuehren des Selects um alle notwendigen Infos aus Gamecard zu beziehen. **/
+                        
+            prepStmt1 = c.prepareStatement("Select g.gid, g.name, g.description,"
+                                     + "g.monster_type, g.atk, g.shield_curr,"
+                                     + "g.shield_max, g.evo_shield_curr"
+                                     + ", g.evo_shield_max, g.evo from \"Gamecard\" g order by g.gid");
+            
+            resStmt1 = prepStmt1.executeQuery();
+               
+            while (resStmt1.next()) {       
+                
+                int gameCardID = resStmt1.getInt(1);
+                String gameCardName = resStmt1.getString(2);
+                String gameCardDescription = resStmt1.getString(3);
+                Type monsterType = stringToType(resStmt1.getString(4));
+                int attack = resStmt1.getInt(5);
+                short lifeShieldCurrent = resStmt1.getShort(6);
+                short lifeShieldMax = resStmt1.getShort(7);
+                short evoShieldCurrent = resStmt1.getShort(8);
+                short evoShieldMax = resStmt1.getShort(9);
                 GameCard evo = null;
-                if (rs.getInt(10) != 0) {
-                    evo = integerToGamecard(rs.getInt(10));
+                
+                if (resStmt1.getInt(10) != 0) {
+                    evo = integerToGamecard(resStmt1.getInt(10));
                 }
-                //Veralteter Ctor!
-//                l.add(new GameCard(rs.getInt(1), rs.getString(2), rs.getString(3), type, rs.getInt(5), 
-//                		new Shield(rs.getShort(6), rs.getShort(7)), new Shield(rs.getShort(8), rs.getShort(9)), evo, effects));
 
+                /** Ausfuerung des Joins(ueber Card_Effekt) um die Effekte der LifeShields einer Karte auszulesen. **/
+               //auslagern, dass ich ihn auch verwenden kann
+                prepStmt2 = c.prepareStatement("select e.eid, e.description, e.effect_type, e.effect_number, c_e.shield"+""
+           		+ " from \"Effecte\" e, \"Card_Effect\" c_e, \"Gamecard\" g "
+           		+ "where g.gid = c_e.gid "
+           		+ "and c_e.eid = e.eid "
+           		+ "and c_e.shield is not null "
+           		+ "and g.gid = "
+           		+ "?");
+           prepStmt2.setInt(1, gameCardID);
+           resStmt2 = prepStmt2.executeQuery();
+            /** Ausfuerung des Joins(ueber Card_Effekt) um die EvoShield- Effekte einer Karte auszulesen. **/
+            //auslagern
+           PreparedStatement selectCard_EvoEffect = c.prepareStatement("select e.eid, e.description, e.effect_type, e.effect_number, c_e.evo_shield"+""
+              		+ " from \"Effecte\" e, \"Card_Effect\" c_e, \"Gamecard\" g "
+              		+ "where g.gid = c_e.gid "
+              		+ "and c_e.eid = e.eid "
+              		+ "and c_e.evo_shield is not null "
+              		+ "and g.gid = "
+              		+ "?");
+           selectCard_EvoEffect.setInt(1, gameCardID);
+              resStmt3 = selectCard_EvoEffect.executeQuery();
+             
+               EffectType effectType;
+                Effect[] effects = new Effect[lifeShieldMax];
+                Effect[] evoEffects = new Effect[EVO_OBERGRENZE];
+                
+           effects = getEffects(lifeShieldMax, resStmt2);
+           evoEffects = getEvoEffects(resStmt3);
+                                           
+               
+                cardList.add(new GameCard(gameCardID, gameCardName, gameCardDescription, monsterType, attack,
+                                   new Shield(lifeShieldCurrent, lifeShieldMax),
+                                   new Shield(evoShieldCurrent, evoShieldMax), evo, effects, evoEffects));            
             }
+            
+            
+             /** Ausfuehren des Selects um alle notwendigen Infos aus Specialcard zu beziehen. **/
+             
+            prepStmt1 = c.prepareStatement("select sc.sid, sc.name, sc.description, sc.type from "
+                                            + "\"Specialcard\" sc order by sc.sid ");
+                                       
+            resStmt1 = prepStmt1.executeQuery();
+            
+            while (resStmt1.next()) {       
+                
+                int specialCardID = resStmt1.getInt(1);
+                String specialCardName = resStmt1.getString(2);
+                String specialCardDescription = resStmt1.getString(3);
+                Type monsterType = stringToType(resStmt1.getString(4));                     
+            
+            /** Ausfuerung des Joins(ueber Specialcard_Effekt) um die Effekte einer Specialkarte auszulesen. **/
+                              
+                prepStmt2 = c.prepareStatement("select e.eid, e.description, e.effect_type, e.effect_number "
+                                        + "from \"Effecte\" e, \"Specialcard_Effect\" ce, \"Specialcard\" s "
+                                        + "where s.sid = " + specialCardID + "and e.eid = ce.eid "
+                                        + "and ce.scid = s.sid");
+                
+                resStmt2 = prepStmt2.executeQuery();
+                
+                List<Effect> effects_list = new ArrayList<>();                
+                EffectType effectType;
+             
+                while (resStmt2.next()) {
+                    
+                    int effectID = resStmt2.getInt(1);
+                    String effectDescription = resStmt2.getString(2);
+                    effectType = stringToEffectType(resStmt2.getString(3));
+                    int effectNumber = resStmt2.getInt(4);
+                    
+                    effects_list.add(new Effect(effectID, effectDescription, effectType, effectNumber));
+                }
+                cardList.add(new SpecialCard(specialCardID, specialCardName, specialCardDescription, 
+                             stringToType(resStmt1.getString(4)), effects_list));         
+            }
+            
+            
             c.close();
-        } catch (SQLException ex) {
+        } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(DbCard.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(DbCard.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
+          } 
+            finally {
+                try {
                 c.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(DbCard.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(DbCard.class.getName()).log(Level.SEVERE, null, ex);
+                  }
             }
-        }
-        return l;
+        
+        return cardList;
     }
 
+    
     /**
      * Ordnet einem String einen Enum zu.
      *

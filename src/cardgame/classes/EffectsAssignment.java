@@ -35,4 +35,8 @@ public class EffectsAssignment {
         }
         return deathCards;
     }
+
+    public static List<GameCard> useEffect(Effect e,List<GameCard> l){
+        return useEffect(e,(GameCard[]) l.toArray());
+    }
 }
