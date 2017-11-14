@@ -137,7 +137,7 @@ public class Game {
             }
 
             //Eigene Evolutionschilder erhoehen
-            addEvoSchieldAndEffect(myCard, null);
+            addEvoSchieldAndEffect(id, myCard, null);
             //TODO destroy Effect kann auf keine Karte wirken???? wird nicht ausgefuehrt???
 
             CardsHaveAttack.add(myCard);
@@ -156,7 +156,7 @@ public class Game {
         	dropShieldAndEffect(id, enemyCard, myCard);
 
             //Eigene Evolutionschilder erhoehen
-            addEvoSchieldAndEffect(myCard, enemyCard);
+            addEvoSchieldAndEffect(id, myCard, enemyCard);
 
         } else if (myCard.getAtk() == enemyCard.getAtk()) {
 
@@ -167,10 +167,10 @@ public class Game {
         	dropShieldAndEffect(id, myCard, enemyCard);
 
             //Eigene Evolutionschilder erhoehen
-        	addEvoSchieldAndEffect(myCard, enemyCard);
+        	addEvoSchieldAndEffect(id, myCard, enemyCard);
         	
             //Gegnerische Evolutionschilder erhoehen
-            addEvoSchieldAndEffect(enemyCard, myCard);
+            addEvoSchieldAndEffect(id ,enemyCard, myCard);
             
 
         } else if (myCard.getAtk() < enemyCard.getAtk()) {
@@ -383,43 +383,48 @@ public class Game {
         	effect = g.getNextEffect();
         }
     	if(effect != null) {
-    		useEffect(effect, g, otherForEffect);
+    		List<GameCard> list = getCardsForEffect(id, effect, g, otherForEffect);
+    		EffectsAssignment.useEffect(effect, list).stream().forEach( (x)->removeGameCardFormField(x) );
     	}
         
     }
     
-   /**
-    * Teilt die verschiedenen Effecttypen den GameCard g oder otherForEffect zu. 
-    * @param effect Effect der ausgefuehrt werden soll.
-    * @param g GameCard von der der Effect stammt.
-    * @param otherForEffect andere fuer destroy Effect.
-    */
-    private void useEffect(Effect effect, GameCard g, GameCard otherForEffect) {
-    	if (effect.getEffectType() == EffectType.destroy) {
-        	//destroy Effect wirkt auf die andere Karte
-    		//bei null kann Effect nicht ausgefuehrt werden und wird ignoriert
-        	if(otherForEffect != null) {
-        		List<GameCard> list = EffectsAssignment.useEffect(effect, otherForEffect);
-        		for(GameCard gamecard: list) {
-        			removeGameCardFormField(gamecard); 
-        		}
-        	}
-        } else {
-        	//alle anderen wirken auf die eigene Karte
-        	EffectsAssignment.useEffect(effect, g);
-        }
-    }
+//   /**
+//    * Teilt die verschiedenen Effecttypen den GameCard g oder otherForEffect zu. 
+//    * @param effect Effect der ausgefuehrt werden soll.
+//    * @param g GameCard von der der Effect stammt.
+//    * @param otherForEffect andere fuer destroy Effect.
+//    */
+//    private void useEffect(Effect effect, GameCard g, GameCard otherForEffect) {
+//    	if (effect.getEffectType() == EffectType.destroy) {
+//        	//destroy Effect wirkt auf die andere Karte
+//    		//bei null kann Effect nicht ausgefuehrt werden und wird ignoriert
+//        	if(otherForEffect != null) {
+//        		List<GameCard> list = EffectsAssignment.useEffect(effect, otherForEffect);
+//        		for(GameCard gamecard: list) {
+//        			removeGameCardFormField(gamecard); 
+//        		}
+//        	}
+//        } else {
+//        	//alle anderen wirken auf die eigene Karte
+//        	EffectsAssignment.useEffect(effect, g);
+//        }
+//    }
     
     /**
      * Erhoeht die EvoShields von der GameCard g und fuehrt falls notwendig den jeweiligen Effect aus.
      * @param g GameCard zum erhoehen der EvoShields
      * @param otherForEffect andere fuer destroy Effect
      */
-    private void addEvoSchieldAndEffect(GameCard g, GameCard otherForEffect) {
+    private void addEvoSchieldAndEffect(int id, GameCard g, GameCard otherForEffect) {
     	GameCard evolution = g.addEvoShield();
         Effect effect = g.getNextEffect();
         if (effect != null) {
-            useEffect(effect, g, otherForEffect);
+        	//falls der Spieler angegriffen wurde wird destroy Effect ignoriert, da keine entsprechende Karte vorhanden ist
+        	if(otherForEffect != null && effect.getEffectType() != EffectType.destroy) {
+        		List<GameCard> list = getCardsForEffect(id, effect, g, otherForEffect);
+        		EffectsAssignment.useEffect(effect, list).stream().forEach( (x)->removeGameCardFormField(x) );
+        	}
         }
         if (evolution != null) {
             makeEvolution(g, evolution);
