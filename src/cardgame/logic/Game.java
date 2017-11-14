@@ -223,14 +223,14 @@ public class Game {
             }
         }
     }
-
+    
     /**
      * Gibt zu einer Effektkarte die Karten zurück auf denen dieser Effekt angewendet wird.
      * @param id Id des Spielers.
      * @param effect Effekt der angewendet werden soll.
      * @param effectTriggered Karte die den Effekt ausgeloest hat.
      * @param enemyCard Karte die angegriffen worden ist.
-     * @return Liste der GameKarten.
+     * @return Liste der GameKarten. 
      */
     private List<GameCard> getCardsForEffect(int id,Effect effect,GameCard effectTriggered,GameCard enemyCard){
         List<GameCard> allCards = new ArrayList<>();
