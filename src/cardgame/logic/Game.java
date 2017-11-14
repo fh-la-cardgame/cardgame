@@ -421,7 +421,7 @@ public class Game {
         Effect effect = g.getNextEffect();
         if (effect != null) {
         	//falls der Spieler angegriffen wurde wird destroy Effect ignoriert, da keine entsprechende Karte vorhanden ist
-        	if(otherForEffect != null && effect.getEffectType() != EffectType.destroy) {
+        	if(otherForEffect != null || effect.getEffectType() != EffectType.destroy) {
         		List<GameCard> list = getCardsForEffect(id, effect, g, otherForEffect);
         		EffectsAssignment.useEffect(effect, list).stream().forEach( (x)->removeGameCardFormField(x) );
         	}
