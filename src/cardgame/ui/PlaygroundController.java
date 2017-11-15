@@ -12,6 +12,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 
 /**
  * FXML Controller class
@@ -19,6 +21,33 @@ import javafx.scene.control.ButtonBar;
  * @author BishaThan
  */
 public class PlaygroundController implements Initializable {
+
+    @FXML
+    private Button main1;
+    @FXML
+    private Button battle1;
+    @FXML
+    private Button end1;
+    @FXML
+    private Button main2;
+    @FXML
+    private Button battle2;
+    @FXML
+    private Button end2;
+    @FXML
+    private Label zuege;
+    @FXML
+    private Label zuege_anzahl;
+    @FXML
+    private Label player2;
+    @FXML
+    private Label player1;
+    @FXML
+    private ListView<?> shields2;
+    @FXML
+    private ListView<?> shields1;
+    @FXML
+    private ListView<?> description;
 
 
     /**
