@@ -4,10 +4,12 @@ import cardgame.db.*;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -36,6 +38,23 @@ public class GameTest {
 		
 		game = new Game(p1, p2, deck1, deck2);
 	}
+	//Override GameCard?
+	@Test 
+	public void DBTest_NoEvoInDeck(){
+		List<GameCard> evolutions = new ArrayList<>();
+		for(Card card: deck1.getCards()){
+			if(card instanceof GameCard){
+				if(((GameCard)card).getEvolution() != null)
+				evolutions.add(((GameCard) card).getEvolution());
+			}
+		}
+		Set<Card> deck_set = new HashSet<Card>(deck1.getCards());
+		for(GameCard evo: evolutions){
+			assertTrue(deck_set.add(evo));
+		}
+		
+	}
+	
 	@Test
 	public void playCardTest_standard() {
 		List<Card> list = game.getMyField(1).getCardsOnHand();
@@ -77,45 +96,60 @@ public class GameTest {
 		}
 	}
 	
-//	@Test
-//	public void playCardTest_playNull() {
-//		List<Card> list = game.getMyField(1).getCardsOnHand();
-//		
-//		int want = 5;
-//		assertEquals(want, list.size());
-//		
-//		int i=0; 
-//		while(i<list.size()){
-//			if(list.get(i) instanceof GameCard){
-//				thrown.expect(NullPointerException.class);
-//				game.playCard(1, null);
-//			}
-//			i++;
-//		}
-//	}
-//	
-//	@Test
-//	public void playCardTest_playSpecialCard() {
-//		List<Card> list = game.getMyField(1).getCardsOnHand();
-//		
-//		int want = 5;
-//		assertEquals(want, list.size());
-//		
-//		int i=0;
-//		SpecialCard[] want_battlegroundSpecials = new SpecialCard[ROW];
-//		SpecialCard[] have_battlegroundSpecials = new SpecialCard[ROW];
-//		while(i<list.size()){
-//			if(list.get(i) instanceof SpecialCard){
-//				SpecialCard played = (SpecialCard) list.get(i);
-//				want_battlegroundSpecials[0] = played; 
-//				game.playCard(1, played);
-//			}
-//			i++;
-//		}
-//		have_battlegroundSpecials = game.getMyField(1).getBattlegroundSpecials();
-//		assertTrue(new HashSet( Arrays.asList( want_battlegroundSpecials )).equals( new HashSet( Arrays.asList( have_battlegroundSpecials ) )) && want_battlegroundSpecials.length == have_battlegroundSpecials.length);
-//	}
-//	
+	//Merkwurdig: Es wird keine NullPointerException geworfen: RunTimeException?
+	@Test
+	public void playCardTest_playNull() {
+		List<Card> list = game.getMyField(1).getCardsOnHand();
+		
+		int want = 5;
+		assertEquals(want, list.size());
+		
+		int i=0; 
+		while(i<list.size()){
+			if(list.get(i) instanceof GameCard){
+				thrown.expect(NullPointerException.class);
+				game.playCard(1, null);
+			}
+			i++;
+		}
+	}
+	//Fehlende Kommentare in Methode!
+	@Test
+	public void playCardTest_playSpecialCard() {
+		List<Card> list = game.getMyField(1).getCardsOnHand();
+		
+		int want = 5;
+		assertEquals(want, list.size());
+		
+		int i=0;
+		SpecialCard[] want_battlegroundSpecials = new SpecialCard[ROW];
+		SpecialCard[] have_battlegroundSpecials = new SpecialCard[ROW];
+		while(i<list.size()){
+			if(list.get(i) instanceof SpecialCard){
+				SpecialCard played = (SpecialCard) list.get(i);
+				want_battlegroundSpecials[0] = played; 
+				game.playCard(1, played);
+			}
+			i++;
+		}
+		have_battlegroundSpecials = game.getMyField(1).getBattlegroundSpecials();
+		assertTrue(new HashSet( Arrays.asList( want_battlegroundSpecials )).equals( new HashSet( Arrays.asList( have_battlegroundSpecials ) )) && want_battlegroundSpecials.length == have_battlegroundSpecials.length);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void playCardTest_playCardYouDidntHave(){
+		GameCard notOwnedCard = null;
+		int i = 0;
+		while(notOwnedCard  == null && i  < deck2.getCards().size()){
+			if(deck2.getCards().get(i) instanceof GameCard)
+				notOwnedCard = (GameCard)deck2.getCards().get(i);
+		}
+		game.playCard(1, notOwnedCard);
+		
+	}
+	
+	
+	
 	
 	
 
