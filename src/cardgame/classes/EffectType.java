@@ -20,7 +20,15 @@ public enum EffectType {
   		/** Erhoehungseffekt. Gilt nur fuer eine Karte**/
   	addition_one(false,GameCard::changeAtk),
   		/** Zerstoerungseffekt. Gilt nur fuer eine Karte**/
-  	destroy(true,(card,anz)->card.getShields().dropShield());
+  	destroy(true,(card,anz)->card.getShields().dropShield()),
+  		/**Erhoehungseffekt. Gilt fuer das eigenes Deck**/
+	addition_deck(false, GameCard::changeAtk),
+		/**Verminderungseffekt. Gilt fur eigenes Deck**/
+	substraction_deck(false, GameCard::changeAtk),
+		/**Erhoehungseffekt. Gilt fur geg. Deck**/
+	addition_deckenemy(false, GameCard::changeAtk),
+		/**Verminderungseffekt. Gilt fur geg. Deck**/
+	substraction_deckenemy(false, GameCard::changeAtk);
 
 	private boolean changeShields;
 

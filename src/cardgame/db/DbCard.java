@@ -379,7 +379,8 @@ public class DbCard {
                     + "from \"Gamecard\" g , \"Deck_Cards\" dc, \"Deck\" d "
                     + "where g.gid = dc.gid "
                     + "and d.did = dc.did "
-                    + "and LOWER(d.name) = LOWER(?)");
+                    + "and LOWER(d.name) = LOWER(?)" 
+                    + "and g.gid not in (select evo from \"Gamecard\" where evo is not null)");
             selectGamecard.setString(1, deckName);
             resultCard = selectGamecard.executeQuery();
 

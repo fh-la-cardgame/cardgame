@@ -78,7 +78,7 @@ public class Playground {
        removeCardFromHand(card);
        //Karten werden von links nach rechts gelegt Eventuell von mitte aus starten !
         for(int i=0;i<battlegroundMonster.length;i++){
-            if(battlegroundMonster[i] != null) {
+            if(battlegroundMonster[i] == null) {
                 battlegroundMonster[i] = card; //Clonen ?
                 return;
             }
@@ -90,7 +90,7 @@ public class Playground {
         if(!getCardsOnHand().contains(card)) throw new IllegalArgumentException();
         removeCardFromHand(card);
         for(int i=0;i<battlegroundSpecials.length;i++){
-            if(battlegroundSpecials[i] != null){
+            if(battlegroundSpecials[i] == null){
                 battlegroundSpecials[i] = card; //Clonen ?
                 return;
             }

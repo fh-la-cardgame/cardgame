@@ -48,9 +48,10 @@ public class Game {
     /**
      * Konstruktor noch nicht fertig.
      */
-    public Game() {
-        side1 = new Playground(null, null);
-        side2 = new Playground(null, null);
+    public Game(Player player1, Player player2, Deck deck1, Deck deck2) {
+        side1 = new Playground(player1, deck1);
+        side2 = new Playground(player2, deck2);
+        playersTurn = player1;
     }
 
     /**
