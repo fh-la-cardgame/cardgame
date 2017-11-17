@@ -255,6 +255,14 @@ public class Game {
                     if(enemyBattleground[i] != null) allCards.add(myBattleground[i]);
                 }
                 break;
+            case "deck":
+                for(GameCard c:getMyField(id).getBattlegroundMonster())
+                    if(c != null) allCards.add(c);
+                break;
+            case "deckenemy":
+                for(GameCard c:getEnemyField(id).getBattlegroundMonster())
+                    if(c != null) allCards.add(c);
+                break;
             default:
                 throw new IllegalArgumentException();
         }
