@@ -54,7 +54,7 @@ public class GameTest {
 		}
 		
 	}
-	
+	//Referenz!!
 	@Test
 	public void playCardTest_standard() {
 		List<Card> list = game.getMyField(1).getCardsOnHand();
@@ -94,6 +94,7 @@ public class GameTest {
 			}
 			i++;
 		}
+		System.out.println("Zu wenig GameCards");
 	}
 	
 	//Merkwurdig: Es wird keine NullPointerException geworfen: RunTimeException?
@@ -133,7 +134,7 @@ public class GameTest {
 			i++;
 		}
 		have_battlegroundSpecials = game.getMyField(1).getBattlegroundSpecials();
-		assertTrue(new HashSet( Arrays.asList( want_battlegroundSpecials )).equals( new HashSet( Arrays.asList( have_battlegroundSpecials ) )) && want_battlegroundSpecials.length == have_battlegroundSpecials.length);
+		assertTrue(new HashSet( Arrays.asList( want_battlegroundSpecials )).equals( new HashSet( Arrays.asList( game.getMyField(1).getBattlegroundSpecials() ) )) && want_battlegroundSpecials.length == have_battlegroundSpecials.length);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -143,10 +144,82 @@ public class GameTest {
 		while(notOwnedCard  == null && i  < deck2.getCards().size()){
 			if(deck2.getCards().get(i) instanceof GameCard)
 				notOwnedCard = (GameCard)deck2.getCards().get(i);
+			i++;
 		}
+		
 		game.playCard(1, notOwnedCard);
 		
 	}
+	//Für Angriff in nicht erster Runde:
+	@Test
+	public void attackTest_standard(){
+		GameCard[] want_battlegroundMonster = new GameCard[ROW];
+		int want_shields = 0;
+		int i = 0;
+		while(i < game.getCardsOnHand(2).size()){
+			if(game.getCardsOnHand(2).get(i) instanceof GameCard){
+				want_shields = ((GameCard)game.getCardsOnHand(2).get(i)).getShields().getCurrentShields(); //NICHT EXISTENT 
+				want_battlegroundMonster[0] = Objects.requireNonNull((GameCard) game.getCardsOnHand(2).get(i));
+				break;
+			}		
+			i++;
+		}
+		int k = 0;
+		while(k < game.getCardsOnHand(1).size() && !(game.getCardsOnHand(1).get(k) instanceof GameCard)){
+			k++;
+		}
+		game.getEnemyField(1).addMonsterCard((GameCard)game.getCardsOnHand(2).get(i));
+		game.getMyField(1).addMonsterCard(Objects.requireNonNull((GameCard) game.getCardsOnHand(1).get(k)));
+		game.attack(1, 0, 0);
+		want_shields = ((GameCard)game.getCardsOnHand(2).get(i)).getAtk() < ((GameCard)game.getCardsOnHand(1).get(k)).getAtk() ? want_shields-1:want_shields;
+		assertTrue(want_shields == ((GameCard)deck2.getCards().get(i)).getShields().getCurrentShields());
+	}
+	
+	@Test(expected = RuntimeException.class)
+	public void attackTest_firstRound(){
+		GameCard[] want_battlegroundMonster = new GameCard[ROW];
+		int i = 0;
+		while(i < game.getCardsOnHand(2).size()){
+			if(game.getCardsOnHand(2).get(i) instanceof GameCard){ 
+				want_battlegroundMonster[0] = Objects.requireNonNull((GameCard) game.getCardsOnHand(2).get(i));
+				break;
+			}		
+			i++;
+		}
+		int k = 0;
+		while(k < game.getCardsOnHand(1).size() && !(game.getCardsOnHand(1).get(k) instanceof GameCard)){
+			k++;
+		}
+		game.getEnemyField(1).addMonsterCard((GameCard)game.getCardsOnHand(2).get(i));
+		game.getMyField(1).addMonsterCard(Objects.requireNonNull((GameCard) game.getCardsOnHand(1).get(k)));
+		game.attack(1, 0, 0);
+	}
+	
+	@Test(expected = RuntimeException.class)
+	public void attackTest_multipleAttackSameCard(){
+		GameCard[] want_battlegroundMonster = new GameCard[ROW];
+		int i = 0;
+		while(i < deck2.getCards().size()){
+			if(deck2.getCards().get(i) instanceof GameCard){
+				want_battlegroundMonster[0] = (GameCard) deck2.getCards().get(i);
+			}		
+			i++;
+		}
+		int k = 0;
+		while(k < deck2.getCards().size()){
+			if(deck2.getCards().get(k) instanceof GameCard){
+				want_battlegroundMonster[0] = (GameCard) deck2.getCards().get(k);
+			}
+			k++;
+		}
+		game.getEnemyField(2).addMonsterCard((GameCard)deck2.getCards().get(i));
+		game.getMyField(1).addMonsterCard((GameCard) deck1.getCards().get(k));
+		game.attack(1, 0, 0);
+		game.attack(1, 0, 0);
+		
+	}
+	
+	
 	
 	
 	
