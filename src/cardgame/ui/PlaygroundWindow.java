@@ -10,9 +10,11 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -24,13 +26,15 @@ public class PlaygroundWindow extends Application {
     
     @Override
     public void start(Stage primaryStage) {
-        try{
-        AnchorPane root = (AnchorPane)FXMLLoader.load(getClass().getResource("Playground.fxml"));
+        System.out.println("Test");
+     try{
+        GridPane root = (GridPane)FXMLLoader.load(getClass().getResource("Playground.fxml"));
 
         
-        Scene scene = new Scene(root, 500, 550);
+        Scene scene = new Scene(root,1000,800);
         primaryStage.setScene(scene);
-        primaryStage.show();}
+        primaryStage.show();
+        }
         catch(Exception e){
             System.out.println(e.getMessage());
         }

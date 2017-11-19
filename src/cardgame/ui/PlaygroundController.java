@@ -7,13 +7,16 @@ package cardgame.ui;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import static javafx.application.Application.launch;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.layout.GridPane;
 
 /**
  * FXML Controller class
@@ -22,6 +25,8 @@ import javafx.scene.control.ListView;
  */
 public class PlaygroundController implements Initializable {
 
+    @FXML
+    private GridPane gridPlayGround;
     @FXML
     private Button main1;
     @FXML
@@ -43,23 +48,26 @@ public class PlaygroundController implements Initializable {
     @FXML
     private Label player1;
     @FXML
-    private ListView<?> shields2;
-    @FXML
-    private ListView<?> shields1;
-    @FXML
     private ListView<?> description;
 
-
+    private StringProperty vorname = new SimpleStringProperty("Alexander");
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        player1.textProperty().bind(vorname);
     }    
 
-    
-    void main(String... test){
+    @FXML
+    private void Aendere(ActionEvent event) {
+        vorname.setValue("Hey");
+        System.out.println(vorname.getValue());
+        System.out.println(player1.textProperty().toString());
+                
     }
     
+     public static void main(String[] args) {
+        launch(args);
+    } 
 }
