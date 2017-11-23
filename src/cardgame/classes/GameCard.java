@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 /**
  * Klasse zur Abbildung der Struktur einer Spielkarte.
@@ -12,7 +14,9 @@ import java.util.List;
 public class GameCard extends Card {
 	
         /** Angriffspunkte. **/
-	private int atk;
+	private int atk;	
+        /** Angriffspunkte, GUI ATK **/
+	private IntegerProperty pAtk;
         /** Notwendige und erreichte Schilder fuer Evolution der Karte. **/
 	private final Shield evolutionShields;
         /** Schutzschilder der Karte. **/
@@ -43,6 +47,7 @@ public class GameCard extends Card {
          */
 	public GameCard(final int id, final String name, final String description, final Type type, final int atk, final Shield evolutionShields, final Shield shields, final GameCard evolution, final Effect[] effects, final Effect[] evoEffects) {
 		super(id, name, description,type);
+                this.pAtk = new SimpleIntegerProperty(atk);
 		this.atk = atk;
 		this.evolutionShields = new Shield(evolutionShields);
 		this.shields = new Shield(shields);
@@ -54,6 +59,7 @@ public class GameCard extends Card {
 	
 	private GameCard(final int id, final String name, final String description, final Type type, final int atk, final Shield evolutionShields, final Shield shields, final GameCard evolution, final Effect[] effects, final Effect[] evoEffects, final ArrayList<SpecialCard> specialcard) {
 		super(id, name, description,type);
+                this.pAtk = new SimpleIntegerProperty(atk);
 		this.atk = atk;
 		this.evolutionShields = new Shield(evolutionShields);
 		this.shields = new Shield(shields);
@@ -78,6 +84,7 @@ public class GameCard extends Card {
 	public void changeAtk(int add){
         	this.atk += add;
         	if(atk < 0) atk = 0;
+                setpAtk(atk);
 	}
 	public void addSpecialCard(SpecialCard s){
 		for(SpecialCard special:specialCards){
@@ -123,6 +130,15 @@ public class GameCard extends Card {
 	public Effect[] getEvoEffects(){
 		return evoEffects;	//Offene Frage: Clonen?
 	}
+
+    public IntegerProperty getpAtk() {
+        return pAtk;
+    }
+
+    public void setpAtk(int atk) {
+        this.pAtk.setValue(atk);
+    }
+        
 	@Override
 	public String toString(){
 		return super.toString() +" "+getAtk()+" "+getEvolutionShields()+" "+getShields()+" \nEvo: "+getEvolution()+"\nEffects: "+Arrays.toString(getEffects())+"\nEvoEffects: "+Arrays.toString(evoEffects)+"\n\n";

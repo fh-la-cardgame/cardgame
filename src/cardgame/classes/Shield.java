@@ -1,5 +1,8 @@
 package cardgame.classes;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+
 /**
  * Klasse zur Abbildung der aktuellen und max. Schilder.
  * @author BishaThan
@@ -8,7 +11,9 @@ public class Shield {
     /** Maximale Anzahl an Schildern. **/
     private final int maxShields;
     /** Aktuelle Anzahl an Schildern. **/
-    private int currentShields;
+    private int currentShields;    
+    /** Aktuelle Anzahl an Schildern, GUI-Element. **/
+    private IntegerProperty pCurrentShields;
 
     /**
      * Konstruktor
@@ -25,6 +30,7 @@ public class Shield {
      */
     public Shield(final int current, final int max){        
         this.currentShields = current;
+        this.pCurrentShields = new SimpleIntegerProperty(current);
         this.maxShields = max;        
     }
     
@@ -34,6 +40,14 @@ public class Shield {
      */
     public Shield(final Shield s){        
         this(s.currentShields, s.maxShields);        
+    }
+
+    public IntegerProperty getpCurrentShields() {
+        return pCurrentShields;
+    }
+
+    private void setpCurrentShields(int shield) {
+        this.pCurrentShields.setValue(shield);
     }
     
     
@@ -51,7 +65,7 @@ public class Shield {
      */
     public boolean dropShield() {
         if(currentShields > 0) {
-        	currentShields--;
+        	setpCurrentShields(--currentShields);
         	return true;
         } else {
         	return false;
@@ -65,7 +79,7 @@ public class Shield {
      */
     public boolean addShield() {
         if(currentShields < maxShields) {
-        	currentShields++;
+        	setpCurrentShields(++currentShields);
         	return true;
         } else {
         	return false;

@@ -5,11 +5,14 @@
  */
 package cardgame.ui;
 
+import cardgame.classes.Card;
+import cardgame.classes.Deck;
+import cardgame.classes.Player;
+import cardgame.logic.Game;
 import java.net.URL;
+import java.util.LinkedList;
 import java.util.ResourceBundle;
 import static javafx.application.Application.launch;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -49,25 +52,27 @@ public class PlaygroundController implements Initializable {
     private Label player1;
     @FXML
     private ListView<?> description;
-
-    private StringProperty vorname = new SimpleStringProperty("Alexander");
+    Player p;
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        player1.textProperty().bind(vorname);
+        p = new Player("hey");
+        
+        player1.textProperty().bind(p.getpName());
     }    
 
     @FXML
     private void Aendere(ActionEvent event) {
-        vorname.setValue("Hey");
-        System.out.println(vorname.getValue());
-        System.out.println(player1.textProperty().toString());
+        p.setpName("Neu");
+        //System.out.println(vorname.getValue());
+        //System.out.println(player1.textProperty().toString());
                 
     }
     
      public static void main(String[] args) {
         launch(args);
     } 
+    
 }

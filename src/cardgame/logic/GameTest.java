@@ -1,4 +1,4 @@
-package cardgame.logic;
+/**package cardgame.logic;
 import cardgame.classes.*;
 import cardgame.db.*;
 
@@ -150,7 +150,7 @@ public class GameTest {
 		game.playCard(1, notOwnedCard);
 		
 	}
-	//Für Angriff in nicht erster Runde:
+	//Fuer Angriff in nicht erster Runde:
 	@Test
 	public void attackTest_standard(){
 		GameCard[] want_battlegroundMonster = new GameCard[ROW];
@@ -227,3 +227,4 @@ public class GameTest {
 	
 
 }
+**/
