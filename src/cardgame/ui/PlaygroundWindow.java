@@ -25,19 +25,20 @@ import javafx.stage.Stage;
 public class PlaygroundWindow extends Application {
     
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws IOException {
         System.out.println("Test");
-     try{
+
         GridPane root = (GridPane)FXMLLoader.load(getClass().getResource("Playground.fxml"));
 
         
-        Scene scene = new Scene(root,1000,800);
+        Scene scene = new Scene(root,1300,900);
+        primaryStage.setTitle("Cardgame");
+        
         primaryStage.setScene(scene);
         primaryStage.show();
-        }
-        catch(Exception e){
-            System.out.println(e.getMessage());
-        }
+        
+        
+       
     }
 
     /**

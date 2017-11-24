@@ -35,10 +35,11 @@ public class Playground {
 		this.deck = deck; 
 		this.cardsOnHand = new LinkedList<>(); //LOGIK: Shuffle, 5 Karten aus dem Deck zu weisen
         deck.shuffle();
+        if(deck.getCards().size() > 0){
         for(int i=0;i<CARDSONHANDSTART;i++){
             cardsOnHand.add(deck.popCard());
         }
-
+        }
     }
 
 
@@ -134,6 +135,11 @@ public class Playground {
 	public SpecialCard[] getBattlegroundSpecials() {
 		return battlegroundSpecials;
 	}
-	
 
+    public Deck getDeck() {
+        return deck;
+    }
+	
+ 
+        
 }

@@ -9,4 +9,24 @@
 	#test{
 	Background-color:black;
 	}
+        
+        .root {
+            
+}
+        #countCards2, #countCards1 {
+            -fx-border-width: 1;
+            -fx-border-color: black;            
+            -fx-background-color: #f4f4f4;
+        }
+        #pl1_specialcard4, #pl1_specialcard3, #pl1_specialcard2,#pl1_specialcard1, #pl2_specialcard4, #pl2_specialcard3, #pl2_specialcard2,#pl2_specialcard1 {
+            -fx-border-width: 1;
+            -fx-border-color: black;
+            -fx-background-color: white;
+        }
+        #pl1_card4, #pl1_card3, #pl1_card2,#pl1_card1, #pl2_card4, #pl2_card3, #pl2_card2,#pl2_card1 {
+            -fx-border-width: 1;
+            -fx-border-color: black;
+            -fx-background-color: white;
+        }
+        
 }

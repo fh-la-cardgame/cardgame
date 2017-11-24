@@ -5,6 +5,8 @@ import java.util.*;
 import cardgame.classes.*;
 
 import static cardgame.classes.EffectType.destroy;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 public class Game {
 
@@ -29,6 +31,12 @@ public class Game {
      */
     // Voschlag Verwendung eines Enums
     private int phase;
+    
+    /** Phasen des 1. Spielers **/
+    private IntegerProperty player1Phase;
+    
+    /** Phasen des 2. Spielers **/
+    private IntegerProperty player2Phase;
 
     /**
      * Spieler der am Zug ist.
@@ -52,7 +60,12 @@ public class Game {
         side1 = new Playground(player1, deck1);
         side2 = new Playground(player2, deck2);
         playersTurn = player1;
+        player1Phase = new SimpleIntegerProperty(0);
+        player2Phase = new SimpleIntegerProperty(2);
+        
+        
     }
+
 
     /**
      * Fuehrt eine Angriff aus.
@@ -465,4 +478,30 @@ public class Game {
 
     }
 
+    public int getPhase() {
+        return phase;
+    }
+
+    public IntegerProperty getPlayer1Phase() {
+        return player1Phase;
+    }
+
+    public void setpPlayer1Phase(int phase1) {
+        this.player1Phase.setValue(phase1);
+    }
+
+  
+    public IntegerProperty getPlayer2Phase() {
+        return player2Phase;
+    }
+
+    public void setpPlayer2Phase(int phase2) {
+        this.player2Phase.setValue(phase2);
+    }
+
+    
+    
+
+    
+    
 }

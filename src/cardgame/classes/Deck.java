@@ -3,6 +3,8 @@ package cardgame.classes;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 /**
  * Bildet Struktur eines Decks ab.
@@ -16,6 +18,8 @@ public class Deck {
     private final String name;
     /** Karten im Deck. **/
     private final List<Card> cards;
+    /** Laufvariable fuer GUI-Anzahl Karten **/
+    private IntegerProperty countCards;
 
     /**
      * Konstruktor
@@ -30,10 +34,12 @@ public class Deck {
         for(Card c:cards){
             if(c instanceof GameCard) this.cards.add(new GameCard((GameCard) c));
             else this.cards.add(new SpecialCard((SpecialCard) c));
-        }
+        }        
+        this.countCards = new SimpleIntegerProperty(this.cards.size());
     }
 
     public Card popCard(){
+        reduceCountCards();
         return cards.remove(0);
     }
 
@@ -63,6 +69,15 @@ public class Deck {
 
     public List<Card> getCards() {
         return cards;
+    }
+
+    public IntegerProperty getCountCards() {
+        return countCards;
+    }
+
+    public void reduceCountCards() {
+        if(countCards.getValue() > 0)
+        this.countCards.subtract(1);
     }
 
     
