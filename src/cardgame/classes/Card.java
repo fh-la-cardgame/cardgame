@@ -1,4 +1,7 @@
 package cardgame.classes;
+
+
+
 /**
  * Bildet eine Teilstruktur einer Karte ab.
  * @author BishaThan
@@ -13,6 +16,8 @@ public abstract class Card {
 	private final String description;
         /** Typ einer Karte. **/
 	private final Type type;
+		/** Bild einer Karte **/
+	private final byte[] image;
         
         /**
          * Konstruktor
@@ -21,11 +26,12 @@ public abstract class Card {
          * @param description Kartenbeschreibung
          * @param type Typ der Karte
          */
-        public Card(final int id, final String name, final String description, final Type type) {
+        public Card(final int id, final String name, final String description, final Type type, final byte[] image) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.type = type;
+		this.image = image;
 	}
 	
 	public int getId() {
@@ -39,6 +45,10 @@ public abstract class Card {
 	}
 	public Type getType() {
 		return type;
+	}
+	
+	public byte[] getImage(){
+		return image;
 	}
 	@Override
 	public String toString(){

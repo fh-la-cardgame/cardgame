@@ -1,5 +1,6 @@
 package cardgame.classes;
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -45,8 +46,8 @@ public class GameCard extends Card {
          * @param evolution Evolutionskarte
          * @param effects Karteneffekte
          */
-	public GameCard(final int id, final String name, final String description, final Type type, final int atk, final Shield evolutionShields, final Shield shields, final GameCard evolution, final Effect[] effects, final Effect[] evoEffects) {
-		super(id, name, description,type);
+	public GameCard(final int id, final String name, final String description, final Type type, final byte[] image, final int atk, final Shield evolutionShields, final Shield shields, final GameCard evolution, final Effect[] effects, final Effect[] evoEffects) {
+		super(id, name, description,type, image);
                 this.pAtk = new SimpleIntegerProperty(atk);
 		this.atk = atk;
 		this.evolutionShields = new Shield(evolutionShields);
@@ -57,8 +58,8 @@ public class GameCard extends Card {
 		this.specialCards = new ArrayList<SpecialCard>();
 	}
 	
-	private GameCard(final int id, final String name, final String description, final Type type, final int atk, final Shield evolutionShields, final Shield shields, final GameCard evolution, final Effect[] effects, final Effect[] evoEffects, final ArrayList<SpecialCard> specialcard) {
-		super(id, name, description,type);
+	private GameCard(final int id, final String name, final String description, final Type type, final byte[] image, final int atk, final Shield evolutionShields, final Shield shields, final GameCard evolution, final Effect[] effects, final Effect[] evoEffects, final ArrayList<SpecialCard> specialcard) {
+		super(id, name, description,type, image);
                 this.pAtk = new SimpleIntegerProperty(atk);
 		this.atk = atk;
 		this.evolutionShields = new Shield(evolutionShields);
@@ -74,7 +75,7 @@ public class GameCard extends Card {
          * @param c Spielkarte
          */
         public GameCard(final GameCard c){
-			this(c.getId(), c.getName(), c.getDescription(), c.getType(), c.getAtk(), c.getEvolutionShields(), c.getShields(), c.getEvolution(), c.getEffects(), c.getEvoEffects());
+			this(c.getId(), c.getName(), c.getDescription(), c.getType(), c.getImage(), c.getAtk(), c.getEvolutionShields(), c.getShields(), c.getEvolution(), c.getEffects(), c.getEvoEffects());
         }
 
 	/**

@@ -25,7 +25,7 @@ public class Cardgame {
          */
         DbCard d = new DbCard();
         //Der Deckname wird nun auch case insensitive eingelesen:
-        List<Card> list = d.getDeck("Flora");
+        List<Card> list = d.getDeck("civitas diaboli");
         System.out.println(list);
        // System.out.println( d.insert_Card_Effect_Shields(14, 3, -1));
                 

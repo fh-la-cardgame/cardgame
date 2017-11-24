@@ -8,6 +8,7 @@ import cardgame.classes.Shield;
 import cardgame.classes.SpecialCard;
 import cardgame.classes.Type;
 
+import java.awt.Image;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -60,7 +61,7 @@ public class DbCard {
             prepStmt1 = c.prepareStatement("Select g.gid, g.name, g.description,"
                                      + "g.monster_type, g.atk, g.shield_curr,"
                                      + "g.shield_max, g.evo_shield_curr"
-                                     + ", g.evo_shield_max, g.evo from \"Gamecard\" g order by g.gid");
+                                     + ", g.evo_shield_max, g.evo, g.image from \"Gamecard\" g order by g.gid");
             
             resStmt1 = prepStmt1.executeQuery();
                
@@ -76,6 +77,7 @@ public class DbCard {
                 short evoShieldCurrent = resStmt1.getShort(8);
                 short evoShieldMax = resStmt1.getShort(9);
                 GameCard evo = null;
+                byte[] imageGamecard = resStmt1.getBytes(11);
                 
                 if (resStmt1.getInt(10) != 0) {
                     evo = integerToGamecard(resStmt1.getInt(10));
@@ -112,7 +114,7 @@ public class DbCard {
            evoEffects = getEvoEffects(resStmt3);
                                            
                
-                cardList.add(new GameCard(gameCardID, gameCardName, gameCardDescription, monsterType, attack,
+                cardList.add(new GameCard(gameCardID, gameCardName, gameCardDescription, monsterType, imageGamecard, attack,
                                    new Shield(lifeShieldCurrent, lifeShieldMax),
                                    new Shield(evoShieldCurrent, evoShieldMax), evo, effects, evoEffects));            
             }
@@ -120,7 +122,7 @@ public class DbCard {
             
              /** Ausfuehren des Selects um alle notwendigen Infos aus Specialcard zu beziehen. **/
              
-            prepStmt1 = c.prepareStatement("select sc.sid, sc.name, sc.description, sc.type from "
+            prepStmt1 = c.prepareStatement("select sc.sid, sc.name, sc.description, sc.type, sc.image from "
                                             + "\"Specialcard\" sc order by sc.sid ");
                                        
             resStmt1 = prepStmt1.executeQuery();
@@ -130,7 +132,8 @@ public class DbCard {
                 int specialCardID = resStmt1.getInt(1);
                 String specialCardName = resStmt1.getString(2);
                 String specialCardDescription = resStmt1.getString(3);
-                Type monsterType = stringToType(resStmt1.getString(4));                     
+                Type monsterType = stringToType(resStmt1.getString(4));
+                byte[] imageSpecialcard = resStmt1.getBytes(5);
             
             /** Ausfuerung des Joins(ueber Specialcard_Effekt) um die Effekte einer Specialkarte auszulesen. **/
                               
@@ -154,7 +157,7 @@ public class DbCard {
                     effects_list.add(new Effect(effectID, effectDescription, effectType, effectNumber));
                 }
                 cardList.add(new SpecialCard(specialCardID, specialCardName, specialCardDescription, 
-                             stringToType(resStmt1.getString(4)), effects_list));         
+                             stringToType(resStmt1.getString(4)), imageSpecialcard, effects_list));         
             }
             
             
@@ -301,7 +304,7 @@ public class DbCard {
             c = DbConnection.getPostgresConnection();
             //Ausfuehren des Selects um alle notwendigen Infos aus Gamecard zu beziehen.
             selectGamecard = c.prepareStatement("Select g.\"gid\", g.\"name\", g.\"description\", g.\"monster_type\", g.\"atk\", g.\"shield_curr\"," + " "
-                    + "g.\"shield_max\", g.\"evo_shield_curr\", g.\"evo_shield_max\" from public.\"Gamecard\" g where g.gid = ?");
+                    + "g.\"shield_max\", g.\"evo_shield_curr\", g.\"evo_shield_max\", g.\"image\" from public.\"Gamecard\" g where g.gid = ?");
             selectGamecard.setInt(1, id);
             resultCard = selectGamecard.executeQuery();
 
@@ -315,6 +318,7 @@ public class DbCard {
             short gShield_max = resultCard.getShort(7);
             short gEvo_Shield_curr = resultCard.getShort(8);
             short gEvo_Shield_max = resultCard.getShort(9);
+            byte[] imageGamecard = resultCard.getBytes(10);
 
             // Da das ResultSet nur Strings statt Enums liefert, werden die Strings mittels switch - Anweisung
             // in der Hilfsmethode StringToType dem zugehoerigem Enum zugeordnet.
@@ -344,7 +348,7 @@ public class DbCard {
             effects = getEffects(gShield_max, resultEffect);
             evoEffects = getEvoEffects(resultEvoEffect);
 
-            result = new GameCard(gId, gName, gDescription, type, gAtk,
+            result = new GameCard(gId, gName, gDescription, type, imageGamecard, gAtk,
                     new Shield(gEvo_Shield_curr, gEvo_Shield_max), new Shield(gShield_curr, gShield_max),
                     null, effects.clone(), evoEffects.clone());
 
@@ -375,7 +379,7 @@ public class DbCard {
             c = DbConnection.getPostgresConnection();
 
             selectGamecard = c.prepareStatement("select g.gid, g.name, g.description, monster_type, atk, shield_curr, "
-                    + "shield_max, evo_shield_curr, evo_shield_max, evo "
+                    + "shield_max, evo_shield_curr, evo_shield_max, evo, g.image "
                     + "from \"Gamecard\" g , \"Deck_Cards\" dc, \"Deck\" d "
                     + "where g.gid = dc.gid "
                     + "and d.did = dc.did "
@@ -383,6 +387,7 @@ public class DbCard {
                     + "and g.gid not in (select evo from \"Gamecard\" where evo is not null)");
             selectGamecard.setString(1, deckName);
             resultCard = selectGamecard.executeQuery();
+            
 
             while (resultCard.next()) {
                 int gId = resultCard.getInt(1);
@@ -395,6 +400,8 @@ public class DbCard {
                 short gEvo_shield_curr = resultCard.getShort(8);
                 short gEvo_shield_max = resultCard.getShort(9);
                 int gEvo = resultCard.getInt(10);
+                byte[] imageGamecard = resultCard.getBytes(11);
+                
 
                 selectCard_Effect = c.prepareStatement("select e.eid, e.description, effect_type, effect_number, shield "
                         + "from \"Effecte\" e, \"Card_Effect\" c_e, \"Gamecard\" g "
@@ -423,12 +430,12 @@ public class DbCard {
                 }
 
                 deck.add(new GameCard(gId, gName, gDescription,
-                        stringToType(gType), gAtk, new Shield(gEvo_shield_curr,
+                        stringToType(gType), imageGamecard, gAtk, new Shield(gEvo_shield_curr,
                         gEvo_shield_max), new Shield(gShield_curr, gShield_max), evo, effects.clone(), evoEffects.clone()));
             }
 
             //Ab hier kommen die Specialcards:
-            selectSpecialcard = c.prepareStatement("select sc.sid, sc.name, description, type "
+            selectSpecialcard = c.prepareStatement("select sc.sid, sc.name, description, type, image "
                     + "from \"Specialcard\" sc, \"Deck_Cards\" dc, \"Deck\" d "
                     + " where LOWER(d.name) = LOWER(?)"
                     + " and sc.sid = dc.sid"
@@ -441,6 +448,7 @@ public class DbCard {
                 int sId = resultCard.getInt(1);
                 String sName = resultCard.getString(2);
                 String sDescription = resultCard.getString(3);
+                byte[] imageSpecialCard = resultCard.getBytes(5);
 
                 List<Effect> effects_list = new ArrayList<>();
                 selectSpecialcardEffect = c.prepareStatement("select e.eid, e.description, e.effect_type, e.effect_number "
@@ -458,7 +466,7 @@ public class DbCard {
 
                     effects_list.add(new Effect(eId, eDescription, stringToEffectType(eEffectType), eEffect_number));
                 }
-                deck.add(new SpecialCard(sId, sName, sDescription, stringToType(resultCard.getString(4)), effects_list));
+                deck.add(new SpecialCard(sId, sName, sDescription, stringToType(resultCard.getString(4)), imageSpecialCard, effects_list));
             }
 
         } catch (SQLException ex) {

@@ -15,7 +15,9 @@ public enum Type {
         /** Daemon**/
         daemon,
         /**Pflanze**/
-        pflanze
+        pflanze,
+        /**Nordic**/
+        nordics
         	
 
 }

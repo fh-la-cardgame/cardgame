@@ -1,4 +1,5 @@
 package cardgame.classes;
+
 import java.util.*;
 
 /**
@@ -21,14 +22,14 @@ public class SpecialCard extends Card{
          * @param type Typ
          * @param effects Effekte der Spezialkarte
          */
-	public SpecialCard(final int id, final String name, final String description, final Type type, final List<Effect> effects) {
-		super(id, name, description, type);
+	public SpecialCard(final int id, final String name, final String description, final Type type, final byte[] image, final List<Effect> effects) {
+		super(id, name, description, type, image);
 		this.effects = new LinkedList<>(effects);
 		this.gameCards = new ArrayList<>();
 	}
 	
-	private SpecialCard(final int id, final String name, final String description, final Type type, final List<Effect> effects, final ArrayList<GameCard> gameCards) {
-		super(id, name, description, type);
+	private SpecialCard(final int id, final String name, final String description, final Type type, final byte[] image, final List<Effect> effects, final ArrayList<GameCard> gameCards) {
+		super(id, name, description, type, image);
 		this.effects = new LinkedList<>(effects);
 		this.gameCards = (ArrayList)gameCards.clone();
 	}
@@ -38,7 +39,7 @@ public class SpecialCard extends Card{
          * @param s Spezialkarte
          */
         public SpecialCard(final SpecialCard s){
-            this(s.getId(), s.getName(), s.getDescription(), s.getType(), s.getEffects(), s.getGameCard());
+            this(s.getId(), s.getName(), s.getDescription(), s.getType(), s.getImage(), s.getEffects(), s.getGameCard());
         }
         
         public ArrayList<GameCard> getGameCard(){
