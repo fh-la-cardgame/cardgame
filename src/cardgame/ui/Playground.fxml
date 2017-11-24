@@ -13,8 +13,8 @@
 
 <GridPane fx:id="gridPlayGround" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="708.0" prefWidth="1132.0" stylesheets="@playground.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cardgame.ui.PlaygroundController">
   <columnConstraints>
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="17.0" prefWidth="100.0" />
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="14.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="13.0" prefWidth="100.0" />
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
@@ -26,8 +26,7 @@
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="8.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="13.0" prefWidth="100.0" />
   </columnConstraints>
   <rowConstraints>
       <RowConstraints maxHeight="158.79999389648438" minHeight="10.0" percentHeight="6.0" prefHeight="31.599999999999994" vgrow="SOMETIMES" />
@@ -99,14 +98,23 @@
             <Label fx:id="zuege_anzahl" layoutX="50.0" text="0" />
          </children>
       </Pane>
-      <Label fx:id="player2" text="Player 2" GridPane.halignment="RIGHT" GridPane.rowIndex="12">
+      <Label fx:id="player2" text="Player 2" GridPane.halignment="LEFT" GridPane.rowIndex="12">
          <font>
             <Font name="System Bold" size="16.0" />
-         </font></Label>
-      <Label fx:id="player1" text="Player 1" GridPane.columnIndex="12" GridPane.halignment="RIGHT">
+         </font>
+         <padding>
+            <Insets left="25.0" />
+         </padding></Label>
+      <Label fx:id="player1" text="Player 1" GridPane.columnIndex="13" GridPane.halignment="RIGHT">
          <font>
             <Font name="System Bold" size="16.0" />
-         </font></Label>
+         </font>
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin>
+         <padding>
+            <Insets right="25.0" />
+         </padding></Label>
       <Pane GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
          <children>
             <ImageView fitHeight="25.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
@@ -117,9 +125,9 @@
             <ImageView fitHeight="25.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
          </children>
       </Pane>
-      <ListView fx:id="description" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="4" GridPane.rowSpan="6">
+      <ListView fx:id="description" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="4" GridPane.rowSpan="5">
          <GridPane.margin>
-            <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
+            <Insets bottom="7.0" left="15.0" right="7.0" top="7.0" />
          </GridPane.margin></ListView>
       <Label fx:id="countCards2" alignment="CENTER" text="999" textAlignment="CENTER" GridPane.columnIndex="12" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="CENTER">
          <font>
