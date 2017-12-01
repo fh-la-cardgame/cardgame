@@ -15,6 +15,8 @@ import java.net.URL;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 import static javafx.application.Application.launch;
+
+import cardgame.logic.LogicException;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.IntegerProperty;
@@ -105,7 +107,7 @@ public class PlaygroundController implements Initializable {
      * Initializes the controller class.
      */
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
+    public void initialize(URL url, ResourceBundle rb){
         DbCard db = new DbCard();
         int id1 = 1;
         int id2 = 2;
@@ -118,20 +120,24 @@ public class PlaygroundController implements Initializable {
         
         stretchElements();
         
-        
-        //Bindings
-        //Player Namen
-        player1.textProperty().bind(g.getMyField(id1).getPlayer().getpName());
-        player2.textProperty().bind(g.getMyField(id2).getPlayer().getpName());
-        
-        //Kartenanzahl Binding
-        countCards2.textProperty().bind(g.getMyField(id2).getDeck().getCountCards().asString());        
-        countCards1.textProperty().bind(g.getMyField(id1).getDeck().getCountCards().asString());
-        
-        //Phasen Binding
-        //main1.disableProperty();
-        bindPhases(main1, battle1, end1, g.getPlayer1Phase(),g.getPlayer2Phase()); 
-        bindPhases(main2, battle2, end2, g.getPlayer2Phase(),g.getPlayer1Phase());       
+        try {
+            //Bindings
+            //Player Namen
+            player1.textProperty().bind(g.getMyField(id1).getPlayer().getpName());
+            player2.textProperty().bind(g.getMyField(id2).getPlayer().getpName());
+
+            //Kartenanzahl Binding
+            countCards2.textProperty().bind(g.getMyField(id2).getDeck().getCountCards().asString());
+            countCards1.textProperty().bind(g.getMyField(id1).getDeck().getCountCards().asString());
+
+            //Phasen Binding
+            //main1.disableProperty();
+            bindPhases(main1, battle1, end1, g.getPlayer1Phase(), g.getPlayer2Phase());
+            bindPhases(main2, battle2, end2, g.getPlayer2Phase(), g.getPlayer1Phase());
+        }catch(LogicException logicException){
+            //Konnte LogicException nicht werfen wegen Override da die Oberklasse diese Exception nicht wirft !
+            throw new IllegalArgumentException();
+        }
        
     }    
 

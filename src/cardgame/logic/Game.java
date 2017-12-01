@@ -7,6 +7,7 @@ import cardgame.classes.*;
 import static cardgame.classes.EffectType.destroy;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import sun.rmi.runtime.Log;
 
 public class Game {
 
@@ -74,17 +75,17 @@ public class Game {
      * @param myCardRow    Zeilennummer der Karte mit der Angegriffen werden soll.
      * @param enemyCardRow Zeilennummer der Karte die angegriffen werden soll (-1 Angriff auf Spieler).
      */
-    public void attack(int id, int myCardRow, int enemyCardRow) {
+    public void attack(int id, int myCardRow, int enemyCardRow) throws LogicException{
         GameCard myCard = getMyField(id).getBattlegroundMonster()[myCardRow];
         if (myCard == null) {
-            throw new RuntimeException("Bei Zeilennummer keine Karte");
+            throw new LogicException("Bei Zeilennummer keine Karte");
         }
         if (enemyCardRow == -1) {
             attack(id, myCard, null);
         } else {
             GameCard enemyCard = getEnemyField(id).getBattlegroundMonster()[enemyCardRow];
             if (enemyCard == null) {
-                throw new RuntimeException("Bei Zeilennummer keine Karte");
+                throw new LogicException("Bei Zeilennummer keine Karte");
             }
             attack(id, myCard, enemyCard);
         }
@@ -99,7 +100,7 @@ public class Game {
      * @param enemyCard Karte die angegriffen werden soll (null Angriff auf Spieler).
      */
     // Noch keine Implementierung mit Effekten
-    public void attack(int id, GameCard myCard, GameCard enemyCard) {
+    public void attack (int id, GameCard myCard, GameCard enemyCard) throws LogicException {
         turn(id);
 
         //Phase wird in Angriff geaendert
@@ -108,18 +109,18 @@ public class Game {
         }
         //Illegale Phasen
         if (phase >= 2 || phase < 0) {
-            throw new RuntimeException("Phase existiert nicht");
+            throw new LogicException("Phase existiert nicht");
         }
 
         //Erster Zug kein Angriff moeglich
         if (round <= 0) {
-            throw new RuntimeException("Erste Runde Kein Angriff moeglich");
+            throw new LogicException("Erste Runde Kein Angriff moeglich");
         }
 
         //Abfrage ob mit Karte schon angegriffen wurde
         for (GameCard g : CardsHaveAttack) {
             if (myCard == g) {
-                throw new RuntimeException("Mit dieser Karte wurde schon angegriffen");
+                throw new LogicException("Mit dieser Karte wurde schon angegriffen");
             }
         }
 
@@ -205,20 +206,20 @@ public class Game {
      * @param card Karte die aufs Feld gelegt werden soll.
      */
 
-    public void playCard(int id, Card card) {
+    public void playCard(int id, Card card) throws LogicException {
         turn(id);
-        if (phase != 0) throw new RuntimeException("Kann nur am Anfang Karten legen !");
+        if (phase != 0) throw new LogicException("Kann nur am Anfang Karten legen !");
         if (card instanceof GameCard) {
             if (playedMonstercard)
-                throw new IllegalArgumentException("Es darf nur 1 mal pro Zug eine Monsterkarte gelegt werden !");
+                throw new LogicException("Es darf nur 1 mal pro Zug eine Monsterkarte gelegt werden !");
             getMyField(id).addMonsterCard((GameCard) card);
             playedMonstercard = true;
         } else playSpecialCard(id, (SpecialCard) card, null);
     }
 
-    public void playSpecialCard(int id, SpecialCard card, GameCard enemyCard) {
+    public void playSpecialCard(int id, SpecialCard card, GameCard enemyCard) throws LogicException {
         turn(id);
-        if (phase != 0) throw new RuntimeException("Kann nur am Anfang Karten legen !");
+        if (phase != 0) throw new LogicException("Kann nur am Anfang Karten legen !");
         //Effekt ausfuehren
         List<Effect> allEffects = card.getEffects();
         for (Effect e : allEffects) {
@@ -246,7 +247,7 @@ public class Game {
      * @param enemyCard Karte die angegriffen worden ist.
      * @return Liste der GameKarten. 
      */
-    private List<GameCard> getCardsForEffect(int id,Effect effect,GameCard effectTriggered,GameCard enemyCard){
+    private List<GameCard> getCardsForEffect(int id,Effect effect,GameCard effectTriggered,GameCard enemyCard) throws LogicException{
         List<GameCard> allCards = new ArrayList<>();
         EffectType type = effect.getEffectType();
         if(effect.getEffectType() == EffectType.destroy){
@@ -308,7 +309,7 @@ public class Game {
      * @param id Id des Spielers
      * @return Die Karten des Spielers.
      */
-    public List<Card> getCardsOnHand(int id) {
+    public List<Card> getCardsOnHand(int id) throws LogicException{
         return getMyField(id).getCardsOnHand();
     }
 
@@ -318,30 +319,30 @@ public class Game {
      * @param id Eigne Spieler Id.
      * @return Gegnerisches Spielfeld.
      */
-    public Playground getEnemyField(int id) {
+    public Playground getEnemyField(int id) throws LogicException{
         if (side1.getPlayer().getId() == id) {
             return side2;
         }
         if (side2.getPlayer().getId() == id) {
             return side1;
         }
-        throw new RuntimeException("PlayerId not exists");
+        throw new LogicException("PlayerId not exists");
     }
 
     /**
-     * Gibt eigenes Playground zuruek.
+     * Gibt eigenes PlaygRuntimeExceptionround zuruek.
      *
      * @param id Eigne Spieler Id.
      * @return Eigenes Spielfeld.
      */
-    public Playground getMyField(int id) {
+    public Playground getMyField(int id) throws LogicException{
         if (side1.getPlayer().getId() == id) {
             return side1;
         }
         if (side2.getPlayer().getId() == id) {
             return side2;
         }
-        throw new RuntimeException("PlayerId not exists");
+        throw new LogicException("PlayerId not exists");
     }
 
     /**
@@ -349,9 +350,9 @@ public class Game {
      *
      * @param PlayerId Spieler Id.
      */
-    private void turn(int PlayerId) {
+    private void turn(int PlayerId) throws LogicException {
         if (playersTurn.getId() != PlayerId) {
-            throw new RuntimeException("Spieler ist nicht am Zug");
+            throw new LogicException("Spieler ist nicht am Zug");
         }
     }
 
@@ -361,13 +362,13 @@ public class Game {
      * @param gameCard Karte.
      * @param field    Spielfeld.
      */
-    private void gameCardInField(GameCard gameCard, final GameCard[] field) {
+    private void gameCardInField(GameCard gameCard, final GameCard[] field) throws LogicException {
         for (GameCard g : field) {
             if (gameCard == g) {
                 return;
             }
         }
-        throw new RuntimeException("Karte nicht auf dem Feld");
+        throw new LogicException("Karte nicht auf dem Feld");
     }
     
     /**
@@ -396,7 +397,7 @@ public class Game {
      * @param g GameCard bei der Shield entfernt wird.
      * @param otherForEffect GameCard fuer destroy Effect.
      */
-    private void dropShieldAndEffect(int id, GameCard g, GameCard otherForEffect) {
+    private void dropShieldAndEffect(int id, GameCard g, GameCard otherForEffect) throws LogicException{
     	Effect effect;
     	if (!g.dropShield()) {
     		effect = g.getNextEffect();
@@ -406,7 +407,7 @@ public class Game {
         }
     	if(effect != null) {
     		List<GameCard> list = getCardsForEffect(id, effect, g, otherForEffect);
-    		EffectsAssignment.useEffect(effect, list).stream().forEach( (x)->removeGameCardFormField(x) );
+    		EffectsAssignment.useEffect(effect, list).forEach( x->removeGameCardFormField(x) );
     	}
         
     }
@@ -438,14 +439,14 @@ public class Game {
      * @param g GameCard zum erhoehen der EvoShields
      * @param otherForEffect andere fuer destroy Effect
      */
-    private void addEvoSchieldAndEffect(int id, GameCard g, GameCard otherForEffect) {
+    private void addEvoSchieldAndEffect(int id, GameCard g, GameCard otherForEffect) throws LogicException {
     	GameCard evolution = g.addEvoShield();
         Effect effect = g.getNextEffect();
         if (effect != null) {
         	//falls der Spieler angegriffen wurde wird destroy Effect ignoriert, da keine entsprechende Karte vorhanden ist
         	if(otherForEffect != null || effect.getEffectType() != EffectType.destroy) {
         		List<GameCard> list = getCardsForEffect(id, effect, g, otherForEffect);
-        		EffectsAssignment.useEffect(effect, list).stream().forEach( (x)->removeGameCardFormField(x) );
+        		EffectsAssignment.useEffect(effect, list).forEach( x->removeGameCardFormField(x) );
         	}
         }
         if (evolution != null) {
@@ -463,6 +464,7 @@ public class Game {
         GameCard[] arraySide2 = side2.getBattlegroundMonster();
         for (int i = 0; i < arraySide1.length; i++) {
             if (arraySide1[i] == old) {
+                //Reicht removeSpecialCardFromGameCard ?
             	removeGameCardFormField(old);
                 arraySide1[i] = evolution;
                 return;
