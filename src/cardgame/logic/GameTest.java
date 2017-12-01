@@ -1,4 +1,6 @@
-/**package cardgame.logic;
+package cardgame.logic;
+ /* 
+
 import cardgame.classes.*;
 import cardgame.db.*;
 

@@ -20,6 +20,10 @@ public class Game {
      * Playground von Spieler 2.
      */
     private final Playground side2;
+    
+    private final int side1PlayerId;
+    
+    private final int side2PlayerId;
 
     /**
      * Runden des Spiels.
@@ -42,12 +46,16 @@ public class Game {
     /**
      * Spieler der am Zug ist.
      */
-    private Player playersTurn;
+    private int playersTurn;
 
     /**
      * True wenn der Spieler der dran ist eine Monstercard gespielt hat.
      */
     private boolean playedMonstercard;
+    
+    private boolean gameEnd = false;
+    
+    private int playerWon = -1;
 
     /**
      * Alle Karten mit denen in diesem Zug schon angegriffen wurde.
@@ -60,7 +68,9 @@ public class Game {
     public Game(Player player1, Player player2, Deck deck1, Deck deck2) {
         side1 = new Playground(player1, deck1);
         side2 = new Playground(player2, deck2);
-        playersTurn = player1;
+        side1PlayerId = player1.getId();
+        side2PlayerId = player2.getId();
+        playersTurn = player1.getId();
         player1Phase = new SimpleIntegerProperty(0);
         player2Phase = new SimpleIntegerProperty(2);
         
@@ -149,6 +159,13 @@ public class Game {
             //Ueberpruefen ob gewonnen ???
             if (shield.getCurrentShields() == 0) {
                 System.out.println("Spieler hat gewonnen");
+              //TODO
+                gameEnd = true;
+                if(id == side1PlayerId) {
+                	playerWon = side2PlayerId;
+                } else {
+                	playerWon = side1PlayerId;
+                }
             }
 
             //Eigene Evolutionschilder erhoehen
@@ -319,11 +336,12 @@ public class Game {
      * @param id Eigne Spieler Id.
      * @return Gegnerisches Spielfeld.
      */
+
     public Playground getEnemyField(int id) throws LogicException{
-        if (side1.getPlayer().getId() == id) {
+        if (side1PlayerId == id) {
             return side2;
         }
-        if (side2.getPlayer().getId() == id) {
+        if (side2PlayerId == id) {
             return side1;
         }
         throw new LogicException("PlayerId not exists");
@@ -336,10 +354,10 @@ public class Game {
      * @return Eigenes Spielfeld.
      */
     public Playground getMyField(int id) throws LogicException{
-        if (side1.getPlayer().getId() == id) {
+        if (side1PlayerId == id) {
             return side1;
         }
-        if (side2.getPlayer().getId() == id) {
+        if (side2PlayerId == id) {
             return side2;
         }
         throw new LogicException("PlayerId not exists");
@@ -350,9 +368,13 @@ public class Game {
      *
      * @param PlayerId Spieler Id.
      */
+
     private void turn(int PlayerId) throws LogicException {
-        if (playersTurn.getId() != PlayerId) {
+        if (playersTurn != PlayerId) {
             throw new LogicException("Spieler ist nicht am Zug");
+        }
+        if (gameEnd == true) {
+        	throw new LogicException("Spiel zu Ende");
         }
     }
 
@@ -484,26 +506,40 @@ public class Game {
         return phase;
     }
 
-    public IntegerProperty getPlayer1Phase() {
-        return player1Phase;
+    public IntegerProperty getMyPhase(int id) {
+    	if(side1PlayerId == id)  {
+    		return player1Phase;
+    	}
+    	if(side2PlayerId == id) {
+    		return player2Phase;
+    	}
+        throw new IllegalArgumentException("Id existiert nicht");
+    }
+    
+    public IntegerProperty getEnemyPhase(int id) {
+    	if(side1PlayerId == id)  {
+    		return player2Phase;
+    	}
+    	if(side2PlayerId == id) {
+    		return player1Phase;
+    	}
+        throw new IllegalArgumentException("Id existiert nicht");
     }
 
-    public void setpPlayer1Phase(int phase1) {
-        this.player1Phase.setValue(phase1);
+    public void setMyPhase(int id, int phase1) {
+    	if(side1PlayerId == id)  {
+    		this.player1Phase.setValue(phase1);
+    	}
+    	if(side2PlayerId == id) {
+    		this.player2Phase.setValue(phase1);
+    	}
+        throw new IllegalArgumentException("Id existiert nicht");
+        
     }
-
   
-    public IntegerProperty getPlayer2Phase() {
-        return player2Phase;
+
+    public boolean isGameRunning() {
+    	return !gameEnd;
     }
-
-    public void setpPlayer2Phase(int phase2) {
-        this.player2Phase.setValue(phase2);
-    }
-
-    
-    
-
-    
     
 }

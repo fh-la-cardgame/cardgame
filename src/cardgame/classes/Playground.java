@@ -10,7 +10,8 @@ public class Playground {
 	
     /** Anzahl an Karten der Arrays**/
 	private final static int ROW = 4;
-	private final static int CARDSONHANDSTART = 5;
+	private final static int CARDSONHANDSTART = 4;
+	private final static int MAXCARDSONHAND = 5;
 	
     /** Spieler. **/
     private final Player player;
@@ -67,7 +68,10 @@ public class Playground {
      * Fuegt der Hand eine Karte vom Deck und entfernt diese aus dem Maindeck.
      */
     public void addCard(){
-        //Logik
+    	if(cardsOnHand.size() < MAXCARDSONHAND) {
+    		cardsOnHand.add(deck.popCard());
+    	}
+        
     }
 
     /**
