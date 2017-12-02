@@ -42,6 +42,8 @@ public enum EffectType {
   		return changeShields;
 	}
 
+	public boolean needsGameCard(){return this.toString().endsWith("one")|| this.toString().equals("destroy");}
+
 	public BiConsumer<GameCard, Integer> getFunction() {
 		return function;
 	}

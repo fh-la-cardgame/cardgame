@@ -53,7 +53,7 @@ public class SpecialCard extends Card{
 		return effects; // ?? Frage offen: ob Kopie noetig
 	}
 
-	public void addGameCard(GameCard... cards){
+	public void addGameCard(List<GameCard> cards){
 		for(GameCard card:cards){
 			boolean has = false;
 			if(card != null) {
@@ -80,6 +80,13 @@ public class SpecialCard extends Card{
 
 	public boolean hasGameCards(){
 		return !gameCards.isEmpty();
+	}
+
+	public boolean needGameCard(){
+		for (Effect e:effects) {
+			if(e.getEffectType().needsGameCard()) return true;
+		}
+		return false;
 	}
 	
 	@Override

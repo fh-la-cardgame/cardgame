@@ -2,9 +2,9 @@ package cardgame.logic;
 
 public class LogicException extends Exception{
 
-    LogicException(){}
+    public LogicException(){}
 
-    LogicException(String msg){
+    public LogicException(String msg){
         super(msg);
     }
 }

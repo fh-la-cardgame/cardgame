@@ -23,7 +23,11 @@ public class Playground {
     /** Array fuer  Monsterkarten**/
 	private final GameCard[] battlegroundMonster = new GameCard[ROW];        
     /** Array fuer die Zauber- bzw. Fallenkarten**/
-	private final SpecialCard[] battlegroundSpecials = new SpecialCard[ROW];  
+	private final SpecialCard[] battlegroundSpecials = new SpecialCard[ROW];
+
+	private int countBattlegroundSpecials;
+
+	private int countBattlegroundMonster;
 	
 	
     /**
@@ -41,6 +45,8 @@ public class Playground {
             cardsOnHand.add(deck.popCard());
         }
         }
+        countBattlegroundMonster = 0;
+        countBattlegroundSpecials = 0;
     }
 
 
@@ -85,6 +91,7 @@ public class Playground {
         for(int i=0;i<battlegroundMonster.length;i++){
             if(battlegroundMonster[i] == null) {
                 battlegroundMonster[i] = card; //Clonen ?
+                countBattlegroundMonster++;
                 return;
             }
         }
@@ -97,6 +104,7 @@ public class Playground {
         for(int i=0;i<battlegroundSpecials.length;i++){
             if(battlegroundSpecials[i] == null){
                 battlegroundSpecials[i] = card; //Clonen ?
+                countBattlegroundSpecials++;
                 return;
             }
         }
@@ -112,6 +120,7 @@ public class Playground {
     	for(int i = 0; i < ROW; i++) {
     		if(battlegroundMonster[i] == gameCard) {
     			battlegroundMonster[i] = null;
+    			countBattlegroundMonster--;
     		}
     	}
     }
@@ -124,7 +133,8 @@ public class Playground {
     public boolean removeBattlegroundSpecial(SpecialCard special) {
         for(int i = 0; i < ROW; i++) {
             if(battlegroundSpecials[i] == special) {
-                battlegroundMonster[i] = null;
+                battlegroundSpecials[i] = null;
+                countBattlegroundSpecials--;
                 return true;
             }
         }
@@ -143,7 +153,14 @@ public class Playground {
     public Deck getDeck() {
         return deck;
     }
-	
- 
+
+    public boolean canPlaySpecialCard(){ return countBattlegroundSpecials < ROW; }
+
+    public boolean canPlayMonsterCard(){return countBattlegroundMonster < ROW;}
+
+    public int getCountBattlegroundSpecials() {return countBattlegroundSpecials;}
+
+    public int getCountBattlegroundMonster() { return countBattlegroundMonster; }
+
         
 }
