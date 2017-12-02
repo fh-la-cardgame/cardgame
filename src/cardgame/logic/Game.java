@@ -250,7 +250,7 @@ public class Game {
                 for(GameCard c:cardsEffect){
                     c.addSpecialCard(card);
                 }
-                card.addGameCard((GameCard[])cardsEffect.toArray());
+                card.addGameCard(cardsEffect);
                 getMyField(id).addSpecialCardToField(card);
             }
         }
@@ -536,7 +536,6 @@ public class Game {
         throw new IllegalArgumentException("Id existiert nicht");
         
     }
-  
 
     public boolean isGameRunning() {
     	return !gameEnd;
