@@ -38,8 +38,11 @@ public class Deck {
         this.countCards = new SimpleIntegerProperty(this.cards.size());
     }
 
-    public Card popCard(){
+    public Card popCard() throws GameEndException {
         reduceCountCards();
+        if(cards.isEmpty()) {
+            throw new GameEndException();
+        }
         return cards.remove(0);
     }
 

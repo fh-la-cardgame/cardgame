@@ -540,5 +540,29 @@ public class Game {
     public boolean isGameRunning() {
     	return !gameEnd;
     }
-    
+
+    public void setGameEnd(boolean gameEnd) {
+        this.gameEnd = gameEnd;
+    }
+
+    public int getPlayerWon() {
+        return playerWon;
+    }
+
+    public void setPlayerWon(int playerWon) {
+        this.playerWon = playerWon;
+    }
+
+    public int getRound() {
+        return round;
+    }
+
+    public void changePlayer(int id) {
+        round++;
+        phase = 0;
+        playersTurn = id;
+        playedMonstercard = false;
+        CardsHaveAttack.clear();
+
+    }
 }

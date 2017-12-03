@@ -42,7 +42,12 @@ public class Playground {
         deck.shuffle();
         if(deck.getCards().size() > 0){
         for(int i=0;i<CARDSONHANDSTART;i++){
-            cardsOnHand.add(deck.popCard());
+            try {
+                cardsOnHand.add(deck.popCard());
+            } catch (GameEndException e) {
+                throw new RuntimeException("Deck hat nicht genug Karten");
+            }
+
         }
         }
         countBattlegroundMonster = 0;
@@ -73,7 +78,7 @@ public class Playground {
     /**
      * Fuegt der Hand eine Karte vom Deck und entfernt diese aus dem Maindeck.
      */
-    public void addCard(){
+    public void addCard() throws GameEndException {
     	if(cardsOnHand.size() < MAXCARDSONHAND) {
     		cardsOnHand.add(deck.popCard());
     	}
