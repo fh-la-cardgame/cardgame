@@ -74,28 +74,39 @@ public class RandomPlayer implements KiPlayer{
     private void attack() throws LogicException{
             if (game.getRound() != 0 && myPlayground.getCountBattlegroundMonster() != 0) {
                 Playground enemyPlayground = game.getEnemyField(id);
-                GameCard[] myBattleground = myPlayground.getBattlegroundMonster().clone();
-                GameCard[] enemyBattleground = enemyPlayground.getBattlegroundMonster().clone();
+                GameCard[] myBattleground = myPlayground.getBattlegroundMonster();
+                GameCard[] enemyBattleground = enemyPlayground.getBattlegroundMonster();
                 int length = myBattleground.length;
                 int zahl = random.nextInt(length + 1);
-                while (zahl != length) {
+                while (zahl != length && myPlayground.getCountBattlegroundMonster() != 0) {
                     GameCard attckCard = nextGameCard(myBattleground, zahl);
-                    myBattleground[zahl] = null;
-                    if (enemyPlayground.getCountBattlegroundMonster() == 0) game.attack(id, attckCard, null);
-                    else {
-                        zahl = random.nextInt(length);
-                        game.attack(id, attckCard, nextGameCard(enemyBattleground, zahl));
-                    }
+                    if (attckCard == null) return;
+                    if (!hasAlreadyAttacked(game.getCardsHaveAttack(), attckCard))
+                        if (enemyPlayground.getCountBattlegroundMonster() == 0) game.attack(id, attckCard, null);
+                        else {
+                            zahl = random.nextInt(length);
+                            game.attack(id, attckCard, nextGameCard(enemyBattleground, zahl));
+                        }
+                    zahl = random.nextInt(length+1);
                 }
             }
     }
 
     private GameCard nextGameCard(GameCard[] battleground,int start){
         int count = start;
-        while(true){
+        do{
             if(battleground[count] != null) return battleground[count];
             count = (count+1) % battleground.length;
-            if(count == start) throw new IllegalArgumentException();
+        }while(count != start);
+
+        return null;
+    }
+
+    private boolean hasAlreadyAttacked(List<GameCard> cards,GameCard card){
+        for(GameCard c:cards){
+            if(c == card) return true;
         }
+        return false;
+
     }
 }

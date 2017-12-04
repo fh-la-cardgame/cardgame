@@ -283,7 +283,7 @@ public class Game {
                 int length = myBattleground.length;
                 for(int i=0;i<length;i++){
                     if(myBattleground[i] != null) allCards.add(myBattleground[i]);
-                    if(enemyBattleground[i] != null) allCards.add(myBattleground[i]);
+                    if(enemyBattleground[i] != null) allCards.add(enemyBattleground[i]);
                 }
                 break;
             case "deck":
@@ -555,6 +555,10 @@ public class Game {
 
     public int getRound() {
         return round;
+    }
+
+    public List<GameCard> getCardsHaveAttack() {
+        return CardsHaveAttack;
     }
 
     public void changePlayer(int id) {

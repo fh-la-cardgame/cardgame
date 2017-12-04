@@ -157,15 +157,15 @@ public class GameCard extends Card {
 			if(nextEffect != null) {
 				throw new RuntimeException("Alter Effect wurde noch nicht ausgefuert");
 			}
-			//TODO Effect Array ist kuerzer als Max Shield. Daher IndexOutofBoundsException
-			if(effects.length <= shield) {
+			/*if(effects.length <= shield) {
 				System.out.println(this);
 				System.out.println("EffectArray: " + effects.length + " CurrentShields: " + shield + " MaxShield: " + shields.getMaxShields());
-			}
-			nextEffect = effects[shield];
+			}*/
 			if(shield == 0) {
 				return false;
 			} else {
+				//Es gibt keine Effekt wenn die Karte tot ist.
+				nextEffect = effects[shield-1];
 				return true;
 			}
 		}
