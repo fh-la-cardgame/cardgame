@@ -22,6 +22,13 @@ public class RandomPlayer implements KiPlayer{
         myPlayground = game.getMyField(id);
         random = new Random();
     }
+
+    public RandomPlayer(Game game,int id,long seed) throws LogicException{
+        this.game = game;
+        this.id = id;
+        myPlayground = game.getMyField(id);
+        random = new Random(seed);
+    }
     @Override
     public void initialize() {
 
@@ -64,10 +71,13 @@ public class RandomPlayer implements KiPlayer{
                 boolean needGameCard = cardPlay.needGameCard();
                     if(needGameCard){
                         if(myPlayground.getCountBattlegroundMonster() != 0) {
+                            zahl = random.nextInt(myPlayground.getBattlegroundMonster().length);
                             GameCard gameCard = nextGameCard(myPlayground.getBattlegroundMonster(),zahl);
                             game.playSpecialCard(id,cardPlay,gameCard);
                         }
                     }else game.playSpecialCard(id,cardPlay,null);
+
+                    zahl = random.nextInt(specialCardsHand.size()+1);
             }
     }
 
@@ -82,9 +92,13 @@ public class RandomPlayer implements KiPlayer{
                     GameCard attckCard = nextGameCard(myBattleground, zahl);
                     if (attckCard == null) return;
                     if (!hasAlreadyAttacked(game.getCardsHaveAttack(), attckCard))
-                        if (enemyPlayground.getCountBattlegroundMonster() == 0) game.attack(id, attckCard, null);
+                        if (enemyPlayground.getCountBattlegroundMonster() == 0) {
+                            game.attack(id, attckCard, null);
+                            System.out.println("Attack Player");
+                        }
                         else {
                             zahl = random.nextInt(length);
+                            System.out.println(" Attack Card");
                             game.attack(id, attckCard, nextGameCard(enemyBattleground, zahl));
                         }
                     zahl = random.nextInt(length+1);

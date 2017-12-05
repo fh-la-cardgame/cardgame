@@ -179,9 +179,10 @@ public class GameCard extends Card {
 	 * @return true(wenn Karte noch am Leben) false(falls Karte keine Schilder mehr besitzt)
 	 */
 	public GameCard addEvoShield() {
-		int shield;
+		int shield = evolutionShields.getCurrentShields();
 		if(evolutionShields.addShield()) {
-			shield = evolutionShields.getCurrentShields();
+			//indexoutofboundsexception ??
+			//shield = evolutionShields.getCurrentShields();
 			if(nextEffect != null) {
 				throw new RuntimeException("Alter Effect wurde noch nicht ausgefuert");
 			}

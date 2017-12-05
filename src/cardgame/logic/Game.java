@@ -283,7 +283,7 @@ public class Game {
                 int length = myBattleground.length;
                 for(int i=0;i<length;i++){
                     if(myBattleground[i] != null) allCards.add(myBattleground[i]);
-                    if(enemyBattleground[i] != null) allCards.add(enemyBattleground[i]);
+                    if(enemyBattleground[i] != null) allCards.add(enemyBattleground [i]);
                 }
                 break;
             case "deck":
@@ -471,7 +471,8 @@ public class Game {
         		EffectsAssignment.useEffect(effect, list).forEach( x->removeGameCardFormField(x) );
         	}
         }
-        if (evolution != null) {
+        //Karte kann schon nicht mehr vorhanden sein !.
+        if (evolution != null && g.isAlive()) {
             makeEvolution(g, evolution);
         }
     }
@@ -487,12 +488,15 @@ public class Game {
         for (int i = 0; i < arraySide1.length; i++) {
             if (arraySide1[i] == old) {
                 //Reicht removeSpecialCardFromGameCard ?
-            	removeGameCardFormField(old);
+                removeGameCardFromSpecialCard(old);
+            	//removeGameCardFormField(old);
                 arraySide1[i] = evolution;
                 return;
             }
             if (arraySide2[i] == old) {
-            	removeGameCardFormField(old);
+
+                removeGameCardFromSpecialCard(old);
+            	//removeGameCardFormField(old);
                 arraySide2[i] = evolution;
                 return;
             }
@@ -529,11 +533,9 @@ public class Game {
     public void setMyPhase(int id, int phase1) {
     	if(side1PlayerId == id)  {
     		this.player1Phase.setValue(phase1);
-    	}
-    	if(side2PlayerId == id) {
+    	}else if(side2PlayerId == id) {
     		this.player2Phase.setValue(phase1);
-    	}
-        throw new IllegalArgumentException("Id existiert nicht");
+    	}else throw new IllegalArgumentException("Id existiert nicht");
         
     }
 

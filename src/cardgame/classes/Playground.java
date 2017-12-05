@@ -126,6 +126,7 @@ public class Playground {
     		if(battlegroundMonster[i] == gameCard) {
     			battlegroundMonster[i] = null;
     			countBattlegroundMonster--;
+    			return;
     		}
     	}
     }

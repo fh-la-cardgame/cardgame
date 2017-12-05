@@ -132,8 +132,8 @@ public class PlaygroundController implements Initializable {
 
             //Phasen Binding
             //main1.disableProperty();
-            bindPhases(main1, battle1, end1, g.getPlayer1Phase(), g.getPlayer2Phase());
-            bindPhases(main2, battle2, end2, g.getPlayer2Phase(), g.getPlayer1Phase());
+            //bindPhases(main1, battle1, end1, g.getPlayer1Phase(), g.getPlayer2Phase());
+            //bindPhases(main2, battle2, end2, g.getPlayer2Phase(), g.getPlayer1Phase());
         }catch(LogicException logicException){
             //Konnte LogicException nicht werfen wegen Override da die Oberklasse diese Exception nicht wirft !
             throw new IllegalArgumentException();
@@ -189,24 +189,24 @@ public class PlaygroundController implements Initializable {
 
     @FXML
     private void battle1Action(ActionEvent event) {
-        g.setpPlayer1Phase(1);
+        //g.setpPlayer1Phase(1);
     }
 
     @FXML
     private void end1Action(ActionEvent event) {
-        g.setpPlayer1Phase(2);
-        g.setpPlayer2Phase(0);
+        //g.setpPlayer1Phase(2);
+        //g.setpPlayer2Phase(0);
     }
 
     @FXML
     private void battle2Action(ActionEvent event) {      
-        g.setpPlayer2Phase(1);
+        //g.setpPlayer2Phase(1);
     }
 
     @FXML
     private void end2Action(ActionEvent event) {       
-        g.setpPlayer2Phase(2);
-        g.setpPlayer1Phase(0);
+       // g.setpPlayer2Phase(2);
+       // g.setpPlayer1Phase(0);
     }
 
     private void stretchElements() {
