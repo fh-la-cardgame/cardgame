@@ -13,13 +13,13 @@ import cardgame.classes.SpecialCard;
 import cardgame.logic.Game;
 import cardgame.logic.LogicException;
 
-public class TestPlayer implements KiPlayer {
+public class TestPlayerProtokoll implements KiPlayer {
 	private static final boolean KAMIKAZE = false;
 	private final int id;
     private final Game game;
     private final Playground myPlayground;
     
-    public TestPlayer(Game game,int id) throws LogicException{
+    public TestPlayerProtokoll(Game game,int id) throws LogicException{
         this.game = game;
         this.id = id;
         myPlayground = game.getMyField(id);
@@ -47,16 +47,18 @@ public class TestPlayer implements KiPlayer {
 		List<SpecialCard> removes = new ArrayList<>();
 		for(Card card: monsterCards){
 			if(card instanceof SpecialCard){
+				System.out.println("Waelbare SpecialCard: "+card);
 				if(((SpecialCard)card).getEffects().stream().filter(e -> e.getEffectType() == EffectType.destroy).findFirst().isPresent()){
 					hasDestroyEffect = true;
 					specialCardPlaying = ((SpecialCard)card);
 				}
 				//Bei Fehler clonen
 				if(!hasDestroyEffect && specialCardPlaying != null){
-				specialCardPlaying = specialCardPlaying.getEffects().stream().map(e -> e.getEffectNumber()).max(Integer::max).get() < ((SpecialCard)card).getEffects().stream().map(e -> e.getEffectNumber()).max(Integer::max).get() ? (SpecialCard)card : specialCardPlaying;
+					specialCardPlaying = specialCardPlaying.getEffects().stream().map(e -> e.getEffectNumber()).max(Integer::max).get() < ((SpecialCard)card).getEffects().stream().map(e -> e.getEffectNumber()).max(Integer::max).get() ? (SpecialCard)card : specialCardPlaying;
 				}else if(!hasDestroyEffect && specialCardPlaying == null){
 					specialCardPlaying = (SpecialCard)card;
 				}
+				System.out.println("Gewaelte SpecialCard: "+specialCardPlaying);
 				specialCards.add(card);
 //				monsterCards.remove(card);
 //				removes.add((SpecialCard)card);
@@ -72,7 +74,9 @@ public class TestPlayer implements KiPlayer {
 		
 		  if(myPlayground.canPlayMonsterCard() && monsterCardPlaying != null){
 			  game.playCard(id, monsterCardPlaying);
+			  System.out.println("NEUE KARTE: "+monsterCardPlaying.getName());
 		  }
+		  //--------------------------------------------------------------------------------------------------------
 //		  GameCard targetCard = null;
 //		  boolean targetCardSelected = false;
 //		  if(myPlayground.canPlaySpecialCard() && specialCardPlaying != null && specialCardPlaying.needGameCard()){
@@ -107,14 +111,16 @@ public class TestPlayer implements KiPlayer {
 //			  game.playSpecialCard(id, specialCardPlaying, null);
 //			  System.out.println("NEUE SPECIALKARTE: "+specialCardPlaying.getName());
 //		  }
-		  
-		  
+//		  
+		 //------------------------------------------------------------------------------------------------------------------------- 
 		  
 	}
 	
 	private void attack() throws LogicException{
+		System.out.println("ROUND: "+game.getRound());
 		 if (game.getRound() != 0 && myPlayground.getCountBattlegroundMonster() != 0){
 			List<GameCard> myField = new ArrayList<>(Arrays.asList(game.getMyField(id).getBattlegroundMonster()));
+			System.out.println("MEIN FELD: "+myField+"\n--------------");
 			int i = 0;
 			int times = myField.size();
 			while(i < times){
@@ -143,10 +149,15 @@ public class TestPlayer implements KiPlayer {
 					
 					if(victim != null && game.getEnemyField(id).getCountBattlegroundMonster() != 0){
 						game.attack(id, aggressor, victim);
+						System.out.println("ANGRIFF: "+aggressor.getName() +" vs " + victim.getName());
 						
 					}else if(game.getEnemyField(id).getCountBattlegroundMonster() == 0){
+						System.out.println("KONTROLLE: "+Arrays.asList(game.getEnemyField(id).getBattlegroundMonster()));
+						System.out.println("ANGRIFF: "+aggressor.getName() +" vs gegnerischer Spieler");
 						game.attack(id, aggressor, null);
 					}
+					System.out.println(game.getEnemyField(id).getCountBattlegroundMonster()+" - "+ game.getEnemyField(id).getPlayer().getShields().getCurrentShields());
+					System.out.println(game.getMyField(id).getCountBattlegroundMonster()+" - "+ game.getMyField(id).getPlayer().getShields().getCurrentShields());
 				}
 				myField.remove(aggressor);
 				i++;

@@ -3,6 +3,7 @@ package cardgame.logic;
 import cardgame.ai.KiPlayer;
 import cardgame.ai.RandomPlayer;
 import cardgame.ai.TestPlayer;
+import cardgame.ai.TestPlayerProtokoll;
 import cardgame.classes.Deck;
 import cardgame.classes.GameEndException;
 import cardgame.classes.Player;
@@ -15,7 +16,7 @@ public class ConsolTest {
 
 		DbCard db = new DbCard();
 		Game g = new Game(new Player(1, "Spieler1"), new Player(2, "Spieler2"), new Deck(1,"Flora", db.getDeck("Flora")), new Deck(2, "David", db.getDeck("civitas diaboli")));
-		KiPlayer p1 = new RandomPlayer(g, 1);
+		KiPlayer p1 = new TestPlayer(g, 1);
 		KiPlayer p2 = new RandomPlayer(g, 2);
 		
 		

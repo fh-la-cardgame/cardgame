@@ -73,7 +73,8 @@ public class Game {
         playersTurn = player1.getId();
         player1Phase = new SimpleIntegerProperty(0);
         player2Phase = new SimpleIntegerProperty(2);
-        
+        //Unsauber!:
+        round = -1;
         
     }
 
