@@ -7,6 +7,7 @@ import cardgame.classes.*;
 import static cardgame.classes.EffectType.destroy;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import sun.awt.util.IdentityArrayList;
 import sun.rmi.runtime.Log;
 
 public class Game {
@@ -61,7 +62,7 @@ public class Game {
      * Alle Karten mit denen in diesem Zug schon angegriffen wurde.
      * Muss am Ende des Spielzugs geleert werden.
      */
-    private List<GameCard> CardsHaveAttack = new ArrayList<>();
+    private List<GameCard> CardsHaveAttack = new IdentityArrayList<>();
     /**
      * Konstruktor noch nicht fertig.
      */
@@ -77,7 +78,6 @@ public class Game {
         round = -1;
         
     }
-
 
     /**
      * Fuehrt eine Angriff aus.
@@ -129,13 +129,12 @@ public class Game {
         }
 
         //Abfrage ob mit Karte schon angegriffen wurde
-        for (GameCard g : CardsHaveAttack) {
+        if(CardsHaveAttack.contains(myCard)) throw new LogicException("Mit dieser Karte wurde schon angegriffen !");
+        /*for (GameCard g : CardsHaveAttack) {
             if (myCard == g) {
                 throw new LogicException("Mit dieser Karte wurde schon angegriffen");
             }
-        }
-
-
+        }*/
         GameCard[] enemyBattleground = getEnemyField(id).getBattlegroundMonster();
         GameCard[] myBattleground = getMyField(id).getBattlegroundMonster();
 
@@ -147,11 +146,8 @@ public class Game {
         //Angriff direkt auf den Gegner
         if (enemyCard == null) {
             //Pruefen ob Gegner noch Karten auf Spielfeld
-            for (GameCard g : enemyBattleground) {
-                if (g != null) {
-                    throw new RuntimeException("Kein Angriff direkt auf den Spieler moeglich");
-                }
-            }
+            if(getEnemyField(id).getCountBattlegroundMonster() != 0)throw new LogicException("Kein Angriff direkt auf den Spieler moeglich");
+
 
             //Gegner verliert ein Schield
             Shield shield = getEnemyField(id).getPlayer().getShields();
@@ -176,10 +172,7 @@ public class Game {
             CardsHaveAttack.add(myCard);
             return;
         }
-
-
         //Angriff auf eine Karte
-
         //Abfrage, ob Karte auf dem Feld
         gameCardInField(enemyCard, enemyBattleground);
 
@@ -223,17 +216,16 @@ public class Game {
      * @param id   SpielerId.
      * @param card Karte die aufs Feld gelegt werden soll.
      */
-
     public void playCard(int id, Card card) throws LogicException {
-        turn(id);
-        if (phase != 0) throw new LogicException("Kann nur am Anfang Karten legen !");
         if (card instanceof GameCard) {
-            if (playedMonstercard)
-                throw new LogicException("Es darf nur 1 mal pro Zug eine Monsterkarte gelegt werden !");
+            turn(id);
+            if (phase != 0) throw new LogicException("Kann nur am Anfang Karten legen !");
+            if (playedMonstercard) throw new LogicException("Es darf nur 1 mal pro Zug eine Monsterkarte gelegt werden !");
             getMyField(id).addMonsterCard((GameCard) card);
             playedMonstercard = true;
         } else playSpecialCard(id, (SpecialCard) card, null);
     }
+
 
     public void playSpecialCard(int id, SpecialCard card, GameCard enemyCard) throws LogicException {
         turn(id);
@@ -244,13 +236,9 @@ public class Game {
             List<GameCard> cardsEffect = getCardsForEffect(id,e,enemyCard,enemyCard);
             List<GameCard> cardsDeath =  EffectsAssignment.useEffect(e,cardsEffect);
             if(e.getEffectType() == EffectType.destroy){
-                for(GameCard c:cardsDeath){
-                    removeGameCardFormField(c);
-                }
+                cardsDeath.forEach(this::removeGameCardFormField);
             }else{
-                for(GameCard c:cardsEffect){
-                    c.addSpecialCard(card);
-                }
+                cardsEffect.forEach(c-> c.addSpecialCard(card));
                 card.addGameCard(cardsEffect);
                 getMyField(id).addSpecialCardToField(card);
             }
@@ -284,7 +272,7 @@ public class Game {
                 int length = myBattleground.length;
                 for(int i=0;i<length;i++){
                     if(myBattleground[i] != null) allCards.add(myBattleground[i]);
-                    if(enemyBattleground[i] != null) allCards.add(enemyBattleground [i]);
+                    if(enemyBattleground[i] != null) allCards.add(enemyBattleground[i]);
                 }
                 break;
             case "deck":
@@ -312,14 +300,6 @@ public class Game {
             }
         }
     }
-
-    private boolean checkForReference(List<Card> cards, Card checkCard) {
-        for (Card c : cards) {
-            if (c == checkCard) return true;
-        }
-        return false;
-    }
-
 
     /**
      * Gibt die Karten auf der Hand des jeweiligen Spielers zurueck.
@@ -374,7 +354,7 @@ public class Game {
         if (playersTurn != PlayerId) {
             throw new LogicException("Spieler ist nicht am Zug");
         }
-        if (gameEnd == true) {
+        if (gameEnd) {
         	throw new LogicException("Spiel zu Ende");
         }
     }
@@ -484,7 +464,7 @@ public class Game {
      * @param evolution GameCard zum ersetzen
      */
     private void makeEvolution(GameCard old, GameCard evolution) {
-        GameCard[] arraySide1 = side1.getBattlegroundMonster();
+        /*GameCard[] arraySide1 = side1.getBattlegroundMonster();
         GameCard[] arraySide2 = side2.getBattlegroundMonster();
         for (int i = 0; i < arraySide1.length; i++) {
             if (arraySide1[i] == old) {
@@ -501,9 +481,9 @@ public class Game {
                 arraySide2[i] = evolution;
                 return;
             }
-        }
-
-        throw new IllegalArgumentException("GameCard wurde im Playground nicht gefunden");
+        }*/
+        if(side1.updateBattlegroundMonster(old,evolution) || side2.updateBattlegroundMonster(old,evolution)) removeGameCardFromSpecialCard(old);
+        else throw new IllegalArgumentException("GameCard wurde im Playground nicht gefunden");
 
     }
 

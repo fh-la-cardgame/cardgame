@@ -94,6 +94,7 @@ public class RandomPlayer implements KiPlayer{
                     if (!hasAlreadyAttacked(game.getCardsHaveAttack(), attckCard))
                         if (enemyPlayground.getCountBattlegroundMonster() == 0) {
                             game.attack(id, attckCard, null);
+                            if(!game.isGameRunning()) return;
                             System.out.println("Attack Player");
                         }
                         else {

@@ -1,5 +1,7 @@
 package cardgame.classes;
 
+import sun.awt.util.IdentityArrayList;
+
 import java.util.*;
 
 /**
@@ -12,7 +14,7 @@ public class SpecialCard extends Card{
 	private List<Effect> effects;
 
 	/**Liste die alle Monsterkarten speichert auf denen der Effekt angewendet wurde.*/
-	private final ArrayList<GameCard> gameCards;
+	private final List<GameCard> gameCards;
 
 	/**
          * Konstruktor
@@ -25,13 +27,13 @@ public class SpecialCard extends Card{
 	public SpecialCard(final int id, final String name, final String description, final Type type, final byte[] image, final List<Effect> effects) {
 		super(id, name, description, type, image);
 		this.effects = new LinkedList<>(effects);
-		this.gameCards = new ArrayList<>();
+		this.gameCards = new IdentityArrayList<>();
 	}
 	
-	private SpecialCard(final int id, final String name, final String description, final Type type, final byte[] image, final List<Effect> effects, final ArrayList<GameCard> gameCards) {
+	private SpecialCard(final int id, final String name, final String description, final Type type, final byte[] image, final List<Effect> effects, final List<GameCard> gameCards) {
 		super(id, name, description, type, image);
 		this.effects = new LinkedList<>(effects);
-		this.gameCards = (ArrayList)gameCards.clone();
+		this.gameCards = new IdentityArrayList<>(gameCards);
 	}
         
         /**
@@ -42,7 +44,7 @@ public class SpecialCard extends Card{
             this(s.getId(), s.getName(), s.getDescription(), s.getType(), s.getImage(), s.getEffects(), s.getGameCard());
         }
         
-        public ArrayList<GameCard> getGameCard(){
+        public List<GameCard> getGameCard(){
         	return gameCards;
         }
 
@@ -54,18 +56,10 @@ public class SpecialCard extends Card{
 	}
 
 	public void addGameCard(List<GameCard> cards){
-		for(GameCard card:cards){
-			boolean has = false;
-			if(card != null) {
-				for (GameCard c : gameCards) {
-					if (card == c) {
-						has = true;
-						break;
-					}
-				}
-				if (!has) gameCards.add(card);
-			}
-		}
+		cards.stream()
+				.filter(card -> !gameCards.contains(card))
+				.forEach(gameCards::add);
+
 	}
 
 	public void removeGameCard(GameCard g){

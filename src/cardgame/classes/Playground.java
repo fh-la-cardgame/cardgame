@@ -1,4 +1,7 @@
 package cardgame.classes;
+import sun.awt.util.IdentityLinkedList;
+
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,7 +41,7 @@ public class Playground {
     public Playground(final Player player, final Deck deck) {
 		this.player = player;
 		this.deck = deck; 
-		this.cardsOnHand = new LinkedList<>(); //LOGIK: Shuffle, 5 Karten aus dem Deck zu weisen
+		this.cardsOnHand = new IdentityLinkedList<>(); //LOGIK: Shuffle, 5 Karten aus dem Deck zu weisen
         deck.shuffle();
         if(deck.getCards().size() > 0){
         for(int i=0;i<CARDSONHANDSTART;i++){
@@ -60,7 +63,7 @@ public class Playground {
      * @return Karten
      */
     public List<Card> getCardsOnHand() {
-		return cardsOnHand;
+		return Collections.unmodifiableList(cardsOnHand);
     }
     
     public Player getPlayer() {
@@ -71,7 +74,7 @@ public class Playground {
      * Entfernt Karte aus der Hand.
      * @param c Spiel- bzw. Spezialkarte
      */
-    public void removeCardFromHand(Card c){
+    private void removeCardFromHand(Card c){
         cardsOnHand.remove(c);
     }
 
@@ -90,7 +93,7 @@ public class Playground {
      * @param card Monsterkarte die eingefuegt werden soll.
      */
     public void addMonsterCard(GameCard card){
-       if(!getCardsOnHand().contains(card)) throw new IllegalArgumentException();
+       if(!getCardsOnHand().contains(card)) throw new IllegalArgumentException("Monsterkarte nicht in der Hand !");
        removeCardFromHand(card);
        //Karten werden von links nach rechts gelegt Eventuell von mitte aus starten !
         for(int i=0;i<battlegroundMonster.length;i++){
@@ -104,7 +107,7 @@ public class Playground {
     }
 
     public void addSpecialCardToField(SpecialCard card){
-        if(!getCardsOnHand().contains(card)) throw new IllegalArgumentException();
+        if(!getCardsOnHand().contains(card)) throw new IllegalArgumentException("Special Karte nicht in der Hand");
         removeCardFromHand(card);
         for(int i=0;i<battlegroundSpecials.length;i++){
             if(battlegroundSpecials[i] == null){
@@ -115,7 +118,6 @@ public class Playground {
         }
         throw new RuntimeException("Special Card Feld ist voll ! ");
     }
-    
     /**
      * Entfernt eine GameCard.
      * Falls GameCard nicht auf dem Feld wird nichts entfernt.
@@ -147,10 +149,25 @@ public class Playground {
         return false;
     }
 
+    public boolean updateBattlegroundMonster(GameCard oldCard,GameCard newCard){
+        for(int i=0;i< ROW;i++){
+            if(battlegroundMonster[i] == oldCard){
+                battlegroundMonster[i] = newCard;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean containsBattlegroundMonster(GameCard card){
+        for(GameCard c:battlegroundMonster)
+            if(c == card) return true;
+        return false;
+    }
+
 	public GameCard[] getBattlegroundMonster() {
 		return battlegroundMonster;
 	}
-
 
 	public SpecialCard[] getBattlegroundSpecials() {
 		return battlegroundSpecials;
