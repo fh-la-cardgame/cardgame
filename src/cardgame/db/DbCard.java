@@ -619,5 +619,43 @@ public class DbCard {
         }
         return length_old < length_new;
     }
+    
+    public void updateShields(int gid, int max_shield){
+    	PreparedStatement pst, pst2, pst3, pst4;
+    	ResultSet result, result2;
+    	 try {
+			c = DbConnection.getPostgresConnection();
+			 pst = c.prepareStatement("select shield_max from \"Gamecard\" where gid = ?");
+			 pst.setInt(1, gid);
+	         result = pst.executeQuery();
+	         result.next();
+	         if(result.getInt(1) > max_shield){
+	        	 pst2 = c.prepareStatement("select c_eid from \"Card_Effect\" "+
+					        			 "where gid = ? "+
+					        			 "and shield > ?;");
+	        	 pst2.setInt(1, gid);
+	        	 pst2.setInt(2, max_shield-2);
+	        	 result2 = pst2.executeQuery();
+	        	 while(result2.next()){
+	        		 pst3 = c.prepareStatement("delete from \"Card_Effect\" "+
+	        				 					"where c_eid = ?");
+	        		 pst3.setInt(1, result2.getInt(1));
+	        		 pst3.executeUpdate();
+	        		 System.out.println(result2.getInt(1)+" wurde geloescht");
+	        	 }
+	         }
+	         pst4 = c.prepareStatement("update \"Gamecard\" "+
+		        	 "set shield_max = ?, shield_curr = ?"+ 
+	        		 "where gid = ?");
+		        	 pst4.setInt(1, max_shield);
+		        	 pst4.setInt(2, max_shield);
+		        	 pst4.setInt(3, gid);
+		     pst4.executeUpdate();
+		     System.out.println("Karte mit id: "+gid+" hat nun "+max_shield+" Schilder");
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}
+        
+    }
 
 }
