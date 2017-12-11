@@ -497,16 +497,20 @@ public class DbCard {
      * falls der Eintrag schon existiert.
      */
     public boolean insert_Card_Effect_EvoShields(int gid, int eid, int evoShield) {
-        PreparedStatement pst, pst2;
+        PreparedStatement pst0, pst, pst2;
         int length_old = 0, length_new = 0;
-        ResultSet result;
+        ResultSet result0, result;
         try {
             c = DbConnection.getPostgresConnection();
             pst = c.prepareStatement("select count(*) from \"Card_Effect\"");
             result = pst.executeQuery();
             result.next();
             length_old = result.getInt(1);
-            if (evoShield > EVO_OBERGRENZE || evoShield == 0) {
+            pst0 = c.prepareStatement("select evo_shield_max from \"Gamecard\" where gid = ?");
+            pst0.setInt(1, gid);
+            result0 = pst0.executeQuery();
+            result0.next();
+            if (evoShield > EVO_OBERGRENZE || evoShield == 0 || evoShield > result0.getInt(1)) {
                 throw new IllegalArgumentException("Ungueltiger Wertebereich");
             }
 
@@ -619,7 +623,13 @@ public class DbCard {
         }
         return length_old < length_new;
     }
-    
+    /**Aktualisieren der Anzahl an Schildern.
+     * Erlaubt eine konsistentes Aendern der Anzahl der Schilder, an denen auch die Effekte hängen.
+     * Dabei gilt folgendes:
+     * Auf dem 0-tem Schild(letztes verbleibendes Schild) gibt es einen Effekt. Auf dem max-Schild gibt es keinen Effekt.
+     * @param gid Id der Gamecard.
+     * @param max_shield Neue Anzahl an maximalen Schildern.
+     */
     public void updateShields(int gid, int max_shield){
     	PreparedStatement pst, pst2, pst3, pst4;
     	ResultSet result, result2;
@@ -656,6 +666,76 @@ public class DbCard {
 			e.printStackTrace();
 		}
         
+    }
+    /**Aktualisieren der Evolution-Schilder.
+     * Erlaubt ein konsistentes Aendern der Anzahl an Evo-Schildern, an denen auch die Effekte haengen.
+     * Dabei gilt folgendes:
+     * Auf dem 0-ten Schild gibt es keinen Effekt. Auf dem letzten Schild gibt es einen Effekt.
+     * @param gid Id der Gamecard.
+     * @param maxShield Neue Anzahl an maximalen Schilder.
+     */
+    public void updateEvoShield(int gid, int maxShield){
+    	PreparedStatement pst, pst2, pst3, pst4;
+    	ResultSet result, result2;
+    	 try {
+			c = DbConnection.getPostgresConnection();
+			 pst = c.prepareStatement("select evo_shield_max from \"Gamecard\" where gid = ?");
+			 pst.setInt(1, gid);
+	         result = pst.executeQuery();
+	         result.next();
+	         if(result.getInt(1) > maxShield){
+	        	 pst2 = c.prepareStatement("select c_eid from \"Card_Effect\" "+
+	        			 "where gid = ? "+
+	        			 "and evo_shield > ?;");
+				 pst2.setInt(1, gid);
+				 pst2.setInt(2, maxShield);
+				 result2 = pst2.executeQuery();
+				 while(result2.next()){
+	        		 pst3 = c.prepareStatement("delete from \"Card_Effect\" "+
+	        				 					"where c_eid = ?");
+	        		 pst3.setInt(1, result2.getInt(1));
+	        		 pst3.executeUpdate();
+	        		 System.out.println(result2.getInt(1)+" wurde geloescht");
+	        	 }
+	         }
+	         pst4 = c.prepareStatement("update \"Gamecard\" "+
+		        	 "set evo_shield_max = ?, evo_shield_curr = ?"+ 
+	        		 "where gid = ?");
+		        	 pst4.setInt(1, maxShield);
+		        	 pst4.setInt(2, maxShield);
+		        	 pst4.setInt(3, gid);
+		     pst4.executeUpdate();
+		     System.out.println("Karte mit id: "+gid+" hat nun "+maxShield+" Evo-Schilder");
+	    }catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}
+    }
+    /**Prueft ob die Beziehung zwischen Evolution und Anzahl an Schildern stimmt.
+     * Hilfsmethode die folgendes ueberprueft:
+     * Wenn eine Karte weniger als 10 Schilder hat, muss sie eine Eovlution besitzten.
+     */
+    private void isEvoConsistent(){
+    	PreparedStatement pst, pst2;
+    	ResultSet result, result2;
+    	boolean inconsistent = false;
+    	 try {
+			c = DbConnection.getPostgresConnection();
+			pst = c.prepareStatement("select gid, evo, evo_shield_max from \"Gamecard\" "+
+					"where evo_shield_max < 10 "+
+					"and evo is null");
+			result = pst.executeQuery();
+			while(result.next()){
+				inconsistent = true;
+				System.out.println("Karte mit ID: "+result.getInt(1)+" hat keine Evolution obwohl es weniger als 10 Evo-Schilder besitzt");
+			}
+			if(inconsistent){
+				throw new IllegalStateException("Inkonsistenzien in der Beziehung Evolution und Anzahl an Evo-Schildern");
+			}else{
+				System.out.println("Alles konsistent");
+			}
+    	 }catch (ClassNotFoundException | SQLException e) {
+ 			e.printStackTrace();
+ 		}
     }
 
 }

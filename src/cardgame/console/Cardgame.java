@@ -24,10 +24,12 @@ public class Cardgame {
          * Exemplarische Ausfuehrung von "getDeck(String deckName)"
          */
         DbCard d = new DbCard();
-        //Der Deckname wird nun auch case insensitive eingelesen:
-        List<Card> list = d.getDeck("civitas diaboli");
-        System.out.println(list);
-       // System.out.println( d.insert_Card_Effect_Shields(14, 3, -1));
+       
+//        Der Deckname wird nun auch case insensitive eingelesen:
+//        List<Card> list = d.getDeck("civitas diaboli");
+//        System.out.println(list);
+//        System.out.println( d.insert_Card_Effect_EvoShields(3, 3, 9));
+//        d.updateEvoShield(3, 8);
                 
    }
     

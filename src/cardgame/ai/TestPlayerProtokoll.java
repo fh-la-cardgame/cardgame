@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import cardgame.classes.Card;
+import cardgame.classes.Effect;
 import cardgame.classes.EffectType;
 import cardgame.classes.GameCard;
 import cardgame.classes.Playground;
@@ -37,7 +38,8 @@ public class TestPlayerProtokoll implements KiPlayer {
         attack();
 
 	}
-	
+	//NICHT GETESTET DA ILLEGALARGUMENTEXCEPTION: SPEICAL KARTE NICHT IN DER HAND
+	//Vermutung: SpecialCard wird nach ausfuehung des ersten Effekts aus der Hand entfernt.
 	private void playCards() throws LogicException{
 		List<Card> monsterCards = game.getCardsOnHand(id);
 		List<Card> specialCards = new ArrayList<>();
@@ -48,11 +50,10 @@ public class TestPlayerProtokoll implements KiPlayer {
 		for(Card card: monsterCards){
 			if(card instanceof SpecialCard){
 				System.out.println("Waelbare SpecialCard: "+card);
-				if(((SpecialCard)card).getEffects().stream().filter(e -> e.getEffectType() == EffectType.destroy).findFirst().isPresent()){
-					hasDestroyEffect = true;
-					specialCardPlaying = ((SpecialCard)card);
-				}
-				//Bei Fehler clonen
+//				if(((SpecialCard)card).getEffects().stream().filter(e -> e.getEffectType() == EffectType.destroy).findFirst().isPresent()){
+//					hasDestroyEffect = true;
+//					specialCardPlaying = ((SpecialCard)card);
+//				}
 				if(!hasDestroyEffect && specialCardPlaying != null){
 					specialCardPlaying = specialCardPlaying.getEffects().stream().map(e -> e.getEffectNumber()).max(Integer::max).get() < ((SpecialCard)card).getEffects().stream().map(e -> e.getEffectNumber()).max(Integer::max).get() ? (SpecialCard)card : specialCardPlaying;
 				}else if(!hasDestroyEffect && specialCardPlaying == null){
@@ -79,39 +80,41 @@ public class TestPlayerProtokoll implements KiPlayer {
 		  //--------------------------------------------------------------------------------------------------------
 //		  GameCard targetCard = null;
 //		  boolean targetCardSelected = false;
-//		  if(myPlayground.canPlaySpecialCard() && specialCardPlaying != null && specialCardPlaying.needGameCard()){
-//			  if(specialCardPlaying.getEffects().stream().filter(e -> e.getEffectType().toString().startsWith("substraction") || e.getEffectType().toString().startsWith("destroy")) !=null && game.getEnemyField(id).getBattlegroundMonster().length != 0){
-//				  for(GameCard card : game.getEnemyField(id).getBattlegroundMonster()){
-//					  if(targetCard != null){
-//						  targetCard = targetCard.getAtk() > card.getAtk() ? targetCard : card;
+//		  if(specialCardPlaying != null && myPlayground.canPlaySpecialCard() && game.getEnemyField(id).getCountBattlegroundMonster() > 0){
+//			  for(Effect e: specialCardPlaying.getEffects()){
+//				  if(e.getEffectType().needsGameCard()){
+//					  if(e.getEffectType().toString().startsWith("addition")){
+//						  for(GameCard card: game.getMyField(id).getBattlegroundMonster()){
+//							  if(card != null){
+//								  if(targetCard != null){
+//									  targetCard = targetCard.getAtk() < card.getAtk() ? card: targetCard;
+//								  }else{
+//									  targetCard = card;
+//								  }
+//							  }
+//						  }
+//						  System.out.println("SPECIAL: " +specialCardPlaying.getName() +" auf "+targetCard.getName()+"\nEffekt: "+e.getDescription());
+//						  game.playSpecialCard(id, specialCardPlaying, targetCard);
 //					  }else{
-//						  targetCard = card;
-//						  targetCardSelected = true;
+//						 for(GameCard card: game.getEnemyField(id).getBattlegroundMonster()){
+//							 if(card != null){
+//								 if(targetCard != null){
+//									 targetCard = targetCard.getAtk() < card.getAtk() ? card: targetCard;
+//								 }else{
+//									 targetCard = card;
+//								 }
+//							 }
+//						 }
+//						 System.out.println("SPECIAL: " +specialCardPlaying.getName() +" auf "+targetCard.getName()+"\nEffekt: "+e.getDescription());
+//						 game.playSpecialCard(id, specialCardPlaying, targetCard);
 //					  }
+//				  }else{
+		  //Wurde dieser Fall implementiert?
+////					  game.playCard(id, specialCardPlaying);
+////					  System.out.println("SPECIAL: " +specialCardPlaying.getName() +"\nEffekt: "+e.getDescription());
 //				  }
 //			  }
-//			  if(specialCardPlaying.getEffects().stream().filter(e -> e.getEffectType().toString().startsWith("addition")) !=null && game.getMyField(id).getBattlegroundMonster().length != 0){
-//				  for(GameCard card : game.getMyField(id).getBattlegroundMonster()){
-//					  if(targetCard != null){
-//						  targetCard = targetCard.getAtk() > card.getAtk() ? targetCard : card;
-//					  }else{
-//						  targetCard = card;
-//						  targetCardSelected = true;
-//					  }
-//				  }
-//			  }
-//			  
-//			  
-//			  if(targetCard != null){
-//			  game.playSpecialCard(id, specialCardPlaying, targetCard);
-//			  System.out.println("NEUE SPECIALKARTE: "+specialCardPlaying.getName()+ " AUF "+ targetCard.getName());
-//			  }
-//		  }else if(myPlayground.canPlaySpecialCard() && specialCardPlaying != null){
-//			  if(game.getEnemyField(id).getBattlegroundMonster().length > 0)
-//			  game.playSpecialCard(id, specialCardPlaying, null);
-//			  System.out.println("NEUE SPECIALKARTE: "+specialCardPlaying.getName());
 //		  }
-//		  
 		 //------------------------------------------------------------------------------------------------------------------------- 
 		  
 	}
