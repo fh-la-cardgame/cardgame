@@ -1,6 +1,5 @@
 package cardgame.classes;
 
-import sun.awt.util.IdentityArrayList;
 
 import java.util.*;
 
@@ -14,7 +13,7 @@ public class SpecialCard extends Card{
 	private List<Effect> effects;
 
 	/**Liste die alle Monsterkarten speichert auf denen der Effekt angewendet wurde.*/
-	private final List<GameCard> gameCards;
+	private final Set<GameCard> gameCards;
 
 	/**
          * Konstruktor
@@ -27,13 +26,13 @@ public class SpecialCard extends Card{
 	public SpecialCard(final int id, final String name, final String description, final Type type, final byte[] image, final List<Effect> effects) {
 		super(id, name, description, type, image);
 		this.effects = new LinkedList<>(effects);
-		this.gameCards = new IdentityArrayList<>();
+		this.gameCards = new IdentityHashSet<>();
 	}
 	
-	private SpecialCard(final int id, final String name, final String description, final Type type, final byte[] image, final List<Effect> effects, final List<GameCard> gameCards) {
+	private SpecialCard(final int id, final String name, final String description, final Type type, final byte[] image, final List<Effect> effects, final Set<GameCard> gameCards) {
 		super(id, name, description, type, image);
 		this.effects = new LinkedList<>(effects);
-		this.gameCards = new IdentityArrayList<>(gameCards);
+		this.gameCards = new IdentityHashSet<>(gameCards);
 	}
         
         /**
@@ -44,7 +43,7 @@ public class SpecialCard extends Card{
             this(s.getId(), s.getName(), s.getDescription(), s.getType(), s.getImage(), s.getEffects(), s.getGameCard());
         }
         
-        public List<GameCard> getGameCard(){
+        public Set<GameCard> getGameCard(){
         	return gameCards;
         }
 
@@ -56,20 +55,22 @@ public class SpecialCard extends Card{
 	}
 
 	public void addGameCard(List<GameCard> cards){
-		cards.stream()
+		gameCards.addAll(cards);
+		/*cards.stream()
 				.filter(card -> !gameCards.contains(card))
-				.forEach(gameCards::add);
+				.forEach(gameCards::add);*/
 
 	}
 
 	public void removeGameCard(GameCard g){
-		Iterator<GameCard> iterator = gameCards.iterator();
+		gameCards.remove(g);
+		/*Iterator<GameCard> iterator = gameCards.iterator();
 		while(iterator.hasNext()){
 			if(iterator.next() == g) {
 				iterator.remove();
 				return;
 			}
-		}
+		}*/
 	}
 
 	public boolean hasGameCards(){

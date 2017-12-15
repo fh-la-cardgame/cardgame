@@ -1,5 +1,4 @@
 package cardgame.classes;
-import sun.awt.util.IdentityLinkedList;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -41,7 +40,7 @@ public class Playground {
     public Playground(final Player player, final Deck deck) {
 		this.player = player;
 		this.deck = deck; 
-		this.cardsOnHand = new IdentityLinkedList<>(); //LOGIK: Shuffle, 5 Karten aus dem Deck zu weisen
+		this.cardsOnHand = new LinkedList<>(); //LOGIK: Shuffle, 5 Karten aus dem Deck zu weisen
         deck.shuffle();
         if(deck.getCards().size() > 0){
         for(int i=0;i<CARDSONHANDSTART;i++){

@@ -7,6 +7,7 @@ import cardgame.logic.LogicException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 public class RandomPlayer implements KiPlayer{
 
@@ -117,11 +118,12 @@ public class RandomPlayer implements KiPlayer{
         return null;
     }
 
-    private boolean hasAlreadyAttacked(List<GameCard> cards,GameCard card){
-        for(GameCard c:cards){
+    private boolean hasAlreadyAttacked(Set<GameCard> cards, GameCard card){
+        return cards.contains(card);
+        /*for(GameCard c:cards){
             if(c == card) return true;
         }
-        return false;
+        return false;*/
 
     }
 }

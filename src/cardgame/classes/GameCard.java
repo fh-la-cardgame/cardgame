@@ -1,14 +1,10 @@
 package cardgame.classes;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import sun.awt.util.IdentityArrayList;
 
 
 /**
@@ -53,7 +49,7 @@ public class GameCard extends Card {
     /**
      * Liste aller SpecialCards die auf diese Karte wirken.
      */
-    private List<SpecialCard> specialCards;
+    private Set<SpecialCard> specialCards;
 
 
     /**
@@ -78,10 +74,10 @@ public class GameCard extends Card {
         this.evolution = evolution;
         this.effects = effects.clone();
         this.evoEffects = evoEffects;
-        this.specialCards = new IdentityArrayList<>();
+        this.specialCards = new IdentityHashSet<>();
     }
 
-    private GameCard(final int id, final String name, final String description, final Type type, final byte[] image, final int atk, final Shield evolutionShields, final Shield shields, final GameCard evolution, final Effect[] effects, final Effect[] evoEffects, final List<SpecialCard> specialcard) {
+    private GameCard(final int id, final String name, final String description, final Type type, final byte[] image, final int atk, final Shield evolutionShields, final Shield shields, final GameCard evolution, final Effect[] effects, final Effect[] evoEffects, final Set<SpecialCard> specialcard) {
         super(id, name, description, type, image);
         this.pAtk = new SimpleIntegerProperty(atk);
         this.atk = atk;
@@ -90,7 +86,7 @@ public class GameCard extends Card {
         this.evolution = evolution;
         this.effects = effects.clone();
         this.evoEffects = evoEffects;
-        this.specialCards = new IdentityArrayList<>(specialcard);
+        this.specialCards = new IdentityHashSet<>(specialcard);
     }
 
     /**
@@ -127,7 +123,7 @@ public class GameCard extends Card {
         }
     }
 
-    public List<SpecialCard> getSpecialCards() {
+    public Set<SpecialCard> getSpecialCards() {
         return specialCards;
     }
 

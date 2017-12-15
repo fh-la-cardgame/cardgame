@@ -4,11 +4,8 @@ import java.util.*;
 
 import cardgame.classes.*;
 
-import static cardgame.classes.EffectType.destroy;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import sun.awt.util.IdentityArrayList;
-import sun.rmi.runtime.Log;
 
 public class Game {
 
@@ -62,7 +59,7 @@ public class Game {
      * Alle Karten mit denen in diesem Zug schon angegriffen wurde.
      * Muss am Ende des Spielzugs geleert werden.
      */
-    private List<GameCard> CardsHaveAttack = new IdentityArrayList<>();
+    private Set<GameCard> CardsHaveAttack = new IdentityHashSet<>();
     /**
      * Konstruktor noch nicht fertig.
      */
@@ -292,7 +289,7 @@ public class Game {
 
 
     private void removeGameCardFromSpecialCard(GameCard gameCard){
-        List<SpecialCard> specialCardGCards = gameCard.getSpecialCards();
+        Set<SpecialCard> specialCardGCards = gameCard.getSpecialCards();
         for(SpecialCard sCard:specialCardGCards){
             sCard.removeGameCard(gameCard);
             if(!sCard.hasGameCards()){
@@ -540,7 +537,7 @@ public class Game {
         return round;
     }
 
-    public List<GameCard> getCardsHaveAttack() {
+    public Set<GameCard> getCardsHaveAttack() {
         return CardsHaveAttack;
     }
 
