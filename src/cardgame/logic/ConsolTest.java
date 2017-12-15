@@ -24,10 +24,10 @@ public class ConsolTest {
 		Deck d1 = new Deck(1,"Flora",c1);
 		Deck d2 = new Deck(2, "David", c2);
 
-		for (int i = 0; i < 10000 ; i++) {
+		for (int i = 0; i < 1 ; i++) {
 			Game g = new Game(new Player(1, "Spieler1"), new Player(2, "Spieler2"), new Deck(d1), new Deck(d2));
-			KiPlayer p1 = new RandomPlayer(g, 1);
-			KiPlayer p2 = new RandomPlayer(g, 2);
+			KiPlayer p1 = new TestPlayer(g, 1);
+			KiPlayer p2 = new TestPlayer(g, 2);
 
 
 			while (g.isGameRunning()) {

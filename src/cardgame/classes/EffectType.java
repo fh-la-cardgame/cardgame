@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 public enum EffectType {
 
         /** Verminderungseffekt. Gilt fuer alle Karten**/
-	subtraction_all(false,GameCard::changeAtk),
+	substraction_all(false,GameCard::changeAtk),
         /** Erhoehungseffekt. Gilt fuer alle Karten**/
   	addition_all(false,GameCard::changeAtk),
   		/** Verminderungseffekt. Gilt nur fuer eine Karte**/

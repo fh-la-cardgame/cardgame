@@ -671,6 +671,7 @@ public class DbCard {
      * Erlaubt ein konsistentes Aendern der Anzahl an Evo-Schildern, an denen auch die Effekte haengen.
      * Dabei gilt folgendes:
      * Auf dem 0-ten Schild gibt es keinen Effekt. Auf dem letzten Schild gibt es einen Effekt.
+     * Das 0-te Schild existiert gar nicht in der Liste, die Liste enthaelt nur die Schilde 1 - 10.
      * @param gid Id der Gamecard.
      * @param maxShield Neue Anzahl an maximalen Schilder.
      */

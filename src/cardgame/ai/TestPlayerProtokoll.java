@@ -38,8 +38,7 @@ public class TestPlayerProtokoll implements KiPlayer {
         attack();
 
 	}
-	//NICHT GETESTET DA ILLEGALARGUMENTEXCEPTION: SPEICAL KARTE NICHT IN DER HAND
-	//Vermutung: SpecialCard wird nach ausfuehung des ersten Effekts aus der Hand entfernt.
+	
 	private void playCards() throws LogicException{
 		List<Card> monsterCards = game.getCardsOnHand(id);
 		List<Card> specialCards = new ArrayList<>();
@@ -50,10 +49,10 @@ public class TestPlayerProtokoll implements KiPlayer {
 		for(Card card: monsterCards){
 			if(card instanceof SpecialCard){
 				System.out.println("Waelbare SpecialCard: "+card);
-//				if(((SpecialCard)card).getEffects().stream().filter(e -> e.getEffectType() == EffectType.destroy).findFirst().isPresent()){
-//					hasDestroyEffect = true;
-//					specialCardPlaying = ((SpecialCard)card);
-//				}
+				if(((SpecialCard)card).getEffects().stream().filter(e -> e.getEffectType() == EffectType.destroy).findFirst().isPresent()){
+					hasDestroyEffect = true;
+					specialCardPlaying = ((SpecialCard)card);
+				}
 				if(!hasDestroyEffect && specialCardPlaying != null){
 					specialCardPlaying = specialCardPlaying.getEffects().stream().map(e -> e.getEffectNumber()).max(Integer::max).get() < ((SpecialCard)card).getEffects().stream().map(e -> e.getEffectNumber()).max(Integer::max).get() ? (SpecialCard)card : specialCardPlaying;
 				}else if(!hasDestroyEffect && specialCardPlaying == null){
@@ -80,29 +79,39 @@ public class TestPlayerProtokoll implements KiPlayer {
 		  //--------------------------------------------------------------------------------------------------------
 		  GameCard targetCard = null;
 		  boolean targetCardSelected = false;
+		  boolean playableAddition = false, playableSubtraction = false;
 		  if(specialCardPlaying != null && myPlayground.canPlaySpecialCard() && specialCardPlaying.needGameCard()){
+			  System.out.println("Needs GameCard");
 			  for(Effect effect: specialCardPlaying.getEffects()){
 				  if(effect.getEffectType() == EffectType.addition_one && myPlayground.getCountBattlegroundMonster() > 0){
+					  System.out.println("Addition");
 					  for(GameCard card: myPlayground.getBattlegroundMonster()){
 						  if(targetCard != null && card != null){
+							  playableAddition = true;
 							  targetCard = targetCard.getAtk() < card.getAtk() ? card : targetCard;
 						  }else if(targetCard == null && card != null){
+							  playableAddition = true;
 							  targetCard = card;
 						  }
 					  }
-					  System.out.println("SPECICAL: "+specialCardPlaying.getName() +" auf "+ targetCard.getName());
-					  game.playSpecialCard(id, specialCardPlaying, targetCard);
+					  
 				  }else if((effect.getEffectType() == EffectType.substraction_one || effect.getEffectType() == EffectType.destroy) && game.getEnemyField(id).getCountBattlegroundMonster() > 0){
+					 System.out.println("minus");
 					  for(GameCard card: game.getEnemyField(id).getBattlegroundMonster()){
 						  if(targetCard != null && card != null){
+							  playableSubtraction = true;
 							  targetCard = targetCard.getAtk() < card.getAtk() ? card : targetCard;
 						  }else if(targetCard == null && card != null){
+							  playableSubtraction = true;
 							  targetCard = card;
 						  }
 					  }
-					  System.out.println("SPECICAL: "+specialCardPlaying.getName() +" auf "+ targetCard.getName());
-					  game.playSpecialCard(id, specialCardPlaying, targetCard);
 				  }
+			  }
+			  System.out.println("SPECIAL" +myPlayground.getCountBattlegroundMonster()+" "+game.getEnemyField(id).getCountBattlegroundMonster());
+			  if(playableAddition || playableSubtraction){
+			  System.out.println("SPECICAL: "+specialCardPlaying.getName() +" auf "+ targetCard.getName());
+			  game.playSpecialCard(id, specialCardPlaying, targetCard);
 			  }
 		  }else if(specialCardPlaying != null && myPlayground.canPlaySpecialCard()){
 			  System.out.println("SPECICAL ALLG: "+specialCardPlaying.getName());
@@ -145,7 +154,7 @@ public class TestPlayerProtokoll implements KiPlayer {
 					
 					if(victim != null && game.getEnemyField(id).getCountBattlegroundMonster() != 0){
 						game.attack(id, aggressor, victim);
-						System.out.println("ANGRIFF: "+aggressor.getName() +" vs " + victim.getName());
+						System.out.println("ANGRIFF: "+aggressor.getName()+"("+aggressor.getAtk()+")" +" vs " + victim.getName()+"("+victim.getAtk()+")");
 						
 					}else if(game.getEnemyField(id).getCountBattlegroundMonster() == 0){
 						System.out.println("KONTROLLE: "+Arrays.asList(game.getEnemyField(id).getBattlegroundMonster()));

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import cardgame.classes.Card;
+import cardgame.classes.Effect;
 import cardgame.classes.EffectType;
 import cardgame.classes.GameCard;
 import cardgame.classes.Playground;
@@ -51,9 +52,8 @@ public class TestPlayer implements KiPlayer {
 					hasDestroyEffect = true;
 					specialCardPlaying = ((SpecialCard)card);
 				}
-				//Bei Fehler clonen
 				if(!hasDestroyEffect && specialCardPlaying != null){
-				specialCardPlaying = specialCardPlaying.getEffects().stream().map(e -> e.getEffectNumber()).max(Integer::max).get() < ((SpecialCard)card).getEffects().stream().map(e -> e.getEffectNumber()).max(Integer::max).get() ? (SpecialCard)card : specialCardPlaying;
+					specialCardPlaying = specialCardPlaying.getEffects().stream().map(e -> e.getEffectNumber()).max(Integer::max).get() < ((SpecialCard)card).getEffects().stream().map(e -> e.getEffectNumber()).max(Integer::max).get() ? (SpecialCard)card : specialCardPlaying;
 				}else if(!hasDestroyEffect && specialCardPlaying == null){
 					specialCardPlaying = (SpecialCard)card;
 				}
@@ -73,42 +73,42 @@ public class TestPlayer implements KiPlayer {
 		  if(myPlayground.canPlayMonsterCard() && monsterCardPlaying != null){
 			  game.playCard(id, monsterCardPlaying);
 		  }
-//		  GameCard targetCard = null;
-//		  boolean targetCardSelected = false;
-//		  if(myPlayground.canPlaySpecialCard() && specialCardPlaying != null && specialCardPlaying.needGameCard()){
-//			  if(specialCardPlaying.getEffects().stream().filter(e -> e.getEffectType().toString().startsWith("substraction") || e.getEffectType().toString().startsWith("destroy")) !=null && game.getEnemyField(id).getBattlegroundMonster().length != 0){
-//				  for(GameCard card : game.getEnemyField(id).getBattlegroundMonster()){
-//					  if(targetCard != null){
-//						  targetCard = targetCard.getAtk() > card.getAtk() ? targetCard : card;
-//					  }else{
-//						  targetCard = card;
-//						  targetCardSelected = true;
-//					  }
-//				  }
-//			  }
-//			  if(specialCardPlaying.getEffects().stream().filter(e -> e.getEffectType().toString().startsWith("addition")) !=null && game.getMyField(id).getBattlegroundMonster().length != 0){
-//				  for(GameCard card : game.getMyField(id).getBattlegroundMonster()){
-//					  if(targetCard != null){
-//						  targetCard = targetCard.getAtk() > card.getAtk() ? targetCard : card;
-//					  }else{
-//						  targetCard = card;
-//						  targetCardSelected = true;
-//					  }
-//				  }
-//			  }
-//			  
-//			  
-//			  if(targetCard != null){
-//			  game.playSpecialCard(id, specialCardPlaying, targetCard);
-//			  System.out.println("NEUE SPECIALKARTE: "+specialCardPlaying.getName()+ " AUF "+ targetCard.getName());
-//			  }
-//		  }else if(myPlayground.canPlaySpecialCard() && specialCardPlaying != null){
-//			  if(game.getEnemyField(id).getBattlegroundMonster().length > 0)
-//			  game.playSpecialCard(id, specialCardPlaying, null);
-//			  System.out.println("NEUE SPECIALKARTE: "+specialCardPlaying.getName());
-//		  }
-		  
-		  
+		  //--------------------------------------------------------------------------------------------------------
+		  GameCard targetCard = null;
+		  boolean targetCardSelected = false;
+		  boolean playableAddition = false, playableSubtraction = false;
+		  if(specialCardPlaying != null && myPlayground.canPlaySpecialCard() && specialCardPlaying.needGameCard()){
+			  for(Effect effect: specialCardPlaying.getEffects()){
+				  if(effect.getEffectType() == EffectType.addition_one && myPlayground.getCountBattlegroundMonster() > 0){
+					  for(GameCard card: myPlayground.getBattlegroundMonster()){
+						  if(targetCard != null && card != null){
+							  playableAddition = true;
+							  targetCard = targetCard.getAtk() < card.getAtk() ? card : targetCard;
+						  }else if(targetCard == null && card != null){
+							  playableAddition = true;
+							  targetCard = card;
+						  }
+					  }
+					  
+				  }else if((effect.getEffectType() == EffectType.substraction_one || effect.getEffectType() == EffectType.destroy) && game.getEnemyField(id).getCountBattlegroundMonster() > 0){
+					  for(GameCard card: game.getEnemyField(id).getBattlegroundMonster()){
+						  if(targetCard != null && card != null){
+							  playableSubtraction = true;
+							  targetCard = targetCard.getAtk() < card.getAtk() ? card : targetCard;
+						  }else if(targetCard == null && card != null){
+							  playableSubtraction = true;
+							  targetCard = card;
+						  }
+					  }
+				  }
+			  }
+			  if(playableAddition || playableSubtraction){
+			  game.playSpecialCard(id, specialCardPlaying, targetCard);
+			  }
+		  }else if(specialCardPlaying != null && myPlayground.canPlaySpecialCard()){
+			  game.playSpecialCard(id, specialCardPlaying, null);
+		  }
+		 //------------------------------------------------------------------------------------------------------------------------- 
 		  
 	}
 	
