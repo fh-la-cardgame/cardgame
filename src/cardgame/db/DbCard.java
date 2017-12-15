@@ -738,5 +738,232 @@ public class DbCard {
  			e.printStackTrace();
  		}
     }
+    
+//    public void add_change_Effects(int gid, int eid, Object shield, Object evoShield){
+//    	PreparedStatement pst;
+//    	ResultSet rs;
+//    	
+//    		try {
+//    			c = DbConnection.getPostgresConnection();
+//    			if(evoShield == null){
+//					pst = c.prepareStatement("select c_eid from \"Card_Effect\" "+
+//							"where gid = ? "+
+//							"and (shield = ? "+
+//							"or shield = -1)");
+//					pst.setInt(1, gid);
+//					pst.setInt(2, (int)shield);
+//					rs = pst.executeQuery();
+//					boolean found = false;
+//					while(rs.next()){
+//						if(found){
+//							throw new IllegalStateException("Zu viele Ergebnisse im ResultSet");
+//						}
+//						found = true;
+//						System.out.println("Update shield an "+rs.getInt(1));
+//						updateEffect(rs.getInt(1), gid, eid, shield, evoShield);
+//					}
+//					if(!found){
+//						System.out.println("Insert Effect bei shield");
+//						System.out.println(insert_Card_Effect_Shields(gid, eid, (int)shield));
+//					}
+//					
+//    			}
+//    			else if(shield == null){
+//    				pst = c.prepareStatement("select c_eid from \"Card_Effect\" "+
+//    						"where gid = ? "+
+//    						"and (evo_shield = ? "+
+//    						"or evo_shield = -1)");
+//    				pst.setInt(1, gid);
+//					pst.setInt(2, (int)evoShield);
+//					rs = pst.executeQuery();
+//					boolean found = false;
+//					while(rs.next()){
+//						if(found){
+//							throw new IllegalStateException("Zu viele Ergebnisse im ResultSet");
+//						}
+//						found = true;
+//						System.out.println("Update Evoshield an "+rs.getInt(1));
+//						updateEffect(rs.getInt(1), gid, eid, shield, evoShield);
+//					}
+//					if(!found){
+//						System.out.println("Insert Effect bei Evoshield");
+//						System.out.println(insert_Card_Effect_EvoShields(gid, eid, (int)evoShield));
+//					}
+//    			}
+//    			
+//    			
+//    			
+//			} catch (ClassNotFoundException | SQLException e) {
+//				e.printStackTrace();
+//			}
+//    		return;
+//    		
+//    }
+    
+    public int updateEffect(int c_eid, int gid, int eid, Object shield, Object evo_shield){
+
+        /**holt die gewuenschte Karte. **/
+        PreparedStatement prepStmtCard;
+        /** holt die Max-Anzahl für Shield und EvoShield.  **/
+        PreparedStatement prepStmtMax;
+        /** holt die Anzahl der Shield-Effekte auf der Karte. **/
+        PreparedStatement prepStmtCount;
+        /** holt die Anzahl der Effekte auf dem Shield. **/
+        PreparedStatement prepStmtDouble;
+        /** holt die Anzahl der Evo-Shield-Effekte auf der Karte. **/
+        PreparedStatement prepStmtCount2;
+        /** holt die Anzahl der Effekte auf dem Evo-Shield. **/
+        PreparedStatement prepStmtDouble2;
+        
+        ResultSet resultMax;
+        ResultSet resultCount;
+        ResultSet resultDouble;
+        ResultSet resultCount2;
+        ResultSet resultDouble2;
+                
+        int affectedRows = 0;
+        
+        try {
+            c = DbConnection.getPostgresConnection();
+           
+             prepStmtMax = c.prepareStatement("select shield_max, evo_shield_max from \"Gamecard\" "
+                                            + "where gid = ?");
+             prepStmtMax.setInt(1, gid);   
+             resultMax = prepStmtMax.executeQuery();
+             resultMax.next();
+             
+             
+             prepStmtCount =  c.prepareStatement("select count(*) from \"Card_Effect\" "
+                                                 + "where gid = ? and shield is not null");
+              prepStmtCount.setInt(1, gid);
+             resultCount = prepStmtCount.executeQuery();
+             resultCount.next();
+             /** speichert die Anzahl der Shield-Effekte auf der Karte ein. **/
+             int countShield = resultCount.getInt(1);
+             
+             
+             prepStmtDouble = c.prepareStatement("select count(*) from \"Card_Effect\""
+                                                  + " where gid = ? and shield = ?");              
+             prepStmtDouble.setInt(1, gid);
+             prepStmtDouble.setObject(2, shield);            
+             resultDouble = prepStmtDouble.executeQuery();
+             resultDouble.next();
+             /** speichert die Anzahl der Shield-Effekte auf dem Shield ein. **/
+             int doubleShield = resultDouble.getInt(1);
+             
+             
+             prepStmtCount2 =  c.prepareStatement("select count(*) from \"Card_Effect\" "
+                                                 + "where gid = ? and evo_shield is not null");
+              prepStmtCount2.setInt(1, gid);
+             resultCount2 = prepStmtCount2.executeQuery();
+             resultCount2.next();
+             /** speichert die Anzahl der Evo-Shield-Effekte auf der Karte ein. **/
+             int countShield2 = resultCount2.getInt(1);
+             
+             
+             prepStmtDouble2 = c.prepareStatement("select count(*) from \"Card_Effect\""
+                                                  + " where gid = ? and evo_shield = ?");              
+             prepStmtDouble2.setInt(1, gid);
+             prepStmtDouble2.setObject(2, evo_shield);            
+             resultDouble2 = prepStmtDouble2.executeQuery();
+             resultDouble2.next();
+             /** speichert die Anzahl der Evo-Shield-Effekte auf dem Shield ein. **/
+             int doubleShield2 = resultDouble2.getInt(1);
+             
+             
+        
+              prepStmtCard = c.prepareStatement("update \"Card_Effect\" set gid = ?, "
+                                                + "eid = ?, shield = ?,"
+                                                + " evo_shield = ? where c_eid = ?");  
+              /**Update der GameCard-ID**/
+              prepStmtCard.setInt(1, gid);
+              /**Update der Effekt-ID**/
+              prepStmtCard.setInt(2, eid);
+              /**Update des betroffenen Shields**/
+              if(shield != null) {
+                  int i = (int) shield;
+                  if (i >= resultMax.getInt(1) - 1 || i == -1 && resultMax.getInt(1) == 1) {
+                      throw new IllegalArgumentException("Die Karte hat nicht so viele Schilder!");
+                  }
+                  else if(i == -1 && countShield > 1){
+                      throw new IllegalArgumentException("Ungueltiger Wertebereich fuer Shields.");
+                  }
+                  else if(doubleShield > 1){
+                      throw new IllegalArgumentException("Auf diesem Schild gibt es bereits einen Effekt!");
+                  }           
+                  prepStmtCard.setObject(3, i);
+                  }
+              else{
+                  prepStmtCard.setObject(3, shield);
+                  }
+              /**Update des betroffenen Evo-Shields**/
+              if(evo_shield != null) {
+                  int i = (int) evo_shield;
+                  if (i > resultMax.getInt(2) || i == 0) {
+                      throw new IllegalArgumentException("Ungueltiger Wertebereich fuer Evo-Schilder!");
+                  }
+                  else if(i == -1 && countShield2 >1) {
+                      throw new IllegalArgumentException("Ungueltiger Wertebereich fuer Evo-Shield!");
+                  }
+                  else if(doubleShield2 > 1){
+                      throw new IllegalArgumentException("Auf diesem Evo-Shied gibt es bereits einen Effekt!");
+                  }
+                  prepStmtCard.setObject(4, i);
+              }
+              else{
+                  prepStmtCard.setObject(4, evo_shield);
+              }
+              /**Auswahl des eindeutigen Effekts**/
+              prepStmtCard.setInt(5, c_eid);
+     
+     
+          affectedRows = prepStmtCard.executeUpdate();
+        
+        } 
+        catch (SQLException | ClassNotFoundException ex) {
+          Logger.getLogger(DbCard.class.getName()).log(Level.SEVERE, null, ex);          
+      }
+        return affectedRows;       
+    }
+    
+public boolean insert_duplicate(int did, int gid) throws IllegalArgumentException {
+        
+        PreparedStatement prepStmtInsert;
+        PreparedStatement prepStmtCount;
+        
+        ResultSet resultCount;
+        
+        try {
+            c = DbConnection.getPostgresConnection();
+            
+            prepStmtCount = c.prepareStatement("select count(*) from \"Deck_Cards\" where did = ? and gid = ?");
+            prepStmtCount.setInt(1, did);
+            prepStmtCount.setInt(2, gid);
+            resultCount = prepStmtCount.executeQuery();
+            resultCount.next();
+            /**Speichert die Anzahl der Eintraege dieser Karte im Deck ein**/
+            int countCard = resultCount.getInt(1);
+               
+           if(countCard == 3){
+               throw new IllegalArgumentException("Diese Karte ist bereits drei mal im Deck!");
+           }
+           
+           prepStmtInsert = c.prepareStatement("insert into \"Deck_Cards\" (did, gid) select ?,?");
+           prepStmtInsert.setInt(1, did);
+           prepStmtInsert.setInt(2, gid);
+           prepStmtInsert.executeUpdate();
+           
+            c.close();
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(DbCard.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                c.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(DbCard.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return true;
+    }
 
 }
