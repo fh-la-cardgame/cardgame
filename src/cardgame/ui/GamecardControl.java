@@ -94,7 +94,7 @@ public class GamecardControl extends GridPane {
     public GamecardControl(String blackshield, String whiteshield, String name, byte[] raw, Effect[] effects,Effect[] evoeffects, boolean isGamecard) {
                 this(blackshield, whiteshield, name, raw, isGamecard);       
 
-        if(effects != null && effects[0] != null){
+        if(effects != null  && effects.length > 0){
             description.add(new Label("Schwarze Schildereffekte:"));
              for (int i = 0; i < effects.length; i++) {
                  if(effects[i] != null){
