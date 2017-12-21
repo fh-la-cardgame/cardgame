@@ -55,9 +55,10 @@ public class GamecardControl extends GridPane {
     private List<Label> description;
     private Background bg;
     private Button play;
+    private BooleanProperty isGamecard;
 
-    
-    public GamecardControl(String blackshield, String whiteshield, String name, byte[] raw, Effect[] effects) {
+
+    public GamecardControl(String blackshield, String whiteshield, String name, byte[] raw, Effect[] effects, boolean isGamecard) {
         this.setMinHeight(120);
         this.setMinWidth(120);
         this.setMaxHeight(120);
@@ -69,6 +70,7 @@ public class GamecardControl extends GridPane {
         this.imageholder = new StackPane();
         this.play = new Button("Spielen");
         this.play.setDisable(true);
+        this.isGamecard = new SimpleBooleanProperty(isGamecard);
         this.description = new ArrayList<>();
         for (int i = 0; i < effects.length; i++) {
             description.add(new Label(effects[i].getDescription()));
@@ -202,6 +204,14 @@ public class GamecardControl extends GridPane {
 
     public void setDescription(List<Label> description) {
         this.description = description;
+    }
+
+    public BooleanProperty getIsGamecard() {
+        return isGamecard;
+    }
+
+    public void setIsGamecard(BooleanProperty isGamecard) {
+        this.isGamecard = isGamecard;
     }
      
 

@@ -113,8 +113,6 @@ public class PlaygroundController implements Initializable {
     @FXML
     private Label pl1_card4;
     @FXML
-    private Label pl2_card1;
-    @FXML
     private Label pl2_card2;
     @FXML
     private Label pl2_card3;
@@ -154,6 +152,8 @@ public class PlaygroundController implements Initializable {
 
     ObservableList<PlayerShieldControl> pl2_observ_list_shields;
     ObservableList<PlayerShieldControl> pl1_observ_list_shields;
+    
+    GamecardControl[] pl2_card_field;
 
     int id1 = 1;
     int id2 = 2;
@@ -176,7 +176,10 @@ public class PlaygroundController implements Initializable {
         cardPreviewPane = new StackPane();
         cardPreviewPane.setMinHeight(200);
         cardPreviewPane.setMinWidth(100);
-        cardPreviewPane.getChildren().add(new Button("test"));
+        
+        pl2_card_field = new GamecardControl[4];
+        
+        setPlayersField();
 
         try {
             setCardsOnHandEnemy();
@@ -253,11 +256,12 @@ public class PlaygroundController implements Initializable {
                     whiteShield = gc.getEvolutionShields().toString();
                 }
 
-                pl2_l.add(new GamecardControl(blackShield, whiteShield, gc.getName(), gc.getImage(), gc.getEffects()));
+                pl2_l.add(new GamecardControl(blackShield, whiteShield, gc.getName(), gc.getImage(), gc.getEffects(), true));
             } else if (c instanceof SpecialCard) {
                 sc = (SpecialCard) c;
-           // Effect[] effects = sc.getEffects().toArray(new Effect[sc.getEffects().size()]);
-                // pl2_l.add(new GamecardControl("", "", sc.getName(), sc.getImage(), effects));
+            Effect[] effects = sc.getEffects().toArray(new Effect[sc.getEffects().size()]);
+                System.out.println("effects" + effects);
+            pl2_l.add(new GamecardControl("", "", sc.getName(), sc.getImage(), effects, false) );
 
             }
 
@@ -280,6 +284,7 @@ public class PlaygroundController implements Initializable {
                         newv.getPlay().setOnAction(new EventHandler<ActionEvent>() {
                             @Override
                             public void handle(ActionEvent e) {
+                               gridPlayGround.add(newv, 4, 7, 2, 1);
                                pl2_cardsOnHand.getItems().remove(newv);
                             }
                         });
@@ -411,7 +416,7 @@ public class PlaygroundController implements Initializable {
         setPrefSizeMax(pl1_card3);
         setPrefSizeMax(pl1_card4);
 
-        setPrefSizeMax(pl2_card1);
+       // setPrefSizeMax(pl2_card1);
         setPrefSizeMax(pl2_card2);
         setPrefSizeMax(pl2_card3);
         setPrefSizeMax(pl2_card4);
@@ -431,6 +436,10 @@ public class PlaygroundController implements Initializable {
         pl2_cardsOnHand.getStyleClass().clear();
         pl1_cardsOnHand.getStyleClass().clear();
 
+    }
+
+    private void setPlayersField() {
+        
     }
 
 }
