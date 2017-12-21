@@ -624,7 +624,7 @@ public class DbCard {
         return length_old < length_new;
     }
     /**Aktualisieren der Anzahl an Schildern.
-     * Erlaubt eine konsistentes Aendern der Anzahl der Schilder, an denen auch die Effekte hängen.
+     * Erlaubt eine konsistentes Aendern der Anzahl der Schilder, an denen auch die Effekte haengen.
      * Dabei gilt folgendes:
      * Auf dem 0-tem Schild(letztes verbleibendes Schild) gibt es einen Effekt. Auf dem max-Schild gibt es keinen Effekt.
      * @param gid Id der Gamecard.
@@ -804,7 +804,7 @@ public class DbCard {
 
         /**holt die gewuenschte Karte. **/
         PreparedStatement prepStmtCard;
-        /** holt die Max-Anzahl für Shield und EvoShield.  **/
+        /** holt die Max-Anzahl fuer Shield und EvoShield.  **/
         PreparedStatement prepStmtMax;
         /** holt die Anzahl der Shield-Effekte auf der Karte. **/
         PreparedStatement prepStmtCount;

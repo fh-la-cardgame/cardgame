@@ -11,7 +11,7 @@ public class Effect {
 	private final String description;
         /** Effekttyp (z.B. Verminderung) **/
       private final EffectType effectType;
-      	/** Angabe der Stärke **/
+      	/** Angabe der Staerke **/
       private final int effectNumber;
 	
 	

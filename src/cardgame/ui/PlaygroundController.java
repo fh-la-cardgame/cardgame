@@ -138,11 +138,11 @@ public class PlaygroundController implements Initializable {
         p2 = new Player(id2, "David");
         //g = new Game();
         d1 = new Deck(1, "Flora", db.getDeck("Flora"));
-        d2 = new Deck(1, "David", db.getDeck("civitas diaboli"));
+        d2 = new Deck(2, "David", db.getDeck("civitas diaboli"));
         g = new Game(p1, p2, d1, d2);
-
-        stretchElements();
-        setBindings();
+//
+//        stretchElements();
+//        setBindings();
     }
 
     private void setBindings() {

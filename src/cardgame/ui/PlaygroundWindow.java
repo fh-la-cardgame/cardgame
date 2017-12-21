@@ -12,7 +12,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -27,8 +26,7 @@ public class PlaygroundWindow extends Application {
     
     @Override
     public void start(Stage primaryStage) throws IOException {
-        
-        Alert a = new Alert(Alert.AlertType.WARNING);
+
         System.out.println("start Playground Window");
 
         GridPane root = (GridPane)FXMLLoader.load(getClass().getResource("Playground.fxml"));
