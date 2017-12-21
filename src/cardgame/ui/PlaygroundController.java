@@ -284,7 +284,7 @@ public class PlaygroundController implements Initializable {
                         newv.getPlay().setOnAction(new EventHandler<ActionEvent>() {
                             @Override
                             public void handle(ActionEvent e) {
-                               gridPlayGround.add(newv, 4, 7, 2, 1);
+                         //     gridPlayGround.add(newv, 4, 7, 2, 1);
                                pl2_cardsOnHand.getItems().remove(newv);
                             }
                         });
