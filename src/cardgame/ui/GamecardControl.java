@@ -58,7 +58,87 @@ public class GamecardControl extends GridPane {
     private BooleanProperty isGamecard;
 
 
-    public GamecardControl(String blackshield, String whiteshield, String name, byte[] raw, Effect[] effects, boolean isGamecard) {
+    public GamecardControl(String blackshield, String whiteshield, String name, byte[] raw, List<Effect> effects, boolean isGamecard) {
+                this(blackshield, whiteshield, name, raw, isGamecard);       
+
+        if(effects != null && effects.size() > 0){
+            description.add(new Label("Allgemeine Effekte:"));
+             for (Effect e : effects) {
+                 if(e != null){
+                     
+                description.add(new Label(e.getDescription())); 
+                 }
+                 
+        }
+             
+            description.add(new Label("***************************************"));
+        }
+        System.out.println("raw:"+raw);
+        //Kartenhintergrund als Bild setzen
+        if(raw != null){
+        //BackgroundImage bi = new BackgroundImage(new Image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNk9bpvm5mT-SKVAgJU2Js8ocq5ctJrCYUUUw8AQ15ho7sxA4x"), BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
+        BackgroundImage bi = new BackgroundImage(new Image(new ByteArrayInputStream(raw)), BackgroundRepeat.SPACE, BackgroundRepeat.SPACE, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
+        
+       // imageholder.setBackground(new Background(new BackgroundImage(img, BackgroundRepeat.REPEAT, BackgroundRepeat.SPACE, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+        bg = new Background(bi);
+        imageholder.setBackground(bg);
+        
+        }
+
+        
+        posititionElements();        
+        setSizesAndPosition();
+        
+    }
+
+    public GamecardControl(String blackshield, String whiteshield, String name, byte[] raw, Effect[] effects,Effect[] evoeffects, boolean isGamecard) {
+                this(blackshield, whiteshield, name, raw, isGamecard);       
+
+        if(effects != null && effects[0] != null){
+            description.add(new Label("Schwarze Schildereffekte:"));
+             for (int i = 0; i < effects.length; i++) {
+                 if(effects[i] != null){
+                     
+                description.add(new Label(effects[i].getDescription())); 
+                 }
+                 
+        }
+             
+            description.add(new Label("***************************************"));
+        }
+        
+        if(evoeffects != null && evoeffects.length > 0){
+            description.add(new Label("Evo Schildereffekte:"));
+             for (int i = 0; i < evoeffects.length; i++) {
+                 if(evoeffects[i] != null){
+                     
+                description.add(new Label(evoeffects[i].getDescription())); 
+                 }
+                 
+        }
+             
+            description.add(new Label("***************************************"));
+        }
+
+        System.out.println("raw:"+raw);
+        //Kartenhintergrund als Bild setzen
+        if(raw != null){
+        //BackgroundImage bi = new BackgroundImage(new Image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNk9bpvm5mT-SKVAgJU2Js8ocq5ctJrCYUUUw8AQ15ho7sxA4x"), BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
+        BackgroundImage bi = new BackgroundImage(new Image(new ByteArrayInputStream(raw)), BackgroundRepeat.SPACE, BackgroundRepeat.SPACE, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
+        
+       // imageholder.setBackground(new Background(new BackgroundImage(img, BackgroundRepeat.REPEAT, BackgroundRepeat.SPACE, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+        bg = new Background(bi);
+        imageholder.setBackground(bg);
+        
+        }
+
+        
+        posititionElements();        
+        setSizesAndPosition();
+        
+    }
+    
+        public GamecardControl(String blackshield, String whiteshield, String name, byte[] raw, boolean isGamecard) {
         this.setMinHeight(120);
         this.setMinWidth(120);
         this.setMaxHeight(120);
@@ -72,9 +152,7 @@ public class GamecardControl extends GridPane {
         this.play.setDisable(true);
         this.isGamecard = new SimpleBooleanProperty(isGamecard);
         this.description = new ArrayList<>();
-        for (int i = 0; i < effects.length; i++) {
-            description.add(new Label(effects[i].getDescription()));
-        }
+        
         System.out.println("raw:"+raw);
         //Kartenhintergrund als Bild setzen
         if(raw != null){
@@ -89,10 +167,6 @@ public class GamecardControl extends GridPane {
         //ID 
         this.setId("pl1_specialcard3");
         
-        posititionElements();
-
-        
-        setSizesAndPosition();
         
     }
     
@@ -128,6 +202,8 @@ public class GamecardControl extends GridPane {
 //        this.card_black_shield.setPrefSize( Double.MAX_VALUE, Double.MAX_VALUE );
         
     }
+    
+    
     
      public GamecardControl() {
        //  this("0/0", "0/0", "Unknown", new byte[0]);
@@ -206,7 +282,7 @@ public class GamecardControl extends GridPane {
         this.description = description;
     }
 
-    public BooleanProperty getIsGamecard() {
+    public BooleanProperty isGamecard() {
         return isGamecard;
     }
 

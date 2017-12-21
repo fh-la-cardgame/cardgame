@@ -26,8 +26,8 @@ public class ConsolTest {
 
 		for (int i = 0; i < 1 ; i++) {
 			Game g = new Game(new Player(1, "Spieler1"), new Player(2, "Spieler2"), new Deck(d1), new Deck(d2));
-			KiPlayer p1 = new TestPlayer(g, 1);
-			KiPlayer p2 = new TestPlayer(g, 2);
+			KiPlayer p1 = new TestPlayerProtokoll(g, 1);
+			KiPlayer p2 = new TestPlayerProtokoll(g, 2);
 
 
 			while (g.isGameRunning()) {

@@ -2,6 +2,8 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
+
+Log4J - Apache
  */
 package cardgame.ui;
 
@@ -136,10 +138,6 @@ public class PlaygroundController implements Initializable {
     private ListView<EnemyGamecardControl> pl1_cardsOnHand;
     @FXML
     private ListView<GamecardControl> pl2_cardsOnHand;
-    @FXML
-    private Label card_black_shield;
-    @FXML
-    private Label card_white_shield;
 
     List<EnemyGamecardControl> pl1_l;
     List<GamecardControl> pl2_l;
@@ -152,11 +150,14 @@ public class PlaygroundController implements Initializable {
 
     ObservableList<PlayerShieldControl> pl2_observ_list_shields;
     ObservableList<PlayerShieldControl> pl1_observ_list_shields;
-    
+
     GamecardControl[] pl2_card_field;
+    GamecardControl[] pl2_scard_field;
 
     int id1 = 1;
     int id2 = 2;
+    @FXML
+    private Label pl2_card1;
 
     /**
      * Initializes the controller class.
@@ -176,10 +177,9 @@ public class PlaygroundController implements Initializable {
         cardPreviewPane = new StackPane();
         cardPreviewPane.setMinHeight(200);
         cardPreviewPane.setMinWidth(100);
-        
+
         pl2_card_field = new GamecardControl[4];
-        
-        setPlayersField();
+        pl2_scard_field = new GamecardControl[4];
 
         try {
             setCardsOnHandEnemy();
@@ -250,18 +250,27 @@ public class PlaygroundController implements Initializable {
 //            System.out.println("GameCard.class"  + GameCard.class + "\n");
             if (c instanceof GameCard) {
                 gc = (GameCard) c;
-                System.out.println(gc.getShields().toString() + "-" + gc.getEvolutionShields().toString() + "-" + gc.getImage() + "-" + gc.getEffects());
+
+                
+                System.out.println(gc + "<<<<<<< CARD");
+                System.out.println("CARD\n" + gc.toString());
+                System.out.println(gc.getShields().toString() + "-" + gc.getEvolutionShields().toString() + "-" + gc.getImage() + "-" + gc.getEffects() + "--------------------------------------------");
                 blackShield = gc.getShields().toString();
                 if (gc.getEvolutionShields() != null) {
+                    
                     whiteShield = gc.getEvolutionShields().toString();
                 }
+                if (gc.getShields() != null) {
+                    blackShield = gc.getShields().toString();
+                }
 
-                pl2_l.add(new GamecardControl(blackShield, whiteShield, gc.getName(), gc.getImage(), gc.getEffects(), true));
+                pl2_l.add(new GamecardControl(blackShield, whiteShield, gc.getName(), gc.getImage(), gc.getEffects(), gc.getEvoEffects(), true));
             } else if (c instanceof SpecialCard) {
                 sc = (SpecialCard) c;
-            Effect[] effects = sc.getEffects().toArray(new Effect[sc.getEffects().size()]);
-                System.out.println("effects" + effects);
-            pl2_l.add(new GamecardControl("", "", sc.getName(), sc.getImage(), effects, false) );
+                System.out.println(sc + "<<<<<<< SPECIALCARD");
+                System.out.println("SPECIALCARD \n" + sc.toString());
+                System.out.println("effects" + sc.getEffects() + "\n--------------------------------------------");
+                pl2_l.add(new GamecardControl("", "", sc.getName(), sc.getImage(), sc.getEffects(),  false));
 
             }
 
@@ -284,8 +293,8 @@ public class PlaygroundController implements Initializable {
                         newv.getPlay().setOnAction(new EventHandler<ActionEvent>() {
                             @Override
                             public void handle(ActionEvent e) {
-                         //     gridPlayGround.add(newv, 4, 7, 2, 1);
-                               pl2_cardsOnHand.getItems().remove(newv);
+                                setPlayersField(newv);
+                                pl2_cardsOnHand.getItems().remove(newv);
                             }
                         });
 
@@ -416,7 +425,7 @@ public class PlaygroundController implements Initializable {
         setPrefSizeMax(pl1_card3);
         setPrefSizeMax(pl1_card4);
 
-       // setPrefSizeMax(pl2_card1);
+        setPrefSizeMax(pl2_card1);
         setPrefSizeMax(pl2_card2);
         setPrefSizeMax(pl2_card3);
         setPrefSizeMax(pl2_card4);
@@ -438,8 +447,31 @@ public class PlaygroundController implements Initializable {
 
     }
 
-    private void setPlayersField() {
-        
+    private void setPlayersField(GamecardControl gc) {
+        if (gc == null) {
+            throw new IllegalArgumentException("setPlayersField(GamecardControl gc) ist null");
+        }
+        if (gc.isGamecard().getValue()) {
+            for (int i = 0; i < pl2_card_field.length; i++) {
+                System.out.println("pl2_card_field[i]:" + pl2_card_field[i]);
+                if (pl2_card_field[i] == null) {
+                    pl2_card_field[i] = gc;
+                    gridPlayGround.add(pl2_card_field[i], 4 + (2 * i), 7, 2, 1);
+                    break;
+                }
+            }
+        } else {
+            for (int i = 0; i < pl2_scard_field.length; i++) {
+                System.out.println("pl2_card_field[i]:" + pl2_card_field[i]);
+                if (pl2_scard_field[i] == null) {
+                    pl2_scard_field[i] = gc;
+                    gridPlayGround.add(pl2_scard_field[i], 4 + (2 * i), 9, 2, 2);
+                    break;
+                }
+            }
+  
     }
+
+}
 
 }
