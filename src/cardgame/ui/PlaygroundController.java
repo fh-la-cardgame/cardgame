@@ -7,8 +7,12 @@ package cardgame.ui;
 
 import cardgame.classes.Card;
 import cardgame.classes.Deck;
+import cardgame.classes.Effect;
+import cardgame.classes.GameCard;
 import cardgame.classes.Player;
 import cardgame.classes.Playground;
+import cardgame.classes.SpecialCard;
+import cardgame.console.Cardgame;
 import cardgame.db.DbCard;
 import cardgame.logic.Game;
 import java.net.URL;
@@ -17,22 +21,39 @@ import java.util.ResourceBundle;
 import static javafx.application.Application.launch;
 
 import cardgame.logic.LogicException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.util.Callback;
+import jdk.nashorn.internal.objects.NativeArray;
 
 /**
  * FXML Controller class
@@ -64,7 +85,7 @@ public class PlaygroundController implements Initializable {
     @FXML
     private Label player1;
     @FXML
-    private ListView<?> description;
+    private ListView<Label> description;
     @FXML
     private Label countCards2;
     @FXML
@@ -76,7 +97,7 @@ public class PlaygroundController implements Initializable {
     private Deck d2;
     private Game g;
     @FXML
-    private AnchorPane pl1_specialcard1;
+    private Label pl1_specialcard1;
     @FXML
     private Label pl1_specialcard2;
     @FXML
@@ -110,17 +131,29 @@ public class PlaygroundController implements Initializable {
     @FXML
     private StackPane cardPreviewPane;
     @FXML
-    private ListView<?> pl2_shields;
+    private ListView<PlayerShieldControl> pl2_shields;
     @FXML
-    private ListView<?> pl1_shields;
+    private ListView<PlayerShieldControl> pl1_shields;
     @FXML
-    private ListView<?> pl1_cardsOnHand;
+    private ListView<EnemyGamecardControl> pl1_cardsOnHand;
     @FXML
-    private ListView<?> pl2_cardsOnHand;
+    private ListView<GamecardControl> pl2_cardsOnHand;
     @FXML
     private Label card_black_shield;
     @FXML
     private Label card_white_shield;
+
+    List<EnemyGamecardControl> pl1_l;
+    List<GamecardControl> pl2_l;
+
+    ObservableList<GamecardControl> pl2_observ_list;
+    ObservableList<EnemyGamecardControl> pl1_observ_list;
+
+    List<PlayerShieldControl> pl1_l_shields;
+    List<PlayerShieldControl> pl2_l_shields;
+
+    ObservableList<PlayerShieldControl> pl2_observ_list_shields;
+    ObservableList<PlayerShieldControl> pl1_observ_list_shields;
 
     int id1 = 1;
     int id2 = 2;
@@ -140,9 +173,119 @@ public class PlaygroundController implements Initializable {
         d1 = new Deck(1, "Flora", db.getDeck("Flora"));
         d2 = new Deck(2, "David", db.getDeck("civitas diaboli"));
         g = new Game(p1, p2, d1, d2);
-//
-//        stretchElements();
-//        setBindings();
+        cardPreviewPane = new StackPane();
+        cardPreviewPane.setMinHeight(200);
+        cardPreviewPane.setMinWidth(100);
+        cardPreviewPane.getChildren().add(new Button("test"));
+
+        try {
+            setCardsOnHandEnemy();
+            setCardsOnHandPlayer();
+            setPlayerShields();
+            setEnemyPlayerShields();
+        } catch (LogicException ex) {
+            Logger.getLogger(PlaygroundController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        clearStyle();
+        stretchElements();
+        setBindings();
+    }
+
+    private void setPlayerShields() throws LogicException {
+
+        pl2_l_shields = new ArrayList();
+
+        int size = g.getMyField(id1).getPlayer().getShields().getCurrentShields();
+        for (int i = 0; i < size; i++) {
+            pl2_l_shields.add(new PlayerShieldControl());
+
+        }
+
+        pl2_observ_list_shields = FXCollections.observableArrayList(pl2_l_shields);
+        pl2_shields.setItems(pl2_observ_list_shields);
+        System.out.println("pl1_observ_list size:" + pl2_observ_list_shields.size());
+    }
+
+    private void setEnemyPlayerShields() throws LogicException {
+
+        pl1_l_shields = new ArrayList();
+
+        int size = g.getEnemyField(id1).getPlayer().getShields().getCurrentShields();
+        for (int i = 0; i < size; i++) {
+            pl1_l_shields.add(new PlayerShieldControl());
+
+        }
+
+        pl1_observ_list_shields = FXCollections.observableArrayList(pl1_l_shields);
+        pl1_shields.setItems(pl1_observ_list_shields);
+        System.out.println("pl1_observ_list size:" + pl1_observ_list_shields.size());
+    }
+
+    private void setCardsOnHandEnemy() throws LogicException {
+        pl1_l = new ArrayList();
+        int size = g.getEnemyField(id1).getCardsOnHand().size();
+        for (int i = 0; i < size; i++) {
+            pl1_l.add(new EnemyGamecardControl());
+
+        }
+        pl1_observ_list = FXCollections.observableArrayList(pl1_l);
+        pl1_cardsOnHand.setItems(pl1_observ_list);
+
+    }
+
+    private void setCardsOnHandPlayer() throws LogicException {
+        GameCard gc;
+        SpecialCard sc;
+        String whiteShield = "";
+        String blackShield = "";
+        pl2_l = new ArrayList();
+        int size = g.getMyField(id1).getCardsOnHand().size();
+
+        for (Card c : g.getMyField(id1).getCardsOnHand()) {
+//            System.out.println("c.getClass().isInstance(GameCard.class)"  + (c instanceof GameCard));
+//            System.out.println("c.getClass()"  + c.getClass());
+//            System.out.println("GameCard.class"  + GameCard.class + "\n");
+            if (c instanceof GameCard) {
+                gc = (GameCard) c;
+                System.out.println(gc.getShields().toString() + "-" + gc.getEvolutionShields().toString() + "-" + gc.getImage() + "-" + gc.getEffects());
+                blackShield = gc.getShields().toString();
+                if (gc.getEvolutionShields() != null) {
+                    whiteShield = gc.getEvolutionShields().toString();
+                }
+
+                pl2_l.add(new GamecardControl(blackShield, whiteShield, gc.getName(), gc.getImage(), gc.getEffects()));
+            } else if (c instanceof SpecialCard) {
+                sc = (SpecialCard) c;
+           // Effect[] effects = sc.getEffects().toArray(new Effect[sc.getEffects().size()]);
+                // pl2_l.add(new GamecardControl("", "", sc.getName(), sc.getImage(), effects));
+
+            }
+
+        }
+        pl2_observ_list = FXCollections.observableArrayList(pl2_l);
+        pl2_cardsOnHand.setItems(pl2_observ_list);
+
+        pl2_cardsOnHand.getSelectionModel().selectedItemProperty()
+                .addListener(new ChangeListener<GamecardControl>() {
+
+                    @Override
+                    public void changed(ObservableValue<? extends GamecardControl> ov, GamecardControl oldv, GamecardControl newv) {
+                        ObservableList<Label> ob = FXCollections.observableArrayList(newv.getDescription());
+                        System.out.println("ob.size()" + ob.size());
+                        description.setItems(ob);
+                        if (newv.getBg() != null) {
+                            cardPreviewPane.setBackground(newv.getBg());
+                        }
+                        newv.getPlay().setDisable(false);
+                        newv.getPlay().setOnAction(new EventHandler<ActionEvent>() {
+                            @Override
+                            public void handle(ActionEvent e) {
+                               pl2_cardsOnHand.getItems().remove(newv);
+                            }
+                        });
+
+                    }
+                });
     }
 
     private void setBindings() {
@@ -160,6 +303,7 @@ public class PlaygroundController implements Initializable {
             bindPhases(main2, battle2, end2, g.getEnemyPhase(id1), g.getMyPhase(id1));
         } catch (LogicException ex) {
             Logger.getLogger(PlaygroundController.class.getName()).log(Level.SEVERE, null, ex);
+
         }
 
     }
@@ -252,7 +396,7 @@ public class PlaygroundController implements Initializable {
         setPrefSizeMax(countCards1);
         setPrefSizeMax(countCards2);
 
-       // setPrefSizeMax(pl1_specialcard1);
+        setPrefSizeMax(pl1_specialcard1);
         setPrefSizeMax(pl1_specialcard2);
         setPrefSizeMax(pl1_specialcard3);
         setPrefSizeMax(pl1_specialcard4);
@@ -272,10 +416,20 @@ public class PlaygroundController implements Initializable {
         setPrefSizeMax(pl2_card3);
         setPrefSizeMax(pl2_card4);
 
+        cardPreviewPane.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
     }
 
     void setPrefSizeMax(Control c) {
         c.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
+    }
+
+    private void clearStyle() {
+        pl1_shields.getStyleClass().clear();
+        pl2_shields.getStyleClass().clear();
+        pl2_cardsOnHand.getStyleClass().clear();
+        pl1_cardsOnHand.getStyleClass().clear();
 
     }
 

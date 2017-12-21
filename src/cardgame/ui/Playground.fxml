@@ -147,6 +147,12 @@
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </GridPane.margin>
       </Label>
+      
+      <Label fx:id="pl1_specialcard1" alignment="CENTER" contentDisplay="CENTER" layoutX="412.0" layoutY="171.0" text="Special Card 2" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+         <GridPane.margin>
+            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+         </GridPane.margin>
+      </Label>
       <Label fx:id="pl1_specialcard2" alignment="CENTER" contentDisplay="CENTER" layoutX="412.0" layoutY="171.0" text="Special Card 2" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
          <GridPane.margin>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
@@ -230,9 +236,9 @@
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding>
       </StackPane>
-      <ListView fx:id="pl2_shields" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="12" />
-      <ListView fx:id="pl1_shields" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="12" />
-      <ListView fx:id="pl1_cardsOnHand" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="11" GridPane.rowIndex="1">
+      <ListView fx:id="pl2_shields" orientation="HORIZONTAL" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+      <ListView fx:id="pl1_shields"  orientation="HORIZONTAL" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="12" />
+      <ListView fx:id="pl1_cardsOnHand" orientation="HORIZONTAL" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="11" GridPane.rowIndex="1">
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding>
@@ -240,7 +246,7 @@
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </GridPane.margin>
       </ListView>
-      <ListView fx:id="pl2_cardsOnHand" orientation="HORIZONTAL" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="11" GridPane.halignment="CENTER" GridPane.rowIndex="11" GridPane.valignment="CENTER">
+      <ListView fx:id="pl2_cardsOnHand" orientation="HORIZONTAL" prefHeight="120.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="11" GridPane.halignment="CENTER" GridPane.rowIndex="11" GridPane.valignment="CENTER">
          <padding>
             <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
          </padding>
@@ -251,36 +257,6 @@
             <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
          </opaqueInsets>
       </ListView>
-      <AnchorPane id="AnchorPane" fx:id="pl1_specialcard1" prefHeight="430.0" prefWidth="303.0" styleClass="mainFxmlClass" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="3">
-         <children>
-            <GridPane prefHeight="430.0" prefWidth="303.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints maxHeight="263.99998779296874" minHeight="10.0" percentHeight="60.0" prefHeight="251.8" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="138.60001220703126" minHeight="10.0" percentHeight="15.0" prefHeight="65.39999999999998" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="141.39999999999998" minHeight="10.0" percentHeight="25.0" prefHeight="112.20003051757811" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
-                     <opaqueInsets>
-                        <Insets />
-                     </opaqueInsets>
-                     <GridPane.margin>
-                        <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
-                     </GridPane.margin>
-                  </StackPane>
-                  <Label text="Gamecardname" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                  <Label fx:id="card_black_shield" text="0/0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
-                  <Label fx:id="card_white_shield" text="0/0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
-               </children>
-            </GridPane>
-         </children>
-         <GridPane.margin>
-            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
-         </GridPane.margin>
-      </AnchorPane>
+     
    </children>
 </GridPane>

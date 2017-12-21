@@ -11,12 +11,14 @@
 	}
         
         .root {
-            
+            -fx-background-color: white;
 }
         #countCards2, #countCards1 {
             -fx-border-width: 1;
             -fx-border-color: black;            
             -fx-background-color: #f4f4f4;
+            -fx-background-image: url("http://i65.tinypic.com/2n1su9d.jpg");
+            -fx-text-fill: white; 
         }
         #pl1_specialcard4, #pl1_specialcard3, #pl1_specialcard2,#pl1_specialcard1, #pl2_specialcard4, #pl2_specialcard3, #pl2_specialcard2,#pl2_specialcard1 {
             -fx-border-width: 1;
@@ -27,6 +29,14 @@
             -fx-border-width: 1;
             -fx-border-color: black;
             -fx-background-color: white;
+        }
+        
+        #pl2_cards_on_hand{
+            -fx-padding: 2;
+                        -fx-border-width: 1;
+            -fx-border-color: black;
+            -fx-background-color: yellow;
+            -fx-background-image: url("http://i65.tinypic.com/2n1su9d.jpg");
         }
         
 }
