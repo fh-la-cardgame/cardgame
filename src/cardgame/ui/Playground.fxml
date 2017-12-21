@@ -5,10 +5,12 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
 <GridPane fx:id="gridPlayGround" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="708.0" prefWidth="1132.0" stylesheets="@playground.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cardgame.ui.PlaygroundController">
@@ -29,19 +31,19 @@
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="13.0" prefWidth="100.0" />
   </columnConstraints>
   <rowConstraints>
+      <RowConstraints maxHeight="158.79999389648438" minHeight="10.0" percentHeight="4.0" prefHeight="31.599999999999994" vgrow="SOMETIMES" />
       <RowConstraints maxHeight="158.79999389648438" minHeight="10.0" percentHeight="6.0" prefHeight="31.599999999999994" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="158.79999389648438" minHeight="10.0" percentHeight="6.0" prefHeight="31.599999999999994" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="158.79999389648438" minHeight="0.0" prefHeight="16.0" vgrow="SOMETIMES" />
-      <RowConstraints percentHeight="17.0" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="158.79999389648438" minHeight="0.0" percentHeight="2.0" prefHeight="18.00001220703126" vgrow="SOMETIMES" />
-      <RowConstraints percentHeight="17.0" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="170.8" minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="222.00002441406247" minHeight="9.199993896484386" percentHeight="17.0" prefHeight="145.80001220703122" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="241.3999755859375" minHeight="10.0" percentHeight="2.0" prefHeight="24.199987792968727" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="158.79999389648438" minHeight="0.0" percentHeight="2.0" prefHeight="16.0" vgrow="SOMETIMES" />
+      <RowConstraints percentHeight="16.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="158.79999389648438" minHeight="0.0" percentHeight="1.0" prefHeight="18.00001220703126" vgrow="SOMETIMES" />
+      <RowConstraints percentHeight="16.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="170.8" minHeight="10.0" percentHeight="1.0" prefHeight="20.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="222.00002441406247" minHeight="9.199993896484386" percentHeight="16.0" prefHeight="145.80001220703122" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="241.3999755859375" minHeight="10.0" percentHeight="1.0" prefHeight="24.199987792968727" vgrow="SOMETIMES" />
     <RowConstraints maxHeight="316.59997558593756" minHeight="10.0" percentHeight="4.0" prefHeight="36.39997558593751" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="310.2000244140625" minHeight="0.0" percentHeight="13.0" prefHeight="94.39999999999998" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="395.8" minHeight="2.9999755859374773" prefHeight="9.600000000000023" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="395.8" minHeight="10.0" percentHeight="6.0" prefHeight="45.19997558593752" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="310.2000244140625" minHeight="0.0" percentHeight="12.0" prefHeight="94.39999999999998" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="395.8" minHeight="2.9999755859374773" percentHeight="17.0" prefHeight="9.600000000000023" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="395.8" minHeight="10.0" percentHeight="4.0" prefHeight="45.19997558593752" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
       <Button fx:id="main1" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" snapToPixel="false" text="MAIN" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
@@ -125,7 +127,7 @@
             <ImageView fitHeight="25.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
          </children>
       </Pane>
-      <ListView fx:id="description" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="4" GridPane.rowSpan="5">
+      <ListView fx:id="description" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="7" GridPane.rowSpan="5">
          <GridPane.margin>
             <Insets bottom="7.0" left="15.0" right="7.0" top="7.0" />
          </GridPane.margin></ListView>
@@ -141,11 +143,6 @@
          <font>
             <Font size="25.0" />
          </font>
-         <GridPane.margin>
-            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
-         </GridPane.margin>
-      </Label>
-      <Label fx:id="pl1_specialcard1" alignment="CENTER" contentDisplay="CENTER" text="Special Card 1" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
          <GridPane.margin>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </GridPane.margin>
@@ -225,5 +222,65 @@
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </GridPane.margin>
       </Label>
+      <StackPane fx:id="cardPreviewPane" cacheShape="false" GridPane.columnSpan="2" GridPane.rowIndex="3" GridPane.rowSpan="4">
+         <GridPane.margin>
+            <Insets bottom="7.0" left="16.0" right="7.0" top="7.0" />
+         </GridPane.margin>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </StackPane>
+      <ListView fx:id="pl2_shields" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+      <ListView fx:id="pl1_shields" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="12" />
+      <ListView fx:id="pl1_cardsOnHand" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="11" GridPane.rowIndex="1">
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+         <GridPane.margin>
+            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+         </GridPane.margin>
+      </ListView>
+      <ListView fx:id="pl2_cardsOnHand" orientation="HORIZONTAL" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="11" GridPane.halignment="CENTER" GridPane.rowIndex="11" GridPane.valignment="CENTER">
+         <padding>
+            <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+         </padding>
+         <GridPane.margin>
+            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+         </GridPane.margin>
+         <opaqueInsets>
+            <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+         </opaqueInsets>
+      </ListView>
+      <AnchorPane id="AnchorPane" fx:id="pl1_specialcard1" prefHeight="430.0" prefWidth="303.0" styleClass="mainFxmlClass" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="3">
+         <children>
+            <GridPane prefHeight="430.0" prefWidth="303.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="263.99998779296874" minHeight="10.0" percentHeight="60.0" prefHeight="251.8" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="138.60001220703126" minHeight="10.0" percentHeight="15.0" prefHeight="65.39999999999998" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="141.39999999999998" minHeight="10.0" percentHeight="25.0" prefHeight="112.20003051757811" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <GridPane.margin>
+                        <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
+                     </GridPane.margin>
+                  </StackPane>
+                  <Label text="Gamecardname" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                  <Label fx:id="card_black_shield" text="0/0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                  <Label fx:id="card_white_shield" text="0/0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+               </children>
+            </GridPane>
+         </children>
+         <GridPane.margin>
+            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+         </GridPane.margin>
+      </AnchorPane>
    </children>
 </GridPane>
