@@ -9,29 +9,22 @@ package cardgame.ui;
 
 import cardgame.classes.Card;
 import cardgame.classes.Deck;
-import cardgame.classes.Effect;
 import cardgame.classes.GameCard;
 import cardgame.classes.Player;
-import cardgame.classes.Playground;
 import cardgame.classes.SpecialCard;
-import cardgame.console.Cardgame;
 import cardgame.db.DbCard;
 import cardgame.logic.Game;
 import java.net.URL;
-import java.util.LinkedList;
 import java.util.ResourceBundle;
 import static javafx.application.Application.launch;
 
 import cardgame.logic.LogicException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -40,22 +33,12 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-import javafx.util.Callback;
-import jdk.nashorn.internal.objects.NativeArray;
 
 /**
  * FXML Controller class
@@ -98,6 +81,7 @@ public class PlaygroundController implements Initializable {
     private Deck d1;
     private Deck d2;
     private Game g;
+    
     @FXML
     private Label pl1_specialcard1;
     @FXML
