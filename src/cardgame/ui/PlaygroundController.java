@@ -178,6 +178,10 @@ public class PlaygroundController implements Initializable {
         setBindings();
     }
 
+    /**
+     * Erzeugung von Spielerschildern 
+     * @throws LogicException 
+     */
     private void setPlayerShields() throws LogicException {
 
         pl2_l_shields = new ArrayList();
@@ -193,6 +197,10 @@ public class PlaygroundController implements Initializable {
         System.out.println("pl1_observ_list size:" + pl2_observ_list_shields.size());
     }
 
+    /**
+     * Erzeugung von Schildern des Gegenüberspielers
+     * @throws LogicException 
+     */
     private void setEnemyPlayerShields() throws LogicException {
 
         pl1_l_shields = new ArrayList();
@@ -208,6 +216,10 @@ public class PlaygroundController implements Initializable {
         System.out.println("pl1_observ_list size:" + pl1_observ_list_shields.size());
     }
 
+    /**
+     * Setzen der Handkarten des Gegenüber.
+     * @throws LogicException 
+     */
     private void setCardsOnHandEnemy() throws LogicException {
         pl1_l = new ArrayList();
         int size = g.getEnemyField(id1).getCardsOnHand().size();
@@ -220,6 +232,10 @@ public class PlaygroundController implements Initializable {
 
     }
 
+    /**
+     * Setzen der Handkarten bei dem Hauptspieler.
+     * @throws LogicException 
+     */
     private void setCardsOnHandPlayer() throws LogicException {
         GameCard gc;
         SpecialCard sc;
@@ -286,6 +302,9 @@ public class PlaygroundController implements Initializable {
                 });
     }
 
+    /**
+     * Erzeugung der Abhängigkeiten/Bindings.
+     */
     private void setBindings() {
 
         try {
@@ -310,6 +329,12 @@ public class PlaygroundController implements Initializable {
         launch(args);
     }
 
+    /**
+     * Binding eines Buttons.
+     * @param b Button
+     * @param ip IntegerProperty
+     * @param v geaenderte Wert
+     */
     private void bindButtonPerValue(Button b, IntegerProperty ip, int v) {
         b.disableProperty().bind(new BooleanBinding() {
             {
@@ -323,6 +348,14 @@ public class PlaygroundController implements Initializable {
         });
     }
 
+    /**
+     * Binding von Phasen
+     * @param m Main-Phase Button
+     * @param b Battle-Phase Button
+     * @param e End-Phase Button
+     * @param phase1 Phase des 1. Spielers
+     * @param phase2 Phase des 2. Spielers
+     */
     private void bindPhases(Button m, Button b, Button e, IntegerProperty phase1, IntegerProperty phase2) {
         m.disableProperty().bind(new BooleanBinding() {
             {
@@ -383,6 +416,9 @@ public class PlaygroundController implements Initializable {
         // g.setpPlayer1Phase(0);
     }
 
+    /**
+     * Sizing an das Parentelement.
+     */
     private void stretchElements() {
         setPrefSizeMax(main1);
         setPrefSizeMax(main2);
@@ -418,11 +454,18 @@ public class PlaygroundController implements Initializable {
 
     }
 
+    /**
+     * Hilfsmethode zur Maximierung der Groesse im Parentcontainer.
+     * @param c Control
+     */
     void setPrefSizeMax(Control c) {
         c.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
     }
 
+    /**
+     * Entfernung des vordefinierten Styles.
+     */
     private void clearStyle() {
         pl1_shields.getStyleClass().clear();
         pl2_shields.getStyleClass().clear();
@@ -431,6 +474,10 @@ public class PlaygroundController implements Initializable {
 
     }
 
+    /**
+     * Setzen einer Karte auf ein freies Feld.
+     * @param gc Spielerkarte/Spezialkarte
+     */
     private void setPlayersField(GamecardControl gc) {
         if (gc == null) {
             throw new IllegalArgumentException("setPlayersField(GamecardControl gc) ist null");
