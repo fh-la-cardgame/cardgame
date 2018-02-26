@@ -96,11 +96,11 @@ public class RandomPlayer implements KiPlayer{
                         if (enemyPlayground.getCountBattlegroundMonster() == 0) {
                             game.attack(id, attckCard, null);
                             if(!game.isGameRunning()) return;
-                            System.out.println("Attack Player");
+//                            System.out.println("Attack Player");
                         }
                         else {
                             zahl = random.nextInt(length);
-                            System.out.println(" Attack Card");
+//                            System.out.println(" Attack Card");
                             game.attack(id, attckCard, nextGameCard(enemyBattleground, zahl));
                         }
                     zahl = random.nextInt(length+1);

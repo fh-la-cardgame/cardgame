@@ -17,7 +17,14 @@ public enum Type {
         /**Pflanze**/
         pflanze,
         /**Nordic**/
-        nordics
+        nordics,
+        /**Erstes Deck zum Testen**/
+        testdeck1,
+        /**Zweites Deck zum Testen**/
+        testdeck2,
+        /**Engel**/
+        engel
+        
         	
 
 }

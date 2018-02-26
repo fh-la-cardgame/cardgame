@@ -3,6 +3,7 @@ package cardgame.ai;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
 import cardgame.classes.Card;
@@ -53,8 +54,13 @@ public class TestPlayer implements KiPlayer {
 					specialCardPlaying = ((SpecialCard)card);
 				}
 				if(!hasDestroyEffect && specialCardPlaying != null){
+					try{
 					specialCardPlaying = specialCardPlaying.getEffects().stream().map(e -> e.getEffectNumber()).max(Integer::max).get() < ((SpecialCard)card).getEffects().stream().map(e -> e.getEffectNumber()).max(Integer::max).get() ? (SpecialCard)card : specialCardPlaying;
-				}else if(!hasDestroyEffect && specialCardPlaying == null){
+					}catch(NoSuchElementException ex){
+							System.out.println(specialCardPlaying+"\n"+card);
+							throw new NoSuchElementException();
+						}
+					}else if(!hasDestroyEffect && specialCardPlaying == null){
 					specialCardPlaying = (SpecialCard)card;
 				}
 				specialCards.add(card);

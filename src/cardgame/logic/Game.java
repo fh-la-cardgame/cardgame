@@ -60,12 +60,17 @@ public class Game {
      * Muss am Ende des Spielzugs geleert werden.
      */
     private Set<GameCard> CardsHaveAttack = new IdentityHashSet<>();
+    
+    public Game(Player player1, Player player2, Deck deck1, Deck deck2){
+    	this(player1, player2, deck1, deck2, false);
+    }
+    
     /**
      * Konstruktor noch nicht fertig.
      */
-    public Game(Player player1, Player player2, Deck deck1, Deck deck2) {
-        side1 = new Playground(player1, deck1);
-        side2 = new Playground(player2, deck2);
+    public Game(Player player1, Player player2, Deck deck1, Deck deck2, boolean isTest) {
+        side1 = new Playground(player1, deck1, isTest);
+        side2 = new Playground(player2, deck2, isTest);
         side1PlayerId = player1.getId();
         side2PlayerId = player2.getId();
         playersTurn = player1.getId();
@@ -152,7 +157,7 @@ public class Game {
 
             //Ueberpruefen ob gewonnen ???
             if (shield.getCurrentShields() == 0) {
-                System.out.println("Spieler hat gewonnen");
+//                System.out.println("Spieler hat gewonnen");
               //TODO
                 gameEnd = true;
                 if(id == side1PlayerId) {
@@ -326,7 +331,7 @@ public class Game {
     }
 
     /**
-     * Gibt eigenes PlaygRuntimeExceptionround zuruek.
+     * Gibt eigenen Playground zurueck.
      *
      * @param id Eigne Spieler Id.
      * @return Eigenes Spielfeld.
@@ -547,6 +552,5 @@ public class Game {
         playersTurn = id;
         playedMonstercard = false;
         CardsHaveAttack.clear();
-
     }
 }

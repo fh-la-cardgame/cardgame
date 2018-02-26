@@ -18,18 +18,17 @@ public class ConsolTest {
 
 
 		DbCard db = new DbCard();
-		List<Card> c1 = db.getDeck("Flora");
-		List<Card> c2 = db.getDeck("civitas diaboli");
+		List<Card> c1 = db.getDeck("TestDeck1");
+		List<Card> c2 = db.getDeck("TestDeck2");
 
-		Deck d1 = new Deck(1,"Flora",c1);
-		Deck d2 = new Deck(2, "David", c2);
+		Deck d1 = new Deck(1,"Alpha",c1);
+		Deck d2 = new Deck(2, "Beta", c2);
 
 		for (int i = 0; i < 1 ; i++) {
-			Game g = new Game(new Player(1, "Spieler1"), new Player(2, "Spieler2"), new Deck(d1), new Deck(d2));
+			Game g = new Game(new Player(1, "Spieler1"), new Player(2, "Spieler2"), new Deck(d1), new Deck(d2), true);
 			KiPlayer p1 = new TestPlayerProtokoll(g, 1);
 			KiPlayer p2 = new TestPlayerProtokoll(g, 2);
-
-
+			int k = 0;
 			while (g.isGameRunning()) {
 				g.changePlayer(p1.getId());
 				try {
@@ -41,6 +40,9 @@ public class ConsolTest {
 				}
 				try {
 					p1.yourTurn();
+					if(k == 0)
+					System.out.println(g.getCardsOnHand(p1.getId()).size()+" "+g.getCardsOnHand(p2.getId()).size());
+					
 				} catch (LogicException e) {
 					System.out.println(e);
 				}
@@ -60,6 +62,7 @@ public class ConsolTest {
 				} catch (LogicException e) {
 					System.out.println(e);
 				}
+				k++;
 			}
 
 

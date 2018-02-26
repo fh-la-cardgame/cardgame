@@ -31,17 +31,18 @@ public class Playground {
 
 	private int countBattlegroundMonster;
 	
-	
     /**
      * Konstruktor
      * @param player
      * @param deck
      */
-    public Playground(final Player player, final Deck deck) {
+    public Playground(final Player player, final Deck deck, boolean isTest) {
 		this.player = player;
 		this.deck = deck; 
 		this.cardsOnHand = new LinkedList<>(); //LOGIK: Shuffle, 5 Karten aus dem Deck zu weisen
-        deck.shuffle();
+        if(!isTest){
+        	deck.shuffle();
+        }
         if(deck.getCards().size() > 0){
         for(int i=0;i<CARDSONHANDSTART;i++){
             try {

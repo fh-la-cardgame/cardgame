@@ -626,7 +626,7 @@ public class DbCard {
     /**Aktualisieren der Anzahl an Schildern.
      * Erlaubt eine konsistentes Aendern der Anzahl der Schilder, an denen auch die Effekte haengen.
      * Dabei gilt folgendes:
-     * Auf dem 0-tem Schild(letztes verbleibendes Schild) gibt es einen Effekt. Auf dem max-Schild gibt es keinen Effekt.
+     * Auf dem 0-tem Schild(letztes verbleibendes Schild) GIBT ES EINEN Effekt. Auf dem max-Schild gibt es keinen Effekt.
      * @param gid Id der Gamecard.
      * @param max_shield Neue Anzahl an maximalen Schildern.
      */
