@@ -238,6 +238,8 @@ public class Game {
             List<GameCard> cardsEffect = getCardsForEffect(id,e,enemyCard,enemyCard);
             List<GameCard> cardsDeath =  EffectsAssignment.useEffect(e,cardsEffect);
             if(e.getEffectType() == EffectType.destroy){
+                if(!getMyField(id).getCardsOnHand().contains(card)) throw new IllegalArgumentException("Karte nicht auf der Hand");
+                getMyField(id).removeCardFromHand(card);
                 cardsDeath.forEach(this::removeGameCardFormField);
             }else{
                 cardsEffect.forEach(c-> c.addSpecialCard(card));

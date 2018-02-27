@@ -74,7 +74,7 @@ public class Playground {
      * Entfernt Karte aus der Hand.
      * @param c Spiel- bzw. Spezialkarte
      */
-    private void removeCardFromHand(Card c){
+    public void removeCardFromHand(Card c){
         cardsOnHand.remove(c);
     }
 
