@@ -896,7 +896,8 @@ public class GameTest {
 		int change = c1.indexOf(swap);
 		c1.set(change, c1.get(0));
 		c1.set(0, swap);
-//		System.out.println(c1.get(0)+" "+c2.get(0));
+		System.out.println("Erste Ausgabe");
+		System.out.println(c1.get(0)+" "+c2.get(0));
 		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), d2, true);
 		game.changePlayer(p1.getId());
 		game.getMyField(p1.getId()).addCard();
@@ -904,22 +905,31 @@ public class GameTest {
 		game.changePlayer(p2.getId());
 		game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
-//		for(int i = 0; i < 2; i++)
+		for(int i = 0; i < 2; i++){
 		game.changePlayer(p1.getId());
 		game.getMyField(p1.getId()).addCard();
 		game.attack(p1.getId(), game.getMyField(p1.getId()).getBattlegroundMonster()[0], game.getEnemyField(p1.getId()).getBattlegroundMonster()[0]);
 		game.changePlayer(p2.getId());
 		game.getMyField(p2.getId()).addCard();
-//		System.out.println(Arrays.toString(game.getMyField(p2.getId()).getBattlegroundMonster()));
-//		System.out.println(Arrays.toString(game.getEnemyField(p2.getId()).getBattlegroundMonster()));
+		}
+		System.out.println("Zweite Ausgabe");
+		System.out.println(Arrays.toString(game.getMyField(p2.getId()).getBattlegroundMonster()));
+		System.out.println(Arrays.toString(game.getEnemyField(p2.getId()).getBattlegroundMonster()));
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId());
-		game.attack(p1.getId(), 0, 0);
-//		game.changePlayer(p2.getId());
-//		game.getMyField(p2.getId());
-//		game.changePlayer(p1.getId());
-//		game.getMyField(p1.getId());
-//		game.changePlayer(p2.getId());
+		game.getMyField(p1.getId()).addCard();
+		System.out.println("Dritte Ausgabe");
+		System.out.println(Arrays.toString(game.getMyField(p2.getId()).getBattlegroundMonster()));
+		System.out.println(Arrays.toString(game.getEnemyField(p2.getId()).getBattlegroundMonster()));
+//		game.attack(p1.getId(), 0, 0);
+		game.changePlayer(p2.getId());
+		game.getMyField(p2.getId()).addCard();
+		System.out.println("Vierte Ausgabe");
+		System.out.println(Arrays.toString(game.getMyField(p2.getId()).getBattlegroundMonster()));
+		System.out.println(Arrays.toString(game.getEnemyField(p2.getId()).getBattlegroundMonster()));
+		game.changePlayer(p1.getId());
+		game.getMyField(p1.getId()).addCard();
+		game.changePlayer(p2.getId());
+		System.out.println("Fuenfte Ausgabe");
 		System.out.println(Arrays.toString(game.getMyField(p2.getId()).getBattlegroundMonster()));
 		System.out.println(Arrays.toString(game.getEnemyField(p2.getId()).getBattlegroundMonster()));
 		assertEquals(500, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
