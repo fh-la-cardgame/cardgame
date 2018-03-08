@@ -205,7 +205,7 @@ public class GameCard extends Card {
      * Prueft, ob dadurch ein Effect ausgeloest wird.
      * Dieser muss mit der Methode getNextEffect geholt und ausgefuehrt werden.
      *
-     * @return true(wenn Karte noch am Leben) false(falls Karte keine Schilder mehr besitzt)
+     * @return GameCard fuer Evolution(wenn evolutionShields maximal und Evolution moeglich) sonst null
      */
     public GameCard addEvoShield() {
         int shield = evolutionShields.getCurrentShields();
@@ -216,14 +216,11 @@ public class GameCard extends Card {
                 throw new RuntimeException("Alter Effect wurde noch nicht ausgefuert");
             }
             nextEffect = evoEffects[shield];
-        } else {
-            shield = evolutionShields.getCurrentShields();
         }
-        if (shield == evolutionShields.getMaxShields()) {
+        if (evolutionShields.getCurrentShields() == evolutionShields.getMaxShields()) {
             return evolution;
         }
         return null;
-
     }
 
     /**
