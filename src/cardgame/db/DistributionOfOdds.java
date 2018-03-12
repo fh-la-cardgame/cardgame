@@ -47,9 +47,8 @@ public class DistributionOfOdds {
 	
 	private static int[] testOfDistribution(String deck1, String deck2) throws LogicException{
 		DbCard db = new DbCard();
-		List<Card> c1 = db.getDeck(deck1);
-		List<Card> c2 = db.getDeck(deck2);
-
+		List<Card> c1 = db.getDeckWithoutImage(deck1);
+		List<Card> c2 = db.getDeckWithoutImage(deck2);
 		Deck d1 = new Deck(1,"Test1",c1);
 		Deck d2 = new Deck(2, "Test2", c2);
 		
@@ -57,8 +56,8 @@ public class DistributionOfOdds {
 		int victory_d2 = 0;
 		for (int i = 0; i < AMOUNT ; i++) {
 			Game g = new Game(new Player(1, "Spieler1"), new Player(2, "Spieler2"), new Deck(d1), new Deck(d2));
-			KiPlayer p1 = new TestPlayer(g, 1);
-			KiPlayer p2 = new TestPlayer(g, 2);
+			KiPlayer p1 = new RandomPlayer(g, 1);
+			KiPlayer p2 = new RandomPlayer(g, 2);
 			
 
 			while (g.isGameRunning()) {

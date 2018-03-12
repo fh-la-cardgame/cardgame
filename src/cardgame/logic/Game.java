@@ -205,7 +205,10 @@ public class Game {
 
             //Eigene Schield entfernen
         	dropShieldAndEffect(id, myCard, enemyCard);
-
+        	
+        	//Gegnerische Evolutionschilder erhoehen
+            addEvoSchieldAndEffect(id ,enemyCard, myCard);
+        	
         }
 
         CardsHaveAttack.add(myCard);

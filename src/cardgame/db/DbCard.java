@@ -482,6 +482,128 @@ public class DbCard {
         }
         return deck;
     }
+    
+    
+    /**
+     * Liest alle Karten und Specialcards in eine Liste ein.
+     *
+     * @param deckName Name des Decks
+     * @return Gibt eine List aller Karten zurueck
+     */
+    public List<Card> getDeckWithoutImage(String deckName) {
+        PreparedStatement selectGamecard, selectCard_Effect, selectCard_EvoEffect, selectSpecialcard, selectSpecialcardEffect;
+        ResultSet resultCard, resultEffect, resultEvoEffect;
+        Effect[] effects = null;
+        Effect[] evoEffects = null;
+        //deckName = deckName.toLowerCase();
+        List<Card> deck = new ArrayList<>();
+        try {
+            c = DbConnection.getPostgresConnection();
+
+            selectGamecard = c.prepareStatement("select g.gid, g.name, g.description, monster_type, atk, shield_curr, "
+                    + "shield_max, evo_shield_curr, evo_shield_max, evo "
+                    + "from \"Gamecard\" g , \"Deck_Cards\" dc, \"Deck\" d "
+                    + "where g.gid = dc.gid "
+                    + "and d.did = dc.did "
+                    + "and LOWER(d.name) = LOWER(?)" 
+                    + "and g.gid not in (select evo from \"Gamecard\" where evo is not null)");
+            selectGamecard.setString(1, deckName);
+            resultCard = selectGamecard.executeQuery();
+            
+
+            while (resultCard.next()) {
+                int gId = resultCard.getInt(1);
+                String gName = resultCard.getString(2);
+                String gDescription = resultCard.getString(3);
+                String gType = resultCard.getString(4);
+                int gAtk = resultCard.getInt(5);
+                short gShield_curr = resultCard.getShort(6);
+                short gShield_max = resultCard.getShort(7);
+                short gEvo_shield_curr = resultCard.getShort(8);
+                short gEvo_shield_max = resultCard.getShort(9);
+                int gEvo = resultCard.getInt(10);
+                
+
+                selectCard_Effect = c.prepareStatement("select e.eid, e.description, effect_type, effect_number, shield "
+                        + "from \"Effecte\" e, \"Card_Effect\" c_e, \"Gamecard\" g "
+                        + "where e.eid = c_e.eid "
+                        + "and c_e.gid = g.gid "
+                        + "and shield is not null "
+                        + "and g.gid = ?");
+                selectCard_Effect.setInt(1, gId);
+                resultEffect = selectCard_Effect.executeQuery();
+
+                selectCard_EvoEffect = c.prepareStatement("select e.eid, e.description, effect_type, effect_number, c_e.evo_shield "
+                        + "from \"Effecte\" e, \"Card_Effect\" c_e, \"Gamecard\" g "
+                        + "where e.eid = c_e.eid "
+                        + "and c_e.gid = g.gid "
+                        + "and evo_shield is not null "
+                        + "and g.gid = ?");
+                selectCard_EvoEffect.setInt(1, gId);
+                resultEvoEffect = selectCard_EvoEffect.executeQuery();
+
+                effects = getEffects(gShield_max, resultEffect);
+                evoEffects = getEvoEffects(resultEvoEffect);
+
+                GameCard evo = null;
+                if (gEvo != 0) {
+                    evo = integerToGamecard(gEvo);
+                }
+
+                deck.add(new GameCard(gId, gName, gDescription,
+                        stringToType(gType), null, gAtk, new Shield(gEvo_shield_curr,
+                        gEvo_shield_max), new Shield(gShield_curr, gShield_max), evo, effects.clone(), evoEffects.clone()));
+            }
+
+            //Ab hier kommen die Specialcards:
+            selectSpecialcard = c.prepareStatement("select sc.sid, sc.name, description, type "
+                    + "from \"Specialcard\" sc, \"Deck_Cards\" dc, \"Deck\" d "
+                    + " where LOWER(d.name) = LOWER(?)"
+                    + " and sc.sid = dc.sid"
+                    + " and dc.did = d.did"
+                    + " order by sc.sid");
+            selectSpecialcard.setString(1, deckName);
+            resultCard = selectSpecialcard.executeQuery();
+
+            while (resultCard.next()) {
+                int sId = resultCard.getInt(1);
+                String sName = resultCard.getString(2);
+                String sDescription = resultCard.getString(3);
+
+                List<Effect> effects_list = new ArrayList<>();
+                selectSpecialcardEffect = c.prepareStatement("select e.eid, e.description, e.effect_type, e.effect_number "
+                        + "from \"Effecte\" e, \"Specialcard_Effect\" ce, \"Specialcard\" "
+                        + "where sid = ?"
+                        + "and e.eid = ce.eid "
+                        + "and scid = sid");
+                selectSpecialcardEffect.setInt(1, sId);
+                resultEffect = selectSpecialcardEffect.executeQuery();
+                while (resultEffect.next()) {
+                    int eId = resultEffect.getInt(1);
+                    String eDescription = resultEffect.getString(2);
+                    String eEffectType = resultEffect.getString(3);
+                    short eEffect_number = resultEffect.getShort(4);
+
+                    effects_list.add(new Effect(eId, eDescription, stringToEffectType(eEffectType), eEffect_number));
+                }
+                deck.add(new SpecialCard(sId, sName, sDescription, stringToType(resultCard.getString(4)), null, effects_list));
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DbCard.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(DbCard.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                c.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(DbCard.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return deck;
+    }
+
+    
 
     /**
      * Fuegt neue Beziehungen zwischen Effekte und Cards in die Tabelle ein. Um
