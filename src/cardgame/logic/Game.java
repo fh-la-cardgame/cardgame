@@ -181,7 +181,7 @@ public class Game {
         if (myCard.getAtk() > enemyCard.getAtk()) {
 
             //Gegner Schild entfernen
-        	dropShieldAndEffect(id, enemyCard, myCard);
+        	dropShieldAndEffect(getEnemyId(id), enemyCard, myCard);
 
             //Eigene Evolutionschilder erhoehen
             addEvoSchieldAndEffect(id, myCard, enemyCard);
@@ -189,7 +189,7 @@ public class Game {
         } else if (myCard.getAtk() == enemyCard.getAtk()) {
 
             //Gegner Schield entfernen
-        	dropShieldAndEffect(id, enemyCard, myCard);
+        	dropShieldAndEffect(getEnemyId(id), enemyCard, myCard);
 
             //Eigene Schield entfernen
         	dropShieldAndEffect(id, myCard, enemyCard);
@@ -198,7 +198,7 @@ public class Game {
         	addEvoSchieldAndEffect(id, myCard, enemyCard);
         	
             //Gegnerische Evolutionschilder erhoehen
-            addEvoSchieldAndEffect(id ,enemyCard, myCard);
+            addEvoSchieldAndEffect(getEnemyId(id) ,enemyCard, myCard);
             
 
         } else if (myCard.getAtk() < enemyCard.getAtk()) {
@@ -207,7 +207,7 @@ public class Game {
         	dropShieldAndEffect(id, myCard, enemyCard);
         	
         	//Gegnerische Evolutionschilder erhoehen
-            addEvoSchieldAndEffect(id ,enemyCard, myCard);
+            addEvoSchieldAndEffect(getEnemyId(id) ,enemyCard, myCard);
         	
         }
 
@@ -256,7 +256,7 @@ public class Game {
     
     /**
      * Gibt zu einer Effektkarte die Karten zurück auf denen dieser Effekt angewendet wird.
-     * @param id Id des Spielers.
+     * @param id Id des Spielers von GameCard effectTriggered.
      * @param effect Effekt der angewendet werden soll.
      * @param effectTriggered Karte die den Effekt ausgeloest hat.
      * @param enemyCard Karte die angegriffen worden ist.
@@ -405,17 +405,17 @@ public class Game {
     /**
      * Entfernt ein Shield von der GameCard und falls diese auf 0 fallen wird diese entfernt.
      * Fuehrt dabei alle notwendigen Effecte aus.
-     * @param id id des Spielers.
+     * @param id id des Spielers von GameCard g.
      * @param g GameCard bei der Shield entfernt wird.
      * @param otherForEffect GameCard fuer destroy Effect.
      */
     private void dropShieldAndEffect(int id, GameCard g, GameCard otherForEffect) throws LogicException{
     	Effect effect;
-    	if (!g.dropShield()) {
+    	if (g.dropShield()) {
     		effect = g.getNextEffect();
-            removeGameCardFormField(g);
         } else {
         	effect = g.getNextEffect();
+            removeGameCardFormField(g);
         }
     	if(effect != null) {
     		List<GameCard> list = getCardsForEffect(id, effect, g, otherForEffect);
@@ -448,8 +448,9 @@ public class Game {
     
     /**
      * Erhoeht die EvoShields von der GameCard g und fuehrt falls notwendig den jeweiligen Effect aus.
-     * @param g GameCard zum erhoehen der EvoShields
-     * @param otherForEffect andere fuer destroy Effect
+     * @param id Id des Spielers von GameCard g.
+     * @param g GameCard zum erhoehen der EvoShields.
+     * @param otherForEffect andere fuer destroy Effect.
      */
     private void addEvoSchieldAndEffect(int id, GameCard g, GameCard otherForEffect) throws LogicException {
     	GameCard evolution = g.addEvoShield();
@@ -465,6 +466,21 @@ public class Game {
         if (evolution != null && g.isAlive()) {
             makeEvolution(g, evolution);
         }
+    }
+
+    /**
+     * Gibt die gegnerische Id zuruek.
+     * @param id eigene Id.
+     * @throws IllegalArgumentException wenn Player id nicht existiert.
+     */
+    private int getEnemyId(int id) {
+        if(id == side1PlayerId) {
+            return side2PlayerId;
+        }
+        if(id == side2PlayerId) {
+            return side1PlayerId;
+        }
+        throw new IllegalArgumentException("Player Id existiert nicht");
     }
 
     /**
