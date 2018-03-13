@@ -1439,22 +1439,7 @@ public class GameTest {
 		assertEquals(2, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getShields().getCurrentShields());
 		assertEquals(1, game.getMyField(p1.getId()).getBattlegroundMonster()[0].getEvolutionShields().getCurrentShields());
 		assertEquals(1200, game.getMyField(p1.getId()).getBattlegroundMonster()[0].getAtk());
-	}
+	}	
 	
-	
-	/** Das Gesamte Spiel durchgetestet.
-	 * Abgepruefte Eigenschaften:
-	 * - meherer Evolutionen.
-	 * - meherere Effektarten.
-	 * - Angriffe aus unter-, ueberlegener oder gleichgestellter Position.
-	 * - Angriffe auf hoehrere Indexe(z.B. 3)
-	 * - Specialcards.
-	 * - korrektes Entfernen von Specialcards.
-	 * - Ende des Spiels. Die Spieler leben noch, wenn die Decks aufgebraucht sind. Das Spiel geht dann weiter.
-	 */
-	@Test
-	public void test_FullGame(){
-		
-	}
 	
 }
