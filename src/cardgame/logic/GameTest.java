@@ -3,6 +3,7 @@ package cardgame.logic;
 
 import cardgame.classes.*;
 import cardgame.db.*;
+import javafx.scene.control.Slider;
 
 import static org.junit.Assert.*;
 
@@ -72,7 +73,7 @@ public class GameTest {
 	public void testGameCtorDeckNull(){
 		new Game(new Player(1, "Spieler1"), new Player(2, "Spieler2"), new Deck(d1), null);
 	}
-	
+	//TODO
 	/** 2 Spieler haben die selbe ID.
 	 * 
 	 */
@@ -80,7 +81,7 @@ public class GameTest {
 	public void testGameSamePlayerId(){
 		new Game(new Player(1, "Spieler1"), new Player(1, "Spieler2"), new Deck(d1), new Deck(d2));
 	}
-	
+	//TODO
 	/** 2 Spieler haben den selben Namen.
 	 * 
 	 */
@@ -313,7 +314,7 @@ public class GameTest {
 		game.getMyField(p2.getId()).addCard();
 		game.playSpecialCard(p2.getId(), (SpecialCard)c2.get(c2.size()-1), game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 	}
-	
+	//TODO
 	
 	/** Angriff auf NULL mit SpecialCard.
 	 * @throws LogicException
@@ -470,6 +471,7 @@ public class GameTest {
 		game.getMyField(p2.getId()).addCard();
 		game.playSpecialCard(p1.getId(), (SpecialCard)game.getCardsOnHand(p1.getId()).get(0), game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 	}
+	
 	/**Feld fuer SpecialCards ist voll.
 	 * Trotzdem wird versucht eine weitere Speicalcard zu spielen.
 	 * @throws GameEndException
@@ -477,24 +479,39 @@ public class GameTest {
 	 */
 	@Test(expected = RuntimeException.class)
 	public void testPlaySpecialCard_FieldIsFull() throws GameEndException, LogicException{
-		for(int i = 0; i < 5; i++){
+		for(int i = 1; i < 6; i++){
 			Card swap = c1.get(c1.size()-(i+1));
 			c1.set(c1.size()-(i+1), c1.get(i));
 			c1.set(i, swap);
 		}
+		
 		Game game = new Game(p1, p2, d2, new Deck(1, "TestDeck1", c1), true);
 		game.changePlayer(p1.getId());
 		game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
+		
 		game.changePlayer(p2.getId());
 		game.getMyField(p2.getId()).addCard();
-		for(int i = 0; i < 5; i++){
+		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
+		for(int i = 0; i < 4; i++){
 			game.playSpecialCard(p2.getId(), (SpecialCard)game.getCardsOnHand(p2.getId()).get(0), game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
-		}
+			}
+		
+		game.changePlayer(p1.getId());
+		game.getMyField(p1.getId()).addCard();
+		
+		game.changePlayer(p2.getId());
+		game.getMyField(p2.getId()).addCard();
+		game.playSpecialCard(p2.getId(), (SpecialCard)game.getCardsOnHand(p2.getId()).get(0), game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 	}
 	
 	//TODO
 	//mMn. sinnlos
+	/**SpecialCard in der ersten Runde ausspielen.
+	 * 
+	 * @throws GameEndException
+	 * @throws LogicException
+	 */
 	@Test(expected = Exception.class)
 	public void testPlaySpecialCard_FirstTurn() throws GameEndException, LogicException{
 		for(int i = 0; i < 3; i++){
@@ -680,7 +697,7 @@ public class GameTest {
 			game.changePlayer(p2.getId());	
 		}
 	}
-	
+	//TODO
 	/**Den Spieler auf den selben Spieler wechseln.
 	 * 
 	 * @throws LogicException
@@ -893,21 +910,14 @@ public class GameTest {
 		game.changePlayer(p2.getId());
 		game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(2));
-		
-		System.out.println(game.getMyField(p2.getId()).getBattlegroundMonster()[0]);
-		System.out.println(game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 		game.attack(p2.getId(), game.getMyField(p2.getId()).getBattlegroundMonster()[0], game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
-		System.out.println(game.getMyField(p2.getId()).getBattlegroundMonster()[0]);
-		System.out.println(game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
-		
+	
 		assertEquals(1600, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
 		assertEquals(2, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0].getShields().getCurrentShields());
 		assertEquals(1, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0].getEvolutionShields().getCurrentShields());
 		assertEquals(0, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getEvolutionShields().getCurrentShields());
 		assertEquals(3, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getShields().getCurrentShields());
 		assertEquals(600, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
-		
-	
 	}
 	
 	/**Beide Karten haben gleich viel ATK.
@@ -923,16 +933,17 @@ public class GameTest {
 		game.changePlayer(p1.getId());
 		game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(4));
+		
 		game.changePlayer(p2.getId());
 		game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(4));
 		game.attack(p2.getId(), game.getMyField(p2.getId()).getBattlegroundMonster()[0], game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 		assertEquals(null, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 		assertEquals(1, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getShields().getCurrentShields());
-		assertEquals(1850, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
+		assertEquals(1750, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
 		assertEquals(1, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getEvolutionShields().getCurrentShields());
 	}
-	//TODO: das fehlende Evolutionsschild
+	
 	@Test
 	/**Wenn der Schwaechere angreift.
 	 * FEHLER: Der Staerkere erhaelt kein Evo_Schild.
@@ -944,57 +955,113 @@ public class GameTest {
 		game.changePlayer(p1.getId());
 		game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
+		
 		game.changePlayer(p2.getId());
 		game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		game.attack(p2.getId(), 0, 0);
+		
 		assertEquals(3, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getShields().getCurrentShields());
 		assertEquals(3, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0].getShields().getCurrentShields());
 		assertEquals(700, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
-//		Sollte eigtl 1, statt 0 sein.
 		assertEquals(1, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0].getEvolutionShields().getCurrentShields());
+		assertEquals(1200, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
 	}
-	
+	/**Eigene Karte beim Angriff null.
+	 * 
+	 * @throws LogicException
+	 * @throws GameEndException
+	 */
 	@Test(expected = NullPointerException.class)
 	public void testAttack2_OwnCardNull() throws LogicException, GameEndException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
 		game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
+		
 		game.changePlayer(p2.getId());
 		game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		game.attack(p2.getId(), null, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 	}
+	
+	/**Angriff auf einen Spieler.
+	 * Dazu darf der jeweilige Spieler keine GameCards mehr auf dem Battleground haben.
+	 * @throws GameEndException
+	 * @throws LogicException
+	 */
 	@Test
 	public void testAttack2_AttackPlayer() throws GameEndException, LogicException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
 		game.getMyField(p1.getId()).addCard();
+		
 		game.changePlayer(p2.getId());
 		game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		game.attack(p2.getId(), game.getMyField(p2.getId()).getBattlegroundMonster()[0], null);
 	}
-	
+	/**Angriff auf Spieler, wenn noch SpecialCards liegen.
+	 * Erlaubt: Voraussetzung fuer einen Angriff ist nur, dass der Gegner keine GameCards mehr auf dem Feld hat.
+	 * @throws GameEndException
+	 * @throws LogicException
+	 */
+	@Test
+	public void testAttack2_AttackPlayerWhileHavingSpecialCards() throws GameEndException, LogicException{
+		for(int i = 0; i < 3; i++){
+			Card swap = c1.get(c1.size()-(i+1));
+			c1.set(c1.size()-(i+1), c1.get(i));
+			c1.set(i, swap);
+		}
+		
+		Game game = new Game(p1, p2, new Deck(1, "Deck1", c1), d2, true);
+		game.changePlayer(p1.getId());
+		game.getMyField(p1.getId()).addCard();
+		
+		game.changePlayer(p2.getId());
+		game.getMyField(p2.getId()).addCard();
+		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
+		
+		game.changePlayer(p1.getId());
+		game.getMyField(p1.getId()).addCard();
+		game.playSpecialCard(p1.getId(), (SpecialCard)game.getCardsOnHand(p1.getId()).get(0), game.getEnemyField(p1.getId()).getBattlegroundMonster()[0]);
+		
+		game.changePlayer(p2.getId());
+		game.getMyField(p2.getId()).addCard();
+		assertEquals(1, game.getEnemyField(p2.getId()).getCountBattlegroundSpecials());
+		game.attack(p2.getId(), game.getMyField(p2.getId()).getBattlegroundMonster()[0], null);
+		assertEquals(2, game.getEnemyField(p2.getId()).getPlayer().getShields().getCurrentShields());
+	}
+	/**Angriff auf Spieler, obwohl noch GameCards auf Feld liegen.
+	 * 
+	 * @throws GameEndException
+	 * @throws LogicException
+	 */
 	@Test(expected = LogicException.class)
 	public void testAttack2_EnemyNull() throws GameEndException, LogicException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
 		game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
+		
 		game.changePlayer(p2.getId());
 		game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		game.attack(p2.getId(), game.getMyField(p2.getId()).getBattlegroundMonster()[0], null);
 	}
 	
+	/**Mit illegaler Karte angreifen.
+	 * Karte ist nur auf der Hand, nicht aber auf dem Feld.
+	 * @throws GameEndException
+	 * @throws LogicException
+	 */
 	@Test(expected = LogicException.class)
 	public void testAttack2_CardNotOnField() throws GameEndException, LogicException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
 		game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
+		
 		game.changePlayer(p2.getId());
 		game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
@@ -1011,6 +1078,7 @@ public class GameTest {
 		game.changePlayer(p1.getId());
 		game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
+		
 		game.changePlayer(p2.getId());
 		game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
@@ -1018,15 +1086,18 @@ public class GameTest {
 
 	}
 	
-	
-	
-	
+	/**Einen Spieler toeten.
+	 * 
+	 * @throws LogicException
+	 * @throws GameEndException
+	 */
 	@Test
 	public void testAttack2_killPlayer() throws LogicException, GameEndException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		for(int i = 0; i < 2; i++){
 		game.changePlayer(p1.getId());
 		game.getMyField(p1.getId()).addCard();
+		
 		game.changePlayer(p2.getId());
 		game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
@@ -1046,6 +1117,7 @@ public class GameTest {
 		for(int i = 0; i < 3; i++){
 		game.changePlayer(p1.getId());
 		game.getMyField(p1.getId()).addCard();
+		
 		game.changePlayer(p2.getId());
 		game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
@@ -1054,61 +1126,38 @@ public class GameTest {
 		}
 	}
 	/**Evolutionieren.
-	 * FEHLER: Die Karte evolutioniert nicht.
-	 * FEHLER: Effekt wird auf das falsche Deck ausgefuehrt.
 	 * @throws GameEndException
 	 * @throws LogicException
 	 */
-	//TODO
 	@Test
 	public void testAttack2_makingEvolutionAndEffects() throws GameEndException, LogicException{
 		Card swap = Objects.requireNonNull(c1.stream().filter(c -> c instanceof GameCard && ((GameCard)c).getId() == 60).findFirst().orElseGet(null));
 		int change = c1.indexOf(swap);
 		c1.set(change, c1.get(0));
 		c1.set(0, swap);
-		System.out.println("Erste Ausgabe");
-		System.out.println(c1.get(0)+" "+c2.get(0));
 		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), d2, true);
 		game.changePlayer(p1.getId());
 		game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
+		
 		game.changePlayer(p2.getId());
 		game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
+		
 		for(int i = 0; i < 2; i++){
-		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
-		game.attack(p1.getId(), game.getMyField(p1.getId()).getBattlegroundMonster()[0], game.getEnemyField(p1.getId()).getBattlegroundMonster()[0]);
-		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+			game.changePlayer(p1.getId());
+			game.getMyField(p1.getId()).addCard();
+			game.attack(p1.getId(), game.getMyField(p1.getId()).getBattlegroundMonster()[0], game.getEnemyField(p1.getId()).getBattlegroundMonster()[0]);
+			game.changePlayer(p2.getId());
+			game.getMyField(p2.getId()).addCard();
 		}
-		System.out.println("Zweite Ausgabe");
-		System.out.println(Arrays.toString(game.getMyField(p2.getId()).getBattlegroundMonster()));
-		System.out.println(Arrays.toString(game.getEnemyField(p2.getId()).getBattlegroundMonster()));
-		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
-		System.out.println("Dritte Ausgabe");
-		System.out.println(Arrays.toString(game.getMyField(p2.getId()).getBattlegroundMonster()));
-		System.out.println(Arrays.toString(game.getEnemyField(p2.getId()).getBattlegroundMonster()));
-//		game.attack(p1.getId(), 0, 0);
-		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
-		System.out.println("Vierte Ausgabe");
-		System.out.println(Arrays.toString(game.getMyField(p2.getId()).getBattlegroundMonster()));
-		System.out.println(Arrays.toString(game.getEnemyField(p2.getId()).getBattlegroundMonster()));
-		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
-		game.changePlayer(p2.getId());
-		System.out.println("Fuenfte Ausgabe");
-		System.out.println(Arrays.toString(game.getMyField(p2.getId()).getBattlegroundMonster()));
-		System.out.println(Arrays.toString(game.getEnemyField(p2.getId()).getBattlegroundMonster()));
+		
 		assertEquals(500, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
 		assertEquals(2, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getShields().getCurrentShields());
 		assertEquals(2100, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
 		assertEquals(58, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0].getId());
 	}
-	@Ignore
-	//TODO: noch nicht fertig, weil der Schwaechere keine Evo-Shilder bekommt.
+	
 	/**Komplexere Angriffe.
 	 * Um auch mal Angriffe auf Karten anderer Indexe(anstatt immer 0) zu testen.
 	 * @throws LogicException 
@@ -1120,37 +1169,52 @@ public class GameTest {
 		game.changePlayer(p1.getId());
 		game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
+		
 		game.changePlayer(p2.getId());
 		game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		game.attack(p2.getId(), 0, 0);
-		//Auskommentiert weil der staerkere beim Angriff noch keine Evo-Shields bekommt:
-//		assertEquals(1, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0].getEvolutionShields().getCurrentShields());
+		
+		assertEquals(1, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0].getEvolutionShields().getCurrentShields());
 		assertEquals(3, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getShields().getCurrentShields());
-//		assertEquals(1200, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
+		assertEquals(1200, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
 		assertEquals(700, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
-//		System.out.println(Arrays.toString(game.getMyField(p2.getId()).getBattlegroundMonster()));
-//		System.out.println(Arrays.toString(game.getEnemyField(p2.getId()).getBattlegroundMonster()));
-//		System.out.println("---------------------------------------------------------------------------");
+		
 		game.changePlayer(p1.getId());
 		game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(4));
 		game.attack(p1.getId(), 0, 0);
 		game.attack(p1.getId(), 1, 0);
-
-//		System.out.println(Arrays.toString(game.getMyField(p2.getId()).getBattlegroundMonster()));
-//		System.out.println(Arrays.toString(game.getEnemyField(p2.getId()).getBattlegroundMonster()));
-//		System.out.println("---------------------------------------------------------------------------");
+		
+		assertEquals(300, game.getEnemyField(p1.getId()).getBattlegroundMonster()[0].getAtk());
+		assertEquals(1, game.getEnemyField(p1.getId()).getBattlegroundMonster()[0].getShields().getCurrentShields());
+		assertEquals(1200, game.getMyField(p1.getId()).getBattlegroundMonster()[0].getAtk());
+		assertEquals(900, game.getMyField(p1.getId()).getBattlegroundMonster()[1].getAtk());
+		assertEquals(2, game.getMyField(p1.getId()).getBattlegroundMonster()[0].getEvolutionShields().getCurrentShields());
+		assertEquals(1, game.getMyField(p1.getId()).getBattlegroundMonster()[1].getEvolutionShields().getCurrentShields());
+		
 		game.changePlayer(p2.getId());
 		game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(4));
 		game.attack(p2.getId(), 0, 1);
 		game.attack(p2.getId(), 1, 1);
+		
+		assertEquals(1, game.getMyField(p2.getId()).getCountBattlegroundMonster());
+		assertEquals(2, game.getEnemyField(p2.getId()).getCountBattlegroundMonster());
+		assertEquals(1400, game.getMyField(p2.getId()).getBattlegroundMonster()[1].getAtk());
+		assertEquals(1, game.getMyField(p2.getId()).getBattlegroundMonster()[1].getEvolutionShields().getCurrentShields());
+		assertEquals(2, game.getMyField(p2.getId()).getBattlegroundMonster()[1].getShields().getCurrentShields());
+		assertEquals(1200, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
+		assertEquals(3, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0].getShields().getCurrentShields());
+		assertEquals(2, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0].getEvolutionShields().getCurrentShields());
+		assertEquals(800, game.getEnemyField(p2.getId()).getBattlegroundMonster()[1].getAtk());
+		assertEquals(2, game.getEnemyField(p2.getId()).getBattlegroundMonster()[1].getShields().getCurrentShields());
+		assertEquals(2, game.getEnemyField(p2.getId()).getBattlegroundMonster()[1].getEvolutionShields().getCurrentShields());
 	}
-	//TODO
+	
 	/**
 	 * Um auch mal Angriffe auf Karten anderer Indexe(anstatt immer 0) zu testen.
-	 * FEHLER: 
+	 * 
 	 * @throws LogicException 
 	 * @throws GameEndException 
 	 */
@@ -1161,33 +1225,26 @@ public class GameTest {
 			c2.set(c2.size()-(i+1), c2.get(i));
 			c2.set(i, swap);
 		}
-//		System.out.println(c2.get(0)+" "+c2.get(1)+" "+c2.get(2));
-//		System.out.println("--------------------------------------------------------");
-//		System.out.println(c2.get(3)+" "+c2.get(4)+" "+c2.get(5)+" "+c2.get(6));
-//		System.out.println("--------------------------------------------------------");
-//		System.out.println(c1+" ---------------- "+c2);
 		Deck d2 = new Deck(2, "TestDeck2", c2);
 		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), d2, true);
 		for(int i = 0; i < 4; i++){
-		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
-		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
-		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
-		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(3));
+			game.changePlayer(p1.getId());
+			game.getMyField(p1.getId()).addCard();
+			game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
+			
+			game.changePlayer(p2.getId());
+			game.getMyField(p2.getId()).addCard();
+			game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(3));
 		}
 		game.changePlayer(p1.getId());
 		game.getMyField(p1.getId()).addCard();
+		
 		game.changePlayer(p2.getId());
 		game.getMyField(p2.getId()).addCard();
-//		System.out.println(Arrays.toString(game.getEnemyField(p2.getId()).getBattlegroundMonster()));
-//		System.out.println("------------------");
-//		System.out.println(game.getCardsOnHand(p2.getId()));
 		game.playSpecialCard(p2.getId(), (SpecialCard)game.getCardsOnHand(p2.getId()).get(0), game.getEnemyField(p2.getId()).getBattlegroundMonster()[3]);
 		game.playSpecialCard(p2.getId(), (SpecialCard)game.getCardsOnHand(p2.getId()).get(0), game.getEnemyField(p2.getId()).getBattlegroundMonster()[3]);
 		game.playSpecialCard(p2.getId(), (SpecialCard)game.getCardsOnHand(p2.getId()).get(0), game.getEnemyField(p2.getId()).getBattlegroundMonster()[2]);
-		System.out.println(Arrays.toString(game.getEnemyField(p2.getId()).getBattlegroundMonster()));
-		System.out.println(Arrays.toString(game.getMyField(p2.getId()).getBattlegroundMonster()));
+		
 		for(int i = 0; i < 3; i++){
 		assertEquals(1900, game.getMyField(p2.getId()).getBattlegroundMonster()[i].getAtk());
 			}
@@ -1198,42 +1255,194 @@ public class GameTest {
 		assertEquals(1400, game.getMyField(p1.getId()).getBattlegroundMonster()[2].getAtk());
 		assertEquals(3, game.getMyField(p1.getId()).getBattlegroundMonster()[2].getShields().getCurrentShields());
 		assertEquals(1900, game.getEnemyField(p2.getId()).getBattlegroundMonster()[3].getAtk());
-		assertEquals(1, game.getEnemyField(p1.getId()).getBattlegroundMonster()[3].getShields().getCurrentShields());	
+		assertEquals(1, game.getEnemyField(p2.getId()).getBattlegroundMonster()[3].getShields().getCurrentShields());	
+		assertEquals(2, game.getMyField(p2.getId()).getCountBattlegroundSpecials());
 	}
 	
-	@Test
-	public void testAttack1_attackingSeveralTimesWithSameCard(){
+	/**Mehrmals mit der selben Karte angreifen.
+	 * Nicht erlaubt: Pro Zug darf nur einmal mit jeder Karte angegriffen werden.
+	 * @throws GameEndException
+	 * @throws LogicException
+	 */
+	@Test(expected = LogicException.class)
+	public void testAttack1_attackingSeveralTimesWithSameCard() throws GameEndException, LogicException{
+		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), d2, true);
+		game.changePlayer(p1.getId());
+		game.getMyField(p1.getId()).addCard();
+		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		
+		game.changePlayer(p2.getId());
+		game.getMyField(p2.getId()).addCard();
+		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
+		game.attack(p2.getId(), 0, 0);
+		game.attack(p2.getId(), 0, 0);
 	}
 	
 	
 	/**Karte toetet sich bei Angriff selbst.
+	 * @throws LogicException 
+	 * @throws GameEndException 
 	 * 
 	 */
 	@Test
-	public void testAttack2_suicidal(){
+	public void testAttack2_suicidal() throws GameEndException, LogicException{
+		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), d2, true);
+		game.changePlayer(p1.getId());
+		game.getMyField(p1.getId()).addCard();
+		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		
-	}
-	@Test
-	public void testAttack2_triggeringDestroyEffect(){
+		game.changePlayer(p2.getId());
+		game.getMyField(p2.getId()).addCard();
+		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		
-	}
-	@Test
-	public void testAttack2_triggeringSingleEffect(){
+		game.attack(p2.getId(), 0, 0);
 		
-	}
-	@Test
-	public void testAttack2_triggeringMultipleEffekt(){
+		game.changePlayer(p1.getId());
+		game.getMyField(p1.getId()).addCard();
+		game.attack(p1.getId(), 0, 0);
+		
+		game.changePlayer(p2.getId());
+		game.getMyField(p2.getId()).addCard();
+		game.attack(p2.getId(), 0, 0);
+		
+		game.changePlayer(p1.getId());
+		game.getMyField(p1.getId()).addCard();
+
+		game.changePlayer(p2.getId());
+		game.getMyField(p2.getId()).addCard();
+		assertEquals(300, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
+		game.attack(p2.getId(), 0, 0);
+		
+		assertEquals(0, game.getMyField(p2.getId()).getCountBattlegroundMonster());
+		assertEquals(1200, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
+		assertEquals(4, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0].getEvolutionShields().getCurrentShields());
 		
 	}
 	
+	/**Destroy Effekt triggern.
+	 * 
+	 * @throws GameEndException
+	 * @throws LogicException
+	 */
 	@Test
-	public void testAttack2_triggeringDeckEffekt(){
+	public void testAttack2_triggeringDestroyEffect() throws GameEndException, LogicException{
+		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), d2, true);
+		game.changePlayer(p1.getId());
+		game.getMyField(p1.getId()).addCard();
+		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
+		
+		game.changePlayer(p2.getId());
+		game.getMyField(p2.getId()).addCard();
+		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(4));
+		game.attack(p2.getId(), 0, 0);
+		
+		assertEquals(1, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getShields().getCurrentShields());
+		assertEquals(1, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getEvolutionShields().getCurrentShields());
+		assertEquals(1400, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
+		assertEquals(2, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0].getShields().getCurrentShields());
+		assertEquals(0, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0].getEvolutionShields().getCurrentShields());
+		assertEquals(1400, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
 		
 	}
 	
+	/**Triggern eines SingleEffekts.
+	 * Bzw. ein addition/subtraction_one
+	 * @throws LogicException 
+	 * @throws GameEndException 
+	 * 
+	 */
+	@Test
+	public void testAttack2_triggeringSingleEffect() throws GameEndException, LogicException{
+		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), d2, true);
+		game.changePlayer(p1.getId());
+		game.getMyField(p1.getId()).addCard();
+		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(4));
+		
+		game.changePlayer(p2.getId());
+		game.getMyField(p2.getId()).addCard();
+		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(4));
+		game.attack(p2.getId(), 0, 0);
+		
+		assertEquals(0, game.getEnemyField(p2.getId()).getCountBattlegroundMonster());
+		assertEquals(1750, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
+		assertEquals(1, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getShields().getCurrentShields());
+		assertEquals(1, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getEvolutionShields().getCurrentShields());
+	}
 	
-	/**
+	/**Triggern eines MultipleEffekt.
+	 * Bzw. addition/subtraction_all.
+	 * @throws LogicException 
+	 * @throws GameEndException 
+	 * 
+	 */
+	@Test
+	public void testAttack2_triggeringMultipleEffekt() throws GameEndException, LogicException{
+		int index = c2.indexOf(c2.stream().filter(elem -> elem.getId() == 68).findFirst().get());
+		Card swap = c2.get(index);
+		c2.set(index, c2.get(0));
+		c2.set(0, swap);
+		
+		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), new Deck(2, "TestDeck2,", c2), true);
+		game.changePlayer(p1.getId());
+		game.getMyField(p1.getId()).addCard();
+		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
+		
+		for(int i = 0; i < 2; i++){
+			game.changePlayer(p2.getId());
+			game.getMyField(p2.getId()).addCard();
+			if(i == 0)
+				game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
+			
+			game.changePlayer(p1.getId());
+			game.getMyField(p1.getId()).addCard();		
+			game.attack(p1.getId(), 0, 0);
+			if(i == 0){
+				assertEquals(1000, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
+				assertEquals(2, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getShields().getCurrentShields());
+				assertEquals(1, game.getMyField(p1.getId()).getBattlegroundMonster()[0].getEvolutionShields().getCurrentShields());
+				assertEquals(1200, game.getMyField(p1.getId()).getBattlegroundMonster()[0].getAtk());
+			}else if(i == 1){
+				assertEquals(900, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
+				assertEquals(1, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getShields().getCurrentShields());
+				assertEquals(2, game.getMyField(p1.getId()).getBattlegroundMonster()[0].getEvolutionShields().getCurrentShields());
+				assertEquals(1100, game.getMyField(p1.getId()).getBattlegroundMonster()[0].getAtk());
+			}
+		}
+	}
+	/**Triggert einen DeckEffekt.
+	 * 
+	 * @throws GameEndException
+	 * @throws LogicException
+	 */
+	@Test
+	public void testAttack2_triggeringDeckEffekt() throws GameEndException, LogicException{
+		int index = c2.indexOf(c2.stream().filter(elem -> elem.getId() == 68).findFirst().get());
+		Card swap = c2.get(index);
+		c2.set(index, c2.get(0));
+		c2.set(0, swap);
+		
+		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), new Deck(2, "TestDeck2,", c2), true);
+		game.changePlayer(p1.getId());
+		game.getMyField(p1.getId()).addCard();
+		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
+		
+		game.changePlayer(p2.getId());
+		game.getMyField(p2.getId()).addCard();
+		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
+		
+		game.changePlayer(p1.getId());
+		game.getMyField(p1.getId()).addCard();		
+		System.out.println(game.getMyField(p2.getId()).getBattlegroundMonster()[0]);
+		System.out.println(game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
+		game.attack(p1.getId(), 0, 0);
+		assertEquals(1000, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
+		assertEquals(2, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getShields().getCurrentShields());
+		assertEquals(1, game.getMyField(p1.getId()).getBattlegroundMonster()[0].getEvolutionShields().getCurrentShields());
+		assertEquals(1200, game.getMyField(p1.getId()).getBattlegroundMonster()[0].getAtk());
+	}
+	
+	
+	/** Das Gesamte Spiel durchgetestet.
 	 * Abgepruefte Eigenschaften:
 	 * - meherer Evolutionen.
 	 * - meherere Effektarten.
@@ -1244,7 +1453,7 @@ public class GameTest {
 	 * - Ende des Spiels. Die Spieler leben noch, wenn die Decks aufgebraucht sind. Das Spiel geht dann weiter.
 	 */
 	@Test
-	public void testFullTest(){
+	public void test_FullGame(){
 		
 	}
 	
