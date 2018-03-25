@@ -12,11 +12,15 @@ import java.awt.Image;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -84,7 +88,6 @@ public class DbCard {
                 }
 
                 /** Ausfuerung des Joins(ueber Card_Effekt) um die Effekte der LifeShields einer Karte auszulesen. **/
-               //auslagern, dass ich ihn auch verwenden kann
                 prepStmt2 = c.prepareStatement("select e.eid, e.description, e.effect_type, e.effect_number, c_e.shield"+""
            		+ " from \"Effecte\" e, \"Card_Effect\" c_e, \"Gamecard\" g "
            		+ "where g.gid = c_e.gid "
@@ -190,6 +193,92 @@ public class DbCard {
          if(type == null) throw new IllegalArgumentException("Kein existenter Type(Enum)");
         
         return type;
+    }
+    
+    /**Gibt eine GameCard zurueck.
+     * 
+     * @param name Name der Karte.
+     * @return eine GameCard.
+     */
+    public GameCard getGameCard(String name){
+    	GameCard result = null;
+    	try{
+    	 c = DbConnection.getPostgresConnection();
+         
+         /** Ausfuehren des Selects um alle notwendigen Infos aus Gamecard zu beziehen. **/
+                      
+          PreparedStatement prepStmt1 = c.prepareStatement("Select g.gid, g.name, g.description,"
+                                   + "g.monster_type, g.atk, g.shield_curr,"
+                                   + "g.shield_max, g.evo_shield_curr"
+                                   + ", g.evo_shield_max, g.evo from \"Gamecard\" g "
+                                   + "where LOWER(g.name) = LOWER(?)");
+          prepStmt1.setString(1, name);
+          ResultSet resStmt1 = prepStmt1.executeQuery();
+          
+          while (resStmt1.next()) {       
+              
+              int gameCardID = resStmt1.getInt(1);
+              String gameCardName = resStmt1.getString(2);
+              String gameCardDescription = resStmt1.getString(3);
+              Type monsterType = stringToType(resStmt1.getString(4));
+              int attack = resStmt1.getInt(5);
+              short lifeShieldCurrent = resStmt1.getShort(6);
+              short lifeShieldMax = resStmt1.getShort(7);
+              short evoShieldCurrent = resStmt1.getShort(8);
+              short evoShieldMax = resStmt1.getShort(9);
+              GameCard evo = null;
+              byte[] imageGamecard = null;
+              
+//              (final int id, final String name, final String description, final Type type, final byte[] image, final int atk,
+//            	final Shield evolutionShields, final Shield shields, final GameCard evolution, 
+//              final Effect[] effects, final Effect[] evoEffects) {
+
+              /** Ausfuerung des Joins(ueber Card_Effekt) um die Effekte der LifeShields einer Karte auszulesen. **/
+             PreparedStatement prepStmt2 = c.prepareStatement("select e.eid, e.description, e.effect_type, e.effect_number, c_e.shield"+""
+         		+ " from \"Effecte\" e, \"Card_Effect\" c_e, \"Gamecard\" g "
+         		+ "where g.gid = c_e.gid "
+         		+ "and c_e.eid = e.eid "
+         		+ "and c_e.shield is not null "
+         		+ "and g.gid = "
+         		+ "?");
+         prepStmt2.setInt(1, gameCardID);
+         ResultSet resStmt2 = prepStmt2.executeQuery();
+          /** Ausfuerung des Joins(ueber Card_Effekt) um die EvoShield- Effekte einer Karte auszulesen. **/
+          //auslagern
+         PreparedStatement selectCard_EvoEffect = c.prepareStatement("select e.eid, e.description, e.effect_type, e.effect_number, c_e.evo_shield"+""
+            		+ " from \"Effecte\" e, \"Card_Effect\" c_e, \"Gamecard\" g "
+            		+ "where g.gid = c_e.gid "
+            		+ "and c_e.eid = e.eid "
+            		+ "and c_e.evo_shield is not null "
+            		+ "and g.gid = "
+            		+ "?");
+         selectCard_EvoEffect.setInt(1, gameCardID);
+            ResultSet resStmt3 = selectCard_EvoEffect.executeQuery();
+           
+             EffectType effectType;
+              Effect[] effects = new Effect[lifeShieldMax];
+              Effect[] evoEffects = new Effect[EVO_OBERGRENZE];
+              
+         effects = getEffects(lifeShieldMax, resStmt2);
+         evoEffects = getEvoEffects(resStmt3);
+             
+              result = new GameCard(gameCardID, gameCardName, gameCardDescription, monsterType, imageGamecard, attack, 
+            		  	new Shield(lifeShieldCurrent, lifeShieldMax), new Shield(evoShieldCurrent, evoShieldMax), evo,
+            		  	effects, evoEffects);
+          }  c.close();
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(DbCard.class.getName()).log(Level.SEVERE, null, ex);
+          } 
+            finally {
+                try {
+                c.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(DbCard.class.getName()).log(Level.SEVERE, null, ex);
+                  }
+            }
+        
+        return Objects.requireNonNull(result);
+          
     }
 
     /**
@@ -922,6 +1011,15 @@ public class DbCard {
 //    		
 //    }
     
+    /**Effekte einer GameCard aendern.
+     * 
+     * @param c_eid	
+     * @param gid Id der GameCard.
+     * @param eid ID des neuen Effekts.
+     * @param shield Nr. des Shields.
+     * @param evo_shield Nr. des EvoShields.
+     * @return Anzahl der betroffenen Zeilen.
+     */
     public int updateEffect(int c_eid, int gid, int eid, Object shield, Object evo_shield){
 
         /**holt die gewuenschte Karte. **/
@@ -1087,5 +1185,61 @@ public boolean insert_duplicate(int did, int gid) throws IllegalArgumentExceptio
         }
         return true;
     }
+	/**Zeigt die Verteilung der Karten im Deck.
+	 * Ebenso auch die Gesamtanzahl.
+	 * @param deckName Name des Decks.
+	 */
+	public void showAmountOfCards(String deckName){
+		PreparedStatement pst, pst2, pst3;
+		ResultSet rs, rs2, rs3;
+		
+		try{
+			c = DbConnection.getPostgresConnection();
+			pst = c.prepareStatement("select g.name, count(dc.gid) from \"Gamecard\" g, \"Deck_Cards\" dc, \"Deck\" d "+
+					"where g.gid = dc.gid "+
+					"and dc.did = d.did "+
+					"and LOWER(d.name) = LOWER(?) "+
+					"group by g.name");
+			
+			pst.setString(1, deckName);
+			rs = pst.executeQuery();
+			
+			pst3 = c.prepareStatement("select sp.name, count(dc.sid) from \"Specialcard\" sp, \"Deck\" d, \"Deck_Cards\" dc "+
+					"where d.did = dc.did "+
+					"and sp.sid = dc.sid "+
+					"and LOWER(d.name) = LOWER(?) "+
+					"group by sp.name");
+			
+			pst3.setString(1, deckName);
+			rs3 = pst3.executeQuery();
+			
+			
+			pst2 = c.prepareStatement("select count(gid)+count(sid) from \"Deck\" d, \"Deck_Cards\" dc "+
+					"where d.did = dc.did "+
+					"and LOWER(name) = LOWER(?)");
+			pst2.setString(1, deckName);
+			rs2 = pst2.executeQuery();
+			while(rs.next()){
+				System.out.println(rs.getString(1)+":\t "+rs.getInt(2));
+			}
+			System.out.println("-----------------------------------------------------");
+			while(rs3.next()){
+				System.out.println(rs3.getString(1)+":\t "+rs3.getInt(2));
+			}
+			rs2.next();
+			System.out.println("-----------------------------------------------------");
+			System.out.println("Gesamt: "+rs2.getInt(1));
+			
+			c.close();	
+		} catch (SQLException | ClassNotFoundException ex) {
+			Logger.getLogger(DbCard.class.getName()).log(Level.SEVERE, null, ex);
+	    } finally {
+	        try {
+	            c.close();
+	        } catch (SQLException ex) {
+	            Logger.getLogger(DbCard.class.getName()).log(Level.SEVERE, null, ex);
+	        }
+    }
+	}
 
 }

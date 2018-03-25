@@ -20,7 +20,7 @@ import cardgame.logic.LogicException;
 
 public class DistributionOfOdds {
 	
-	public static int AMOUNT = 100;
+	public static int AMOUNT = 10_000;
 	
 	public static void main(String...args) throws LogicException, SQLException, ClassNotFoundException{
 		List<String> allDeckNames = new ArrayList<>();
@@ -56,6 +56,7 @@ public class DistributionOfOdds {
 		int victory_d2 = 0;
 		for (int i = 0; i < AMOUNT ; i++) {
 			Game g = new Game(new Player(1, "Spieler1"), new Player(2, "Spieler2"), new Deck(d1), new Deck(d2));
+//			Bei Testplayer die Exception auskommentieren: Game: 386
 			KiPlayer p1 = new RandomPlayer(g, 1);
 			KiPlayer p2 = new RandomPlayer(g, 2);
 			
@@ -90,7 +91,7 @@ public class DistributionOfOdds {
 				} catch (LogicException e) {
 					System.out.println(e);
 				}
-			}
+			} 
 			if(g.getPlayerWon() == p1.getId()){
 				victory_d1++;
 			}

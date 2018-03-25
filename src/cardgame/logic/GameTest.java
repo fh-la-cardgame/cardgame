@@ -314,14 +314,37 @@ public class GameTest {
 		game.getMyField(p2.getId()).addCard();
 		game.playSpecialCard(p2.getId(), (SpecialCard)c2.get(c2.size()-1), game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 	}
-	//TODO
+	
+	/** Angriff auf NULL mit SpecialCard die keine direkte Karte angreift.
+	 * Also z.B. mit dem Effekt: addition_all.
+	 * @throws LogicException
+	 * @throws GameEndException
+	 */
+	@Test
+	public void testPlaySpecialCard_EnemyNullMultipleEffect() throws LogicException, GameEndException{
+		for(int i = 0; i < 3; i++){
+			Card swap = c2.get(c2.size()-(i+1));
+			c2.set(c2.size()-(i+1), c2.get(i));
+			c2.set(i, swap);
+		}
+		Deck d3 = new Deck(2, "TestDeck3", c2);
+		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), d3, true);
+		game.changePlayer(p1.getId());
+		game.getMyField(p1.getId()).addCard();
+		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
+		game.changePlayer(p2.getId());
+		game.getMyField(p2.getId()).addCard();
+		game.playSpecialCard(p2.getId(), (SpecialCard)game.getCardsOnHand(p2.getId()).get(0), null);
+		assertEquals(1, game.getMyField(p2.getId()).getCountBattlegroundSpecials());
+	}
 	
 	/** Angriff auf NULL mit SpecialCard.
+	 * In diesem Fall
 	 * @throws LogicException
 	 * @throws GameEndException
 	 */
 	@Test(expected = NullPointerException.class)
-	public void testPlaySpecialCard_EnemyNull() throws LogicException, GameEndException{
+	public void testPlaySpecialCard_EnemyNullSingleEffect() throws LogicException, GameEndException{
 		for(int i = 0; i < 3; i++){
 			Card swap = c2.get(c2.size()-(i+1));
 			c2.set(c2.size()-(i+1), c2.get(i));
@@ -335,7 +358,7 @@ public class GameTest {
 		game.changePlayer(p2.getId());
 		game.getMyField(p2.getId()).addCard();
 		// statt null alternativ auch: game.getEnemyField(p2.getId()).getBattlegroundMonster()[1]
-		game.playSpecialCard(p2.getId(), (SpecialCard)game.getCardsOnHand(p2.getId()).get(0), null);
+		game.playSpecialCard(p2.getId(), (SpecialCard)game.getCardsOnHand(p2.getId()).get(1), null);
 	}
 	
 	/**Spielen einer illegalen Karte.
@@ -505,14 +528,14 @@ public class GameTest {
 		game.playSpecialCard(p2.getId(), (SpecialCard)game.getCardsOnHand(p2.getId()).get(0), game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 	}
 	
-	//TODO
+
 	//mMn. sinnlos
-	/**SpecialCard in der ersten Runde ausspielen.
-	 * 
+	/**SpecialCard(Multiple-Effekt) in der ersten Runde ausspielen.
+	 * Die Karte verpufft einfach.
 	 * @throws GameEndException
 	 * @throws LogicException
 	 */
-	@Test(expected = Exception.class)
+	@Test
 	public void testPlaySpecialCard_FirstTurn() throws GameEndException, LogicException{
 		for(int i = 0; i < 3; i++){
 			Card swap = c2.get(c2.size()-(i+1));
@@ -525,7 +548,7 @@ public class GameTest {
 		game.getMyField(p1.getId()).addCard();
 		game.playSpecialCard(p1.getId(), (SpecialCard)game.getCardsOnHand(p1.getId()).get(0), null);
 		assertEquals(3, game.getEnemyField(p1.getId()).getPlayer().getShields().getCurrentShields());
-//		assertEquals(1, Stream.of(game.getMyField(p1.getId()).getBattlegroundSpecials()).filter(a -> a != null).count());
+		assertEquals(0, game.getMyField(p1.getId()).getCountBattlegroundSpecials());
 	}
 	/**Einer Karte ATK abziehen.
 	 * Effekt: substraction_one

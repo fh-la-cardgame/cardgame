@@ -161,9 +161,9 @@ public class Game {
               //TODO
                 gameEnd = true;
                 if(id == side1PlayerId) {
-                	playerWon = side2PlayerId;
-                } else {
                 	playerWon = side1PlayerId;
+                } else {
+                	playerWon = side2PlayerId;
                 }
             }
 
@@ -364,6 +364,7 @@ public class Game {
             throw new LogicException("Spieler ist nicht am Zug");
         }
         if (gameEnd) {
+        	// Beim Distribution of Odds auskommentieren:
         	throw new LogicException("Spiel zu Ende");
         }
     }
