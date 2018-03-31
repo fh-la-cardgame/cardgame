@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Scanner;
 import java.util.stream.Stream;
 
 import cardgame.classes.Card;
@@ -16,6 +17,8 @@ import cardgame.logic.Game;
 import cardgame.logic.LogicException;
 
 public class TestPlayer implements KiPlayer {
+	
+	
 	private static final boolean KAMIKAZE = false;
 	private final int id;
     private final Game game;
@@ -39,6 +42,8 @@ public class TestPlayer implements KiPlayer {
         attack();
 
 	}
+	
+	
 	
 	private void playCards() throws LogicException{
 		List<Card> monsterCards = game.getCardsOnHand(id);
@@ -77,7 +82,10 @@ public class TestPlayer implements KiPlayer {
 		}
 		
 		  if(myPlayground.canPlayMonsterCard() && monsterCardPlaying != null){
-			  game.playCard(id, monsterCardPlaying);
+				 game.playCard(id, monsterCardPlaying);
+				 if(DELAY)
+			  		delay();
+			  	
 		  }
 		  //--------------------------------------------------------------------------------------------------------
 		  GameCard targetCard = null;
@@ -110,9 +118,13 @@ public class TestPlayer implements KiPlayer {
 			  }
 			  if(playableAddition || playableSubtraction){
 			  game.playSpecialCard(id, specialCardPlaying, targetCard);
+			  if(DELAY)
+			  		delay();
 			  }
 		  }else if(specialCardPlaying != null && myPlayground.canPlaySpecialCard()){
 			  game.playSpecialCard(id, specialCardPlaying, null);
+			  if(DELAY)
+			  		delay();
 		  }
 		 //------------------------------------------------------------------------------------------------------------------------- 
 		  
@@ -149,9 +161,13 @@ public class TestPlayer implements KiPlayer {
 					
 					if(victim != null && game.getEnemyField(id).getCountBattlegroundMonster() != 0){
 						game.attack(id, aggressor, victim);
+						if(DELAY)
+					  		delay();
 						
 					}else if(game.getEnemyField(id).getCountBattlegroundMonster() == 0){
 						game.attack(id, aggressor, null);
+						if(DELAY)
+					  		delay();
 					}
 				}
 				myField.remove(aggressor);
@@ -176,6 +192,9 @@ public class TestPlayer implements KiPlayer {
 				}
 				if(myCard.getShields().getCurrentShields() >= 2 && Stream.of(myCard.getEffects()).filter(e -> e.getEffectType() == EffectType.addition_deck || e.getEffectType() == EffectType.addition_one).findFirst().get() != null){
 					game.attack(id, myCard, enemyField.get(0));
+					if(DELAY){
+						delay();
+					}
 				}
 			}
 		}

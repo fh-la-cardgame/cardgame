@@ -14,7 +14,11 @@ import cardgame.classes.SpecialCard;
 import cardgame.logic.Game;
 import cardgame.logic.LogicException;
 
+
+
 public class TestPlayerProtokoll implements KiPlayer {
+	
+	
 	private static final boolean KAMIKAZE = false;
 	private final int id;
     private final Game game;
@@ -75,6 +79,9 @@ public class TestPlayerProtokoll implements KiPlayer {
 		  if(myPlayground.canPlayMonsterCard() && monsterCardPlaying != null){
 			  game.playCard(id, monsterCardPlaying);
 			  System.out.println("NEUE KARTE: "+monsterCardPlaying.getName());
+			  if(DELAY){
+				  delay();
+			  }
 		  }
 		  //--------------------------------------------------------------------------------------------------------
 		  GameCard targetCard = null;
@@ -110,12 +117,18 @@ public class TestPlayerProtokoll implements KiPlayer {
 			  }
 			  System.out.println("SPECIAL" +myPlayground.getCountBattlegroundMonster()+" "+game.getEnemyField(id).getCountBattlegroundMonster());
 			  if(playableAddition || playableSubtraction){
-			  System.out.println("SPECICAL: "+specialCardPlaying.getName() +" auf "+ targetCard.getName());
-			  game.playSpecialCard(id, specialCardPlaying, targetCard);
+				  System.out.println("SPECICAL: "+specialCardPlaying.getName() +" auf "+ targetCard.getName());
+				  game.playSpecialCard(id, specialCardPlaying, targetCard);
+				  if(DELAY){
+					  delay();
+				  }
 			  }
 		  }else if(specialCardPlaying != null && myPlayground.canPlaySpecialCard()){
 			  System.out.println("SPECICAL ALLG: "+specialCardPlaying.getName());
 			  game.playSpecialCard(id, specialCardPlaying, null);
+			  if(DELAY){
+				  delay();
+			  }
 		  }
 		 //------------------------------------------------------------------------------------------------------------------------- 
 		  
@@ -154,8 +167,8 @@ public class TestPlayerProtokoll implements KiPlayer {
 					
 					if(victim != null && game.getEnemyField(id).getCountBattlegroundMonster() != 0){
 						game.attack(id, aggressor, victim);
-						System.out.println("ANGRIFF: "+aggressor.getName()+"("+aggressor.getAtk()+")" +" vs " + victim.getName()+"("+victim.getAtk()+")");
 						
+						System.out.println("ANGRIFF: "+aggressor.getName()+"("+aggressor.getAtk()+")" +" vs " + victim.getName()+"("+victim.getAtk()+")");
 					}else if(game.getEnemyField(id).getCountBattlegroundMonster() == 0){
 						System.out.println("KONTROLLE: "+Arrays.asList(game.getEnemyField(id).getBattlegroundMonster()));
 						System.out.println("ANGRIFF: "+aggressor.getName() +" vs gegnerischer Spieler");
@@ -163,6 +176,9 @@ public class TestPlayerProtokoll implements KiPlayer {
 					}
 					System.out.println(game.getEnemyField(id).getCountBattlegroundMonster()+" - "+ game.getEnemyField(id).getPlayer().getShields().getCurrentShields());
 					System.out.println(game.getMyField(id).getCountBattlegroundMonster()+" - "+ game.getMyField(id).getPlayer().getShields().getCurrentShields());
+					if(DELAY){
+						delay();
+					}
 				}
 				myField.remove(aggressor);
 				i++;
@@ -186,6 +202,9 @@ public class TestPlayerProtokoll implements KiPlayer {
 				}
 				if(myCard.getShields().getCurrentShields() >= 2 && Stream.of(myCard.getEffects()).filter(e -> e.getEffectType() == EffectType.addition_deck || e.getEffectType() == EffectType.addition_one).findFirst().get() != null){
 					game.attack(id, myCard, enemyField.get(0));
+					if(DELAY){
+						delay();
+					}
 				}
 			}
 		}
