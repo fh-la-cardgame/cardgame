@@ -80,7 +80,8 @@ public class Deck {
 
     public void reduceCountCards() {
         if(countCards.getValue() > 0)
-        this.countCards.subtract(1);
+        this.countCards.setValue(countCards.getValue()-1);
+        System.out.println("countCards:"+countCards.getValue());
     }
 
     

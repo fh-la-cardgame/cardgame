@@ -5,6 +5,9 @@ import java.util.*;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.geometry.Insets;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 
 
 /**
@@ -18,10 +21,15 @@ public class GameCard extends Card {
      * Angriffspunkte.
      **/
     private int atk;
-    /**
-     * Angriffspunkte, GUI ATK
-     **/
-    private IntegerProperty pAtk;
+//    /**
+//     * Angriffspunkte, GUI ATK
+//     **/
+//    private IntegerProperty pAtk;
+    
+    /* Angriffstaerke **/
+    private Label gAtk;
+    /* Button zur Kampfsteuerung **/
+    private Button fight;
     /**
      * Notwendige und erreichte Schilder fuer Evolution der Karte.
      **/
@@ -67,7 +75,7 @@ public class GameCard extends Card {
      */
     public GameCard(final int id, final String name, final String description, final Type type, final byte[] image, final int atk, final Shield evolutionShields, final Shield shields, final GameCard evolution, final Effect[] effects, final Effect[] evoEffects) {
         super(id, name, description, type, image);
-        this.pAtk = new SimpleIntegerProperty(atk);
+        //this.pAtk = new SimpleIntegerProperty(atk);
         this.atk = atk;
         this.evolutionShields = new Shield(evolutionShields);
         this.shields = new Shield(shields);
@@ -75,17 +83,53 @@ public class GameCard extends Card {
         this.effects = effects.clone();
         this.evoEffects = evoEffects;
         this.specialCards = new IdentityHashSet<>();
+        
+        
+        //GUI 
+        this.gAtk = new Label(Integer.toString(atk));
+        this.fight = new Button("Kaempfen");
+        this.fight.setVisible(false);
+
+        if (effects != null && effects.length > 0) {
+            getgDescription().add(new Label("SCHWARZE SCHILDEFFEKTE:"));
+            for (int i = 0; i < effects.length; i++) {
+                if (effects[i] != null) {
+
+                   getgDescription().add(new Label(effects[i].getDescription()));
+                }
+
+            }
+
+            getgDescription().add(new Label("***************************************"));
+        }
+
+        if (evoEffects != null && evoEffects.length > 0) {
+            getgDescription().add(new Label("EVO SCHILDEFFEKTE:"));
+            for (int i = 0; i < evoEffects.length; i++) {
+                if (evoEffects[i] != null) {
+
+                    getgDescription().add(new Label(evoEffects[i].getDescription()));
+                }
+
+            }
+
+            getgDescription().add(new Label("***************************************"));
+        }
+        
+        positionAdditionalElements();
+        setAdditionalSizesAndPosition();
+
     }
 
     private GameCard(final int id, final String name, final String description, final Type type, final byte[] image, final int atk, final Shield evolutionShields, final Shield shields, final GameCard evolution, final Effect[] effects, final Effect[] evoEffects, final Set<SpecialCard> specialcard) {
-        super(id, name, description, type, image);
-        this.pAtk = new SimpleIntegerProperty(atk);
-        this.atk = atk;
-        this.evolutionShields = new Shield(evolutionShields);
-        this.shields = new Shield(shields);
-        this.evolution = evolution;
-        this.effects = effects.clone();
-        this.evoEffects = evoEffects;
+       this(id, name, description, type, image, atk, evolutionShields, shields, evolution, effects, evoEffects);
+        //this.pAtk = new SimpleIntegerProperty(atk);
+//        this.atk = atk;
+//        this.evolutionShields = new Shield(evolutionShields);
+//        this.shields = new Shield(shields);
+//        this.evolution = evolution;
+//        this.effects = effects.clone();
+//        this.evoEffects = evoEffects;
         this.specialCards = new IdentityHashSet<>(specialcard);
     }
 
@@ -95,9 +139,27 @@ public class GameCard extends Card {
      * @param c Spielkarte
      */
     public GameCard(final GameCard c) {
-        this(c.getId(), c.getName(), c.getDescription(), c.getType(), c.getImage(), c.getAtk(), c.getEvolutionShields(), c.getShields(), c.getEvolution(), c.getEffects(), c.getEvoEffects());
+        this(c.getCid(), c.getName(), c.getDescription(), c.getType(), c.getImage(), c.getAtk(), c.getEvolutionShields(), c.getShields(), c.getEvolution(), c.getEffects(), c.getEvoEffects());
     }
 
+    /**
+     * Platzhalterklasse - Definiert eine leere Karte als Schablone
+     */
+    public GameCard(){
+        super();
+        this.atk = 0;
+        this.evolutionShields = new Shield(0);
+        this.shields = new Shield(0);
+        this.evolution = null;
+        this.effects = null;
+        this.evoEffects = null;
+        this.specialCards = null;
+        
+        
+        //GUI 
+        this.gAtk = new Label("");
+        this.fight = new Button("");
+    }
     /**
      * Ändert die Atk Punkte um den Wert add.
      *
@@ -106,7 +168,8 @@ public class GameCard extends Card {
     public void changeAtk(int add) {
         this.atk += add;
         if (atk < 0) atk = 0;
-        setpAtk(atk);
+        //setpAtk(atk);
+        getgAtk().setText(Integer.toString(this.atk));
     }
 
     public void addSpecialCard(SpecialCard s) {
@@ -159,13 +222,13 @@ public class GameCard extends Card {
         return evoEffects;    //Offene Frage: Clonen?
     }
 
-    public IntegerProperty getpAtk() {
-        return pAtk;
-    }
-
-    public void setpAtk(int atk) {
-        this.pAtk.setValue(atk);
-    }
+//    public IntegerProperty getpAtk() {
+//        return pAtk;
+//    }
+//
+//    public void setpAtk(int atk) {
+//        this.pAtk.setValue(atk);
+//    }
 
     @Override
     public String toString() {
@@ -234,5 +297,59 @@ public class GameCard extends Card {
         nextEffect = null;
         return e;
     }
+    
+    /**
+     * Getter 
+     * @return Angrisspunkte 
+     */
+    public Label getgAtk() {
+        return gAtk;
+    }
+
+    /**
+     * Getter
+     * @return Kampfbutton 
+     */
+    public Button getFight() {
+        return fight;
+    }
+
+    /**
+     * Positionierung der Elemente im Grid.
+     */
+ @Override
+    protected final void positionAdditionalElements() {
+        this.add(this.shields.getgShield(), 0, 3);
+        this.add(this.evolutionShields.getgShield(), 1, 3);
+        this.add(gAtk, 0,2,2,1);        
+        this.add(fight, 1, 4);        
+        
+    }
+
+    
+    /**
+     * Anpassung der Groesse und Ausrichtung.
+     */
+    @Override
+    protected final void setAdditionalSizesAndPosition() {
+        //Padding
+        Insets i = new Insets(2, 2, 2, 2);
+       this.shields.getgShield().setPadding(i);
+        this.evolutionShields.getgShield().setPadding(i);
+        this.gAtk.setPadding(i);
+        this.fight.setPadding(i);
+
+        //   this.card_black_shield.
+//        this.card_black_shield.setAlignment(Pos.CENTER);
+//        
+//        this.card_white_shield.setAlignment(Pos.CENTER);
+//        this.cardname.setAlignment(Pos.CENTER);
+//        this.imageholder.setAlignment(Pos.CENTER);
+//        this.cardname.setPrefSize( Double.MAX_VALUE, Double.MAX_VALUE );
+//        this.imageholder.setPrefSize( Double.MAX_VALUE, Double.MAX_VALUE );
+//        this.card_white_shield.setPrefSize( Double.MAX_VALUE, Double.MAX_VALUE );
+//        this.card_black_shield.setPrefSize( Double.MAX_VALUE, Double.MAX_VALUE );
+    }
+
 
 }
