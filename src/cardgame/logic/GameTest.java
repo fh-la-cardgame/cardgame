@@ -106,7 +106,7 @@ public class GameTest {
 		int i = 0;
 		try {
 			while(i < game.getCardsOnHand(p1.getId()).size()){
-				have.add(game.getCardsOnHand(p1.getId()).get(i).getId());
+				have.add(game.getCardsOnHand(p1.getId()).get(i).getCid());
 				i++;
 			}
 		} catch (LogicException e) {
@@ -135,7 +135,7 @@ public class GameTest {
 		assertEquals(gameCardId_want, card.getId());
 		game.playCard(p1.getId(), card);
 		GameCard cardOnField = game.getMyField(1).getBattlegroundMonster()[0];
-		int id_have = cardOnField.getId();
+		int id_have = cardOnField.getCid();
 		assertEquals(73, id_have);
 	}
 	
@@ -474,7 +474,7 @@ public class GameTest {
 	}
 	//TODO
 	/**Es werden keine neuen Karten gezogen.
-	 * Es sollen aber automatisch Neue nachgezogen werden, falls möglich(Karten auf der Hand < 5).
+	 * Es sollen aber automatisch Neue nachgezogen werden, falls moeglich(Karten auf der Hand < 5).
 	 */
 	@Ignore
 	@Test(expected = LogicException.class)
@@ -1160,7 +1160,7 @@ public class GameTest {
 	 */
 	@Test
 	public void testAttack2_makingEvolutionAndEffects() throws GameEndException, LogicException{
-		Card swap = Objects.requireNonNull(c1.stream().filter(c -> c instanceof GameCard && ((GameCard)c).getId() == 60).findFirst().orElseGet(null));
+		Card swap = Objects.requireNonNull(c1.stream().filter(c -> c instanceof GameCard && ((GameCard)c).getCid() == 60).findFirst().orElseGet(null));
 		int change = c1.indexOf(swap);
 		c1.set(change, c1.get(0));
 		c1.set(0, swap);
@@ -1406,7 +1406,7 @@ public class GameTest {
 	 */
 	@Test
 	public void testAttack2_triggeringMultipleEffekt() throws GameEndException, LogicException{
-		int index = c2.indexOf(c2.stream().filter(elem -> elem.getId() == 68).findFirst().get());
+		int index = c2.indexOf(c2.stream().filter(elem -> elem.getCid() == 68).findFirst().get());
 		Card swap = c2.get(index);
 		c2.set(index, c2.get(0));
 		c2.set(0, swap);
@@ -1445,7 +1445,7 @@ public class GameTest {
 	 */
 	@Test
 	public void testAttack2_triggeringDeckEffekt() throws GameEndException, LogicException{
-		int index = c2.indexOf(c2.stream().filter(elem -> elem.getId() == 68).findFirst().get());
+		int index = c2.indexOf(c2.stream().filter(elem -> elem.getCid() == 68).findFirst().get());
 		Card swap = c2.get(index);
 		c2.set(index, c2.get(0));
 		c2.set(0, swap);
