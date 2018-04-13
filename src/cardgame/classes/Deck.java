@@ -3,6 +3,8 @@ package cardgame.classes;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
@@ -80,7 +82,7 @@ public class Deck {
 
     public void reduceCountCards() {
         if(countCards.getValue() > 0)
-        this.countCards.setValue(countCards.getValue()-1);
+            Platform.runLater(()-> this.countCards.setValue(countCards.getValue()-1));
         System.out.println("countCards:"+countCards.getValue());
     }
 
