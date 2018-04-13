@@ -3,6 +3,9 @@ package cardgame.classes;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -45,9 +48,9 @@ public class Playground {
 	private final SpecialCard[] guiBattlegroundSpecials = new SpecialCard[ROW];
 
     /** GUI **/
-        private Card example;
-        private ListView<Card> guiBattlegroundMonster;
-        ObservableList<Card> guiObservableBattlegroundMonster;
+    private Card example;
+    // private ListView<Card> guiBattlegroundMonster;
+    ObservableList<Card> guiObservableBattlegroundMonster;
 	private int countBattlegroundSpecials;
 
 	private int countBattlegroundMonster;
@@ -122,10 +125,12 @@ public class Playground {
        if(!getCardsOnHand().contains(card)) throw new IllegalArgumentException("Monsterkarte nicht in der Hand !");
        removeCardFromHand(card);
        //Karten werden von links nach rechts gelegt Eventuell von mitte aus starten !
+        AtomicInteger e= new AtomicInteger(0);
         for(int i=0;i<battlegroundMonster.length;i++){
             if(battlegroundMonster[i] == null) {
-                battlegroundMonster[i] = card; //Clonen ?                
-                guiObservableBattlegroundMonster.add(i, card);
+                battlegroundMonster[i] = card; //Clonen ?
+                e.set(i);
+                Platform.runLater(()->guiObservableBattlegroundMonster.add(e.get(), card));
                 countBattlegroundMonster++;
                 return;
             }
@@ -152,11 +157,14 @@ public class Playground {
      * @param gameCard Karte die entfernt werden soll.
      */
     public void removeBattlegroundMonster(GameCard gameCard) {
+       //
+        //AtomicInteger e = new AtomicInteger(0);
     	for(int i = 0; i < ROW; i++) {
     		if(battlegroundMonster[i] == gameCard) {
-    			battlegroundMonster[i] = null;    			        
-                guiObservableBattlegroundMonster.remove(i);		        
-                guiBattlegroundMonster.getItems().add(i, new GameCard());
+    			battlegroundMonster[i] = null;
+    			int e = i;
+                Platform.runLater(()->guiObservableBattlegroundMonster.set(e,new GameCard()));
+                //guiBattlegroundMonster.getItems().add(i, new GameCard());
                     System.out.println(">>>>>>>>>>>>>");
     			countBattlegroundMonster--;
     			return;
@@ -219,7 +227,10 @@ public class Playground {
     public int getCountBattlegroundMonster() { return countBattlegroundMonster; }
 
     private void createFieldsPlaceholder() {
-        guiBattlegroundMonster = new ListView<>();
+        guiObservableBattlegroundMonster = FXCollections.observableArrayList();
+        for(int i=0; i < battlegroundMonster.length; i++)
+            guiObservableBattlegroundMonster.add(i, new GameCard());
+       /* guiBattlegroundMonster = new ListView<>();
         guiBattlegroundMonster.setOrientation(Orientation.HORIZONTAL);
         guiObservableBattlegroundMonster = FXCollections.observableArrayList();
         //guiObservableBattlegroundMonster = FXCollections.observableArrayList(this.cardsOnHand);
@@ -258,12 +269,12 @@ public class Playground {
                  
                  return cell;
             }
-        });
+        });*/
 
     }
 
     public ListView<Card> getGuiBattlegroundMonster() {
-        return guiBattlegroundMonster;
+        return null;
     }
 
     public ObservableList<Card> getGuiObservableBattlegroundMonster() {
@@ -277,5 +288,5 @@ public class Playground {
     }
 
     
-        
+
 }

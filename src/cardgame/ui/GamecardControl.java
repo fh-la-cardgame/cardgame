@@ -4,8 +4,12 @@ import cardgame.classes.Effect;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import cardgame.classes.GameCard;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -72,9 +76,21 @@ public class GamecardControl extends GridPane {
 
         }
 
+
+
         posititionElements();
         setSizesAndPosition();
 
+    }
+
+    public GamecardControl(GameCard card){
+        this("x/b","y/b",card.getName(),card.getImage(),card.getEffects(),card.getEvoEffects(),true);
+        card.getpAtk().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                card_black_shield.setText(t1.toString());
+            }
+        });
     }
 
     public GamecardControl(String blackshield, String whiteshield, String name, byte[] raw, Effect[] effects, Effect[] evoeffects, boolean isGamecard) {

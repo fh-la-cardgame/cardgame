@@ -13,22 +13,30 @@ import cardgame.classes.GameCard;
 import cardgame.classes.Player;
 import cardgame.classes.SpecialCard;
 import cardgame.db.DbCard;
+import cardgame.logic.ConsolTest;
 import cardgame.logic.Game;
+
 import java.net.URL;
 import java.util.ResourceBundle;
+
 import static javafx.application.Application.launch;
 
 import cardgame.logic.LogicException;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -81,7 +89,7 @@ public class PlaygroundController implements Initializable {
     private Deck d1;
     private Deck d2;
     private Game g;
-    
+
     @FXML
     private Label pl1_specialcard1;
     @FXML
@@ -176,11 +184,53 @@ public class PlaygroundController implements Initializable {
         clearStyle();
         stretchElements();
         setBindings();
+        Thread task = new GameThread(g);
+        task.start();
+        try {
+            g.getMyField(id1).getGuiObservableBattlegroundMonster().addListener(new ListChangeListener<Card>() {
+                @Override
+                public void onChanged(Change<? extends Card> change) {
+                    System.out.println("CHANGED");
+                    while (change.next()) {
+                        System.out.println(change.getFrom());
+                        System.out.println(change.getTo());
+                        System.out.println(change.getList().get(change.getTo()));
+                        if (change.wasReplaced()){
+                            int from = change.getFrom();
+                            GamecardControl c = new GamecardControl("y/z","z/k","no",null,true);
+                            setCardonField(c,from);
+                        }  else {
+                            for (int i = change.getFrom(); i < change.getTo(); i++) {
+                                GameCard from = (GameCard) change.getList().get(i);
+                               // GamecardControl c = new GamecardControl("x/x", "y/y", from.getName(), from.getImage(), from.getEffects(), from.getEvoEffects(), true);
+                                GamecardControl c = new GamecardControl(from);
+                                setCardonField(c, i);
+                            }
+                        }
+
+                    }
+                }
+            });
+        } catch (LogicException ex) {
+
+        }
+/*
+        try {
+            Card c = g.getMyField(id1).getCardsOnHand().stream().filter(e -> e instanceof GameCard).findFirst().get();
+            g.playCard(id1, c);
+            g.changePlayer(id2);
+            g.changePlayer(id1);
+            Card c2 = g.getMyField(id1).getCardsOnHand().stream().filter(e -> e instanceof GameCard).findFirst().get();
+            g.playCard(id1,c2);
+        } catch (LogicException ex) {
+            System.out.println(ex);
+        }*/
     }
 
     /**
-     * Erzeugung von Spielerschildern 
-     * @throws LogicException 
+     * Erzeugung von Spielerschildern
+     *
+     * @throws LogicException
      */
     private void setPlayerShields() throws LogicException {
 
@@ -199,7 +249,8 @@ public class PlaygroundController implements Initializable {
 
     /**
      * Erzeugung von Schildern des Gegenüberspielers
-     * @throws LogicException 
+     *
+     * @throws LogicException
      */
     private void setEnemyPlayerShields() throws LogicException {
 
@@ -218,7 +269,8 @@ public class PlaygroundController implements Initializable {
 
     /**
      * Setzen der Handkarten des Gegenüber.
-     * @throws LogicException 
+     *
+     * @throws LogicException
      */
     private void setCardsOnHandEnemy() throws LogicException {
         pl1_l = new ArrayList();
@@ -234,7 +286,8 @@ public class PlaygroundController implements Initializable {
 
     /**
      * Setzen der Handkarten bei dem Hauptspieler.
-     * @throws LogicException 
+     *
+     * @throws LogicException
      */
     private void setCardsOnHandPlayer() throws LogicException {
         GameCard gc;
@@ -251,13 +304,13 @@ public class PlaygroundController implements Initializable {
             if (c instanceof GameCard) {
                 gc = (GameCard) c;
 
-                
+
                 System.out.println(gc + "<<<<<<< CARD");
                 System.out.println("CARD\n" + gc.toString());
                 System.out.println(gc.getShields().toString() + "-" + gc.getEvolutionShields().toString() + "-" + gc.getImage() + "-" + gc.getEffects() + "--------------------------------------------");
                 blackShield = gc.getShields().toString();
                 if (gc.getEvolutionShields() != null) {
-                    
+
                     whiteShield = gc.getEvolutionShields().toString();
                 }
                 if (gc.getShields() != null) {
@@ -270,7 +323,7 @@ public class PlaygroundController implements Initializable {
                 System.out.println(sc + "<<<<<<< SPECIALCARD");
                 System.out.println("SPECIALCARD \n" + sc.toString());
                 System.out.println("effects" + sc.getEffects() + "\n--------------------------------------------");
-                pl2_l.add(new GamecardControl("", "", sc.getName(), sc.getImage(), sc.getEffects(),  false));
+                pl2_l.add(new GamecardControl("", "", sc.getName(), sc.getImage(), sc.getEffects(), false));
 
             }
 
@@ -331,9 +384,10 @@ public class PlaygroundController implements Initializable {
 
     /**
      * Binding eines Buttons.
-     * @param b Button
+     *
+     * @param b  Button
      * @param ip IntegerProperty
-     * @param v geaenderte Wert
+     * @param v  geaenderte Wert
      */
     private void bindButtonPerValue(Button b, IntegerProperty ip, int v) {
         b.disableProperty().bind(new BooleanBinding() {
@@ -350,9 +404,10 @@ public class PlaygroundController implements Initializable {
 
     /**
      * Binding von Phasen
-     * @param m Main-Phase Button
-     * @param b Battle-Phase Button
-     * @param e End-Phase Button
+     *
+     * @param m      Main-Phase Button
+     * @param b      Battle-Phase Button
+     * @param e      End-Phase Button
      * @param phase1 Phase des 1. Spielers
      * @param phase2 Phase des 2. Spielers
      */
@@ -456,6 +511,7 @@ public class PlaygroundController implements Initializable {
 
     /**
      * Hilfsmethode zur Maximierung der Groesse im Parentcontainer.
+     *
      * @param c Control
      */
     void setPrefSizeMax(Control c) {
@@ -474,8 +530,15 @@ public class PlaygroundController implements Initializable {
 
     }
 
+    private void setCardonField(GamecardControl gc, int where) {
+        //pl2_card_field[where] = gc;
+        gridPlayGround.add(gc, 4 + (2 * where), 7, 2, 1);
+
+    }
+
     /**
      * Setzen einer Karte auf ein freies Feld.
+     *
      * @param gc Spielerkarte/Spezialkarte
      */
     private void setPlayersField(GamecardControl gc) {
@@ -500,9 +563,9 @@ public class PlaygroundController implements Initializable {
                     break;
                 }
             }
-  
-    }
 
-}
+        }
+
+    }
 
 }

@@ -3,6 +3,7 @@ package cardgame.classes;
 
 import java.util.*;
 
+import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Insets;
@@ -59,6 +60,8 @@ public class GameCard extends Card {
      */
     private Set<SpecialCard> specialCards;
 
+    private SimpleIntegerProperty pAtk;
+
 
     /**
      * Konstruktor
@@ -75,7 +78,7 @@ public class GameCard extends Card {
      */
     public GameCard(final int id, final String name, final String description, final Type type, final byte[] image, final int atk, final Shield evolutionShields, final Shield shields, final GameCard evolution, final Effect[] effects, final Effect[] evoEffects) {
         super(id, name, description, type, image);
-        //this.pAtk = new SimpleIntegerProperty(atk);
+        this.pAtk = new SimpleIntegerProperty(atk);
         this.atk = atk;
         this.evolutionShields = new Shield(evolutionShields);
         this.shields = new Shield(shields);
@@ -168,7 +171,7 @@ public class GameCard extends Card {
     public void changeAtk(int add) {
         this.atk += add;
         if (atk < 0) atk = 0;
-        //setpAtk(atk);
+        setpAtk(atk);
         getgAtk().setText(Integer.toString(this.atk));
     }
 
@@ -222,13 +225,15 @@ public class GameCard extends Card {
         return evoEffects;    //Offene Frage: Clonen?
     }
 
-//    public IntegerProperty getpAtk() {
-//        return pAtk;
-//    }
-//
-//    public void setpAtk(int atk) {
-//        this.pAtk.setValue(atk);
-//    }
+
+    public IntegerProperty getpAtk() {
+    return pAtk;
+    }
+
+    public void setpAtk(int atk) {
+        Platform.runLater(()->this.pAtk.setValue(atk));
+    }
+
 
     @Override
     public String toString() {
