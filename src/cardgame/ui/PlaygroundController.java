@@ -129,12 +129,12 @@ public class PlaygroundController implements Initializable {
     @FXML
     private ListView<EnemyGamecardControl> pl1_cardsOnHand;
     @FXML
-    private ListView<GamecardControl> pl2_cardsOnHand;
+    private ListView<CardControl> pl2_cardsOnHand;
 
     List<EnemyGamecardControl> pl1_l;
-    List<GamecardControl> pl2_l;
+    List<CardControl> pl2_l;
 
-    ObservableList<GamecardControl> pl2_observ_list;
+    ObservableList<CardControl> pl2_observ_list;
     ObservableList<EnemyGamecardControl> pl1_observ_list;
 
     List<PlayerShieldControl> pl1_l_shields;
@@ -144,7 +144,7 @@ public class PlaygroundController implements Initializable {
     ObservableList<PlayerShieldControl> pl1_observ_list_shields;
 
     GamecardControl[] pl2_card_field;
-    GamecardControl[] pl2_scard_field;
+    SpecialCardControl[] pl2_scard_field;
 
     int id1 = 1;
     int id2 = 2;
@@ -171,7 +171,7 @@ public class PlaygroundController implements Initializable {
         cardPreviewPane.setMinWidth(100);
 
         pl2_card_field = new GamecardControl[4];
-        pl2_scard_field = new GamecardControl[4];
+        pl2_scard_field = new SpecialCardControl[4];
 
         try {
             setCardsOnHandEnemy();
@@ -187,9 +187,9 @@ public class PlaygroundController implements Initializable {
         Thread task = new GameThread(g);
         task.start();
         try {
-            g.getMyField(id1).getGuiObservableBattlegroundMonster().addListener(new ListChangeListener<Card>() {
+            g.getMyField(id1).getGuiObservableBattlegroundMonster().addListener(new ListChangeListener<GameCard>() {
                 @Override
-                public void onChanged(Change<? extends Card> change) {
+                public void onChanged(Change<? extends GameCard> change) {
                     System.out.println("CHANGED");
                     while (change.next()) {
                         System.out.println(change.getFrom());
@@ -197,7 +197,7 @@ public class PlaygroundController implements Initializable {
                         System.out.println(change.getList().get(change.getTo()));
                         if (change.wasReplaced()){
                             int from = change.getFrom();
-                            GamecardControl c = new GamecardControl("y/z","z/k","no",null,true);
+                            GamecardControl c = new GamecardControl();
                             setCardonField(c,from);
                         }  else {
                             for (int i = change.getFrom(); i < change.getTo(); i++) {
@@ -317,13 +317,10 @@ public class PlaygroundController implements Initializable {
                     blackShield = gc.getShields().toString();
                 }
 
-                pl2_l.add(new GamecardControl(blackShield, whiteShield, gc.getName(), gc.getImage(), gc.getEffects(), gc.getEvoEffects(), true));
+                pl2_l.add(new GamecardControl(gc));
             } else if (c instanceof SpecialCard) {
                 sc = (SpecialCard) c;
-                System.out.println(sc + "<<<<<<< SPECIALCARD");
-                System.out.println("SPECIALCARD \n" + sc.toString());
-                System.out.println("effects" + sc.getEffects() + "\n--------------------------------------------");
-                pl2_l.add(new GamecardControl("", "", sc.getName(), sc.getImage(), sc.getEffects(), false));
+                pl2_l.add(new SpecialCardControl(sc.getName(), sc.getDescription(), sc.getType(), sc.getImage(), sc.getEffects()));
 
             }
 
@@ -332,13 +329,11 @@ public class PlaygroundController implements Initializable {
         pl2_cardsOnHand.setItems(pl2_observ_list);
 
         pl2_cardsOnHand.getSelectionModel().selectedItemProperty()
-                .addListener(new ChangeListener<GamecardControl>() {
+                .addListener(new ChangeListener<CardControl>() {
 
                     @Override
-                    public void changed(ObservableValue<? extends GamecardControl> ov, GamecardControl oldv, GamecardControl newv) {
-                        ObservableList<Label> ob = FXCollections.observableArrayList(newv.getDescription());
-                        System.out.println("ob.size()" + ob.size());
-                        description.setItems(ob);
+                    public void changed(ObservableValue<? extends CardControl> ov, CardControl oldv, CardControl newv) {
+                        ObservableList<Label> ob = FXCollections.observableArrayList(newv.getgDescription());                       description.setItems(ob);
                         if (newv.getBg() != null) {
                             cardPreviewPane.setBackground(newv.getBg());
                         }
@@ -541,15 +536,15 @@ public class PlaygroundController implements Initializable {
      *
      * @param gc Spielerkarte/Spezialkarte
      */
-    private void setPlayersField(GamecardControl gc) {
+    private void setPlayersField(CardControl gc) {
         if (gc == null) {
             throw new IllegalArgumentException("setPlayersField(GamecardControl gc) ist null");
         }
-        if (gc.isGamecard().getValue()) {
+        if (gc instanceof GamecardControl) {
             for (int i = 0; i < pl2_card_field.length; i++) {
                 System.out.println("pl2_card_field[i]:" + pl2_card_field[i]);
                 if (pl2_card_field[i] == null) {
-                    pl2_card_field[i] = gc;
+                    pl2_card_field[i] = (GamecardControl)gc;
                     gridPlayGround.add(pl2_card_field[i], 4 + (2 * i), 7, 2, 1);
                     break;
                 }
@@ -558,7 +553,7 @@ public class PlaygroundController implements Initializable {
             for (int i = 0; i < pl2_scard_field.length; i++) {
                 System.out.println("pl2_card_field[i]:" + pl2_card_field[i]);
                 if (pl2_scard_field[i] == null) {
-                    pl2_scard_field[i] = gc;
+                    pl2_scard_field[i] = (SpecialCardControl)gc;
                     gridPlayGround.add(pl2_scard_field[i], 4 + (2 * i), 9, 2, 2);
                     break;
                 }

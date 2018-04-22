@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cardgame.classes.GameCard;
+import cardgame.classes.Type;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -29,211 +30,99 @@ import javafx.scene.layout.StackPane;
  *
  * @author BishaThan
  */
-public class GamecardControl extends GridPane {
+public class GamecardControl extends CardControl {
 
 
+    /* Angriffspunkte **/
+    private Label atk;
     /* Schwarze Schilder **/
     private Label card_black_shield;
     /* Weiße Schilder **/
     private Label card_white_shield;
-    /* Kartenname **/
-    private Label cardname;
-    /* Abbildung des Kartenbildes **/
-    private StackPane imageholder;
-    /* Kartenbeschreibung **/
-    private List<Label> description;
-    /* Hintergrund, Kartenbild **/
-    private Background bg;
     /* Button zum Spielen der Karte auf das Feld **/
     private Button play;
-    /* Unterscheidung zwischen Spielkarte und Spezialkarte **/
-    private BooleanProperty isGamecard;
+    /* Card Referenz */
+    private GameCard card;
 
-    public GamecardControl(String blackshield, String whiteshield, String name, byte[] raw, List<Effect> effects, boolean isGamecard) {
-        this(blackshield, whiteshield, name, raw, isGamecard);
-
-        if (effects != null && effects.size() > 0) {
-            description.add(new Label("Allgemeine Effekte:"));
-            for (Effect e : effects) {
-                if (e != null) {
-
-                    description.add(new Label(e.getDescription()));
-                }
-
-            }
-
-            description.add(new Label("***************************************"));
-        }
-        System.out.println("raw:" + raw);
-        //Kartenhintergrund als Bild setzen
-        if (raw != null) {
-            //BackgroundImage bi = new BackgroundImage(new Image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNk9bpvm5mT-SKVAgJU2Js8ocq5ctJrCYUUUw8AQ15ho7sxA4x"), BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
-            BackgroundImage bi = new BackgroundImage(new Image(new ByteArrayInputStream(raw)), BackgroundRepeat.SPACE, BackgroundRepeat.SPACE, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
-
-            // imageholder.setBackground(new Background(new BackgroundImage(img, BackgroundRepeat.REPEAT, BackgroundRepeat.SPACE, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-            bg = new Background(bi);
-            imageholder.setBackground(bg);
-
-        }
-
-
-
-        posititionElements();
-        setSizesAndPosition();
-
+    
+    public GamecardControl(){
+        this("-/-","-/-","","","",Type.human, new byte[1],null,null);
+        
     }
-
     public GamecardControl(GameCard card){
-        this("x/b","y/b",card.getName(),card.getImage(),card.getEffects(),card.getEvoEffects(),true);
+        this(card.getEvolutionShields().toString(), card.getShields().toString(),card.getName(), card.getDescription(), Integer.toString(card.getAtk()), card.getType(), card.getImage(),card.getEffects(),card.getEvoEffects());
+        atk.textProperty().bind(card.getpAtk().asString());
         card.getpAtk().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
                 card_black_shield.setText(t1.toString());
+                atk.setText(t1.toString());
+                System.out.println("new atk:"+card.getName() + "-" +card.getpAtk().toString());
             }
         });
     }
 
-    public GamecardControl(String blackshield, String whiteshield, String name, byte[] raw, Effect[] effects, Effect[] evoeffects, boolean isGamecard) {
-        this(blackshield, whiteshield, name, raw, isGamecard);
+    public GamecardControl(String blackshield, String whiteshield, String name, String description, String atk, Type type, byte[] raw, Effect[] effects, Effect[] evoeffects) {
+        super(name, description, type, raw);        
+        this.card_black_shield = new Label(blackshield);
+        this.card_white_shield = new Label(whiteshield);
+        this.atk = new Label(atk);
 
         if (effects != null && effects.length > 0) {
-            description.add(new Label("Schwarze Schildereffekte:"));
+            this.getgDescription().add(new Label("Schwarze Schildereffekte:"));
             for (int i = 0; i < effects.length; i++) {
                 if (effects[i] != null) {
 
-                    description.add(new Label(effects[i].getDescription()));
+                    this.getgDescription().add(new Label(effects[i].getDescription()));
                 }
 
             }
 
-            description.add(new Label("***************************************"));
+            this.getgDescription().add(new Label("***************************************"));
         }
 
         if (evoeffects != null && evoeffects.length > 0) {
-            description.add(new Label("Evo Schildereffekte:"));
+            this.getgDescription().add(new Label("Evo Schildereffekte:"));
             for (int i = 0; i < evoeffects.length; i++) {
                 if (evoeffects[i] != null) {
 
-                    description.add(new Label(evoeffects[i].getDescription()));
+                    this.getgDescription().add(new Label(evoeffects[i].getDescription()));
                 }
 
             }
 
-            description.add(new Label("***************************************"));
+            this.getgDescription().add(new Label("***************************************"));
         }
 
-        System.out.println("raw:" + raw);
-        //Kartenhintergrund als Bild setzen
-        if (raw != null) {
-            //BackgroundImage bi = new BackgroundImage(new Image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNk9bpvm5mT-SKVAgJU2Js8ocq5ctJrCYUUUw8AQ15ho7sxA4x"), BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
-            BackgroundImage bi = new BackgroundImage(new Image(new ByteArrayInputStream(raw)), BackgroundRepeat.SPACE, BackgroundRepeat.SPACE, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
 
-            // imageholder.setBackground(new Background(new BackgroundImage(img, BackgroundRepeat.REPEAT, BackgroundRepeat.SPACE, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-            bg = new Background(bi);
-            imageholder.setBackground(bg);
 
-        }
-
-        posititionElements();
-        setSizesAndPosition();
+        positionAdditionalElements();
+        setAdditionalSizesAndPosition();
 
     }
 
-    public GamecardControl(String blackshield, String whiteshield, String name, byte[] raw, boolean isGamecard) {
-        this.setMinHeight(120);
-        this.setMinWidth(120);
-        this.setMaxHeight(120);
-        this.setMaxWidth(120);
-        setConstraints();
-        this.card_black_shield = new Label(blackshield);
-        this.card_white_shield = new Label(whiteshield);
-        this.cardname = new Label(name);
-        this.imageholder = new StackPane();
-        this.play = new Button("Spielen");
-        this.play.setDisable(true);
-        this.isGamecard = new SimpleBooleanProperty(isGamecard);
-        this.description = new ArrayList<>();
 
-        System.out.println("raw:" + raw);
-        //Kartenhintergrund als Bild setzen
-        if (raw != null) {
-            //BackgroundImage bi = new BackgroundImage(new Image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNk9bpvm5mT-SKVAgJU2Js8ocq5ctJrCYUUUw8AQ15ho7sxA4x"), BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
-            BackgroundImage bi = new BackgroundImage(new Image(new ByteArrayInputStream(raw)), BackgroundRepeat.SPACE, BackgroundRepeat.SPACE, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
-
-            // imageholder.setBackground(new Background(new BackgroundImage(img, BackgroundRepeat.REPEAT, BackgroundRepeat.SPACE, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-            bg = new Background(bi);
-            imageholder.setBackground(bg);
-
-        }
-        //ID 
-        this.setId("pl1_specialcard3");
-
-    }
 
     /**
      * Positionierung der Elemente im Grid.
      */
-    private void posititionElements() {
-        this.add(imageholder, 0, 0, 2, 1);
-        this.add(cardname, 0, 1, 2, 1);
-        this.add(card_black_shield, 0, 2);
-        this.add(card_white_shield, 1, 2);
-        this.add(play, 0, 3, 2, 1);
+    @Override
+    protected void positionAdditionalElements() {
+        this.add(card_black_shield, 0, 3);
+        this.add(card_white_shield, 1, 3);
+        this.add(atk, 0, 2, 2, 1);
 
     }
 
     /**
      * Anpassung der Groesse und Ausrichtung.
      */
-    private void setSizesAndPosition() {
+    @Override
+    protected void setAdditionalSizesAndPosition() {
         //Padding
         Insets i = new Insets(2, 2, 2, 2);
         this.card_black_shield.setPadding(i);
-        this.card_white_shield.setPadding(i);
-        this.cardname.setPadding(i);
-        this.imageholder.setPadding(i);
-        this.play.setPadding(i);
-
-        //   this.card_black_shield.
-//        this.card_black_shield.setAlignment(Pos.CENTER);
-//        
-//        this.card_white_shield.setAlignment(Pos.CENTER);
-//        this.cardname.setAlignment(Pos.CENTER);
-//        this.imageholder.setAlignment(Pos.CENTER);
-//        this.cardname.setPrefSize( Double.MAX_VALUE, Double.MAX_VALUE );
-//        this.imageholder.setPrefSize( Double.MAX_VALUE, Double.MAX_VALUE );
-//        this.card_white_shield.setPrefSize( Double.MAX_VALUE, Double.MAX_VALUE );
-//        this.card_black_shield.setPrefSize( Double.MAX_VALUE, Double.MAX_VALUE );
-    }
-
-    public GamecardControl() {
-        //  this("0/0", "0/0", "Unknown", new byte[0]);
-
-    }
-
-    /**
-     * Anlegen und Setzen der Constraints.
-     */
-    private void setConstraints() {
-        RowConstraints r1 = new RowConstraints();
-        RowConstraints r2 = new RowConstraints();
-        RowConstraints r3 = new RowConstraints();
-        RowConstraints r4 = new RowConstraints();
-
-        ColumnConstraints c1 = new ColumnConstraints();
-        ColumnConstraints c2 = new ColumnConstraints();
-
-        r1.setPercentHeight(70);
-        r2.setPercentHeight(10);
-        r3.setPercentHeight(10);
-        r4.setPercentHeight(10);
-        c1.setPercentWidth(50);;
-        c2.setPercentWidth(50);
-        this.getRowConstraints().addAll(r1, r2, r3, r4);
-        this.getColumnConstraints().addAll(c1, c2);
-
-        //      this.getColumnConstraints().addAll(new ColumnConstraints(50),new ColumnConstraints(50));
-    }
+        this.card_white_shield.setPadding(i);}
 
     /**
      * Getter
@@ -267,84 +156,14 @@ public class GamecardControl extends GridPane {
         this.card_white_shield = card_white_shield;
     }
 
-    /**
-     * Getter
-     * @return Kartenname 
-     */
-    public Label getCardname() {
-        return cardname;
+    public GameCard getCard() {
+        return card;
     }
 
-    /**
-     * Setter
-     * @param cardname Kartenname
-     */
-    public void setCardname(Label cardname) {
-        this.cardname = cardname;
+    public void setCard(GameCard card) {
+        this.card = card;
     }
 
-    /**
-     * Getter
-     * @return Bildcontainer
-     */
-    public StackPane getImageholder() {
-        return imageholder;
-    }
-
-    /**
-     * Setter
-     * @param imageholder Bildcontainer
-     */
-    public void setImageholder(StackPane imageholder) {
-        this.imageholder = imageholder;
-    }
-
-    /**
-     * Getter
-     * @return Liste mit den Effektbeschreibungen
-     */
-    public List<Label> getDescription() {
-        return description;
-    }
-
-    /**
-     * Getter
-     * @return Spielbutton
-     */
-    public Button getPlay() {
-        return play;
-    }
-
-    /**
-     * Getter
-     * @return Hintergrund
-     */
-    public Background getBg() {
-        return bg;
-    }
-
-    /**
-     * Setter
-     * @param description Beschreibung
-     */
-    public void setDescription(List<Label> description) {
-        this.description = description;
-    }
-
-    /**
-     * Getter
-     * @return Unterscheidung zwischen Spielkarte und Spezialkarte (true - Spielkarte; false - Spezialkarte)
-     */
-    public BooleanProperty isGamecard() {
-        return isGamecard;
-    }
-
-    /**
-     * Setter
-     * @param isGamecard Unterscheidung zwischen Spielkarte und Spezialkarte (true - Spielkarte; false - Spezialkarte)
-     */
-    public void setIsGamecard(BooleanProperty isGamecard) {
-        this.isGamecard = isGamecard;
-    }
-
+    
+    
 }

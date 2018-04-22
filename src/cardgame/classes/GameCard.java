@@ -6,9 +6,7 @@ import java.util.*;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 
 
 /**
@@ -28,7 +26,7 @@ public class GameCard extends Card {
 //    private IntegerProperty pAtk;
     
     /* Angriffstaerke **/
-    private Label gAtk;
+   // private Label gAtk;
     /* Button zur Kampfsteuerung **/
     private Button fight;
     /**
@@ -87,40 +85,6 @@ public class GameCard extends Card {
         this.evoEffects = evoEffects;
         this.specialCards = new IdentityHashSet<>();
         
-        
-        //GUI 
-        this.gAtk = new Label(Integer.toString(atk));
-        this.fight = new Button("Kaempfen");
-        this.fight.setVisible(false);
-
-        if (effects != null && effects.length > 0) {
-            getgDescription().add(new Label("SCHWARZE SCHILDEFFEKTE:"));
-            for (int i = 0; i < effects.length; i++) {
-                if (effects[i] != null) {
-
-                   getgDescription().add(new Label(effects[i].getDescription()));
-                }
-
-            }
-
-            getgDescription().add(new Label("***************************************"));
-        }
-
-        if (evoEffects != null && evoEffects.length > 0) {
-            getgDescription().add(new Label("EVO SCHILDEFFEKTE:"));
-            for (int i = 0; i < evoEffects.length; i++) {
-                if (evoEffects[i] != null) {
-
-                    getgDescription().add(new Label(evoEffects[i].getDescription()));
-                }
-
-            }
-
-            getgDescription().add(new Label("***************************************"));
-        }
-        
-        positionAdditionalElements();
-        setAdditionalSizesAndPosition();
 
     }
 
@@ -145,25 +109,16 @@ public class GameCard extends Card {
         this(c.getCid(), c.getName(), c.getDescription(), c.getType(), c.getImage(), c.getAtk(), c.getEvolutionShields(), c.getShields(), c.getEvolution(), c.getEffects(), c.getEvoEffects());
     }
 
+/*
     /**
-     * Platzhalterklasse - Definiert eine leere Karte als Schablone
+     * Basiskonstruktor
+     *
      */
-    public GameCard(){
-        super();
-        this.atk = 0;
-        this.evolutionShields = new Shield(0);
-        this.shields = new Shield(0);
-        this.evolution = null;
-        this.effects = null;
-        this.evoEffects = null;
-        this.specialCards = null;
-        
-        
-        //GUI 
-        this.gAtk = new Label("");
-        this.fight = new Button("");
+    public GameCard() {
+        this(-1, "", "", Type.human, new byte[1], 0, new Shield(0), new Shield(0), null, new Effect[0], new Effect[0]);
     }
-    /**
+
+/*
      * Ändert die Atk Punkte um den Wert add.
      *
      * @param add Die Atk punkte die hinzugefügt oder abgezogen werden sollen.
@@ -172,7 +127,7 @@ public class GameCard extends Card {
         this.atk += add;
         if (atk < 0) atk = 0;
         setpAtk(atk);
-        getgAtk().setText(Integer.toString(this.atk));
+        getpAtk().setValue(this.atk);
     }
 
     public void addSpecialCard(SpecialCard s) {
@@ -302,14 +257,14 @@ public class GameCard extends Card {
         nextEffect = null;
         return e;
     }
-    
-    /**
-     * Getter 
-     * @return Angrisspunkte 
-     */
-    public Label getgAtk() {
-        return gAtk;
-    }
+//    
+//    /**
+//     * Getter 
+//     * @return Angrisspunkte 
+//     */
+//    public Label getgAtk() {
+//        return gAtk;
+//    }
 
     /**
      * Getter
@@ -319,42 +274,8 @@ public class GameCard extends Card {
         return fight;
     }
 
-    /**
-     * Positionierung der Elemente im Grid.
-     */
- @Override
-    protected final void positionAdditionalElements() {
-        this.add(this.shields.getgShield(), 0, 3);
-        this.add(this.evolutionShields.getgShield(), 1, 3);
-        this.add(gAtk, 0,2,2,1);        
-        this.add(fight, 1, 4);        
-        
-    }
 
-    
-    /**
-     * Anpassung der Groesse und Ausrichtung.
-     */
-    @Override
-    protected final void setAdditionalSizesAndPosition() {
-        //Padding
-        Insets i = new Insets(2, 2, 2, 2);
-       this.shields.getgShield().setPadding(i);
-        this.evolutionShields.getgShield().setPadding(i);
-        this.gAtk.setPadding(i);
-        this.fight.setPadding(i);
 
-        //   this.card_black_shield.
-//        this.card_black_shield.setAlignment(Pos.CENTER);
-//        
-//        this.card_white_shield.setAlignment(Pos.CENTER);
-//        this.cardname.setAlignment(Pos.CENTER);
-//        this.imageholder.setAlignment(Pos.CENTER);
-//        this.cardname.setPrefSize( Double.MAX_VALUE, Double.MAX_VALUE );
-//        this.imageholder.setPrefSize( Double.MAX_VALUE, Double.MAX_VALUE );
-//        this.card_white_shield.setPrefSize( Double.MAX_VALUE, Double.MAX_VALUE );
-//        this.card_black_shield.setPrefSize( Double.MAX_VALUE, Double.MAX_VALUE );
-    }
-
+  
 
 }
