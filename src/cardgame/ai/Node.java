@@ -5,15 +5,17 @@
  */
 package cardgame.ai;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
 public class Node {
     
-    private final Map<Transition, Node> children;
-    private final Map<Integer, Integer> wins;
+    private List<Node> children;
+    private int wins = 0;
     private int simulations = 0;
     private Node parent;
     private boolean terminal;
@@ -22,9 +24,7 @@ public class Node {
     public Node(Node parent, boolean terminal){
         this.parent = parent;
         this.terminal = terminal;
-        children = new HashMap<>();
-        wins = new HashMap<>();
-               
+        children = new ArrayList<>();
     }
     
     
@@ -36,41 +36,41 @@ public class Node {
         return simulations;
     }
     
+    /**Return wins.
+     * Can return wins for both players.
+     * Node stores only the wins of the player who takes action in this node.
+     * @param player 0 for current player of this node, anything else.
+     * @return the wins of this node.
+     */
     public long getWins(int player) {
-        Integer w = wins.get(player);
-        if (w==null) {
-            return 0;
-        }
-        else {
-            return w;
-        }
+         if(player == 0)
+            return wins;
+         return (simulations - wins);
+        
     }
-    
+    /**ARGUMENT WINNER NOCH DEFINIEREN!
+     * 
+     * @param winner 
+     */
     public void result(int winner) {
         simulations++;
-        Integer w = wins.get(winner);
-        if (w==null) {
-            wins.put(winner, 1);
-        }
-        else {
-            wins.put(winner, w + 1);
-        }
+        wins++;
     }
         
     /**
      *  Gibt die Map aller Transitions und das Kind dieses Knotens zurueck.
      * @return
      */
-    public Map<Transition, Node> getTransitionsAndNodes() {
-        return children;
-    }
+//    public Map<Transition, Node> getTransitionsAndNodes() {
+//        return children;
+//    }
     
     /**
      *  Gibt eine Collection aller Kinder dieses Knotes zurueck.
      * @return
      */
-    public Collection<Node> getChildren() {
-        return children.values();       
+    public List<Node> getChildren() {
+        return children;       
     }
     
     /**
@@ -78,9 +78,9 @@ public class Node {
      * @param transition
      * @return
      */
-    public Node getNode(Transition transition){
-        return children.get(transition);
-    }
+//    public Node getNode(Transition transition){
+//        return children.get(transition);
+//    }
 
     /**
      *  Ein Knoten ist terminal, wenn es kein Kind zu erkunden gibt.
@@ -101,9 +101,9 @@ public class Node {
      * @param transition Die Transition, die zum Kind fuehrt.
      * @param child Das Kind.
      */
-    public void addChildNote(Transition transition, Node child){
-       getTransitionsAndNodes().put(transition, child);
-   }
+//    public void addChildNote(Transition transition, Node child){
+//       getTransitionsAndNodes().put(transition, child);
+//   }
    
     /**
      *  evtl. unnoetig, das UCT-Methode dafuer da ist.
