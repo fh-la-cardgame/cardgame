@@ -132,7 +132,7 @@ public class GameTest {
 			fail();
 		}
 		int gameCardId_want = 73;
-		assertEquals(gameCardId_want, card.getId());
+		assertEquals(gameCardId_want, card.getCid());
 		game.playCard(p1.getId(), card);
 		GameCard cardOnField = game.getMyField(1).getBattlegroundMonster()[0];
 		int id_have = cardOnField.getCid();
@@ -1184,7 +1184,7 @@ public class GameTest {
 		assertEquals(500, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
 		assertEquals(2, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getShields().getCurrentShields());
 		assertEquals(2100, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
-		assertEquals(58, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0].getId());
+		assertEquals(58, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0].getCid());
 	}
 	
 	/**Komplexere Angriffe.

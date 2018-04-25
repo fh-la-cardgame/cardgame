@@ -1,19 +1,15 @@
 package cardgame.classes;
 
+import cardgame.ui.SpecialCardControl;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Orientation;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.util.Callback;
 
 /**
  * Abbildung der Feldseite eines Spielers.
@@ -45,12 +41,12 @@ public class Playground {
     /** Array fuer  Monsterkarten**/
 	//private final GameCard[] guiBattlegroundMonster = new GameCard[ROW];        
     /** Array fuer die Zauber- bzw. Fallenkarten**/
-	private final SpecialCard[] guiBattlegroundSpecials = new SpecialCard[ROW];
+	private final SpecialCardControl[] guiBattlegroundSpecials = new SpecialCardControl[ROW];
 
     /** GUI **/
     private Card example;
     // private ListView<Card> guiBattlegroundMonster;
-    ObservableList<Card> guiObservableBattlegroundMonster;
+    ObservableList<GameCard> guiObservableBattlegroundMonster;
 	private int countBattlegroundSpecials;
 
 	private int countBattlegroundMonster;
@@ -80,8 +76,7 @@ public class Playground {
         countBattlegroundMonster = 0;
         countBattlegroundSpecials = 0;
         
-        /** GUI */
-         example = new GameCard();
+
         
         createFieldsPlaceholder();
     }
@@ -129,6 +124,7 @@ public class Playground {
         for(int i=0;i<battlegroundMonster.length;i++){
             if(battlegroundMonster[i] == null) {
                 battlegroundMonster[i] = card; //Clonen ?
+                
                 e.set(i);
                 Platform.runLater(()->guiObservableBattlegroundMonster.add(e.get(), card));
                 countBattlegroundMonster++;
@@ -144,7 +140,7 @@ public class Playground {
         for(int i=0;i<battlegroundSpecials.length;i++){
             if(battlegroundSpecials[i] == null){
                 battlegroundSpecials[i] = card; //Clonen ?
-                guiBattlegroundSpecials[i] = new SpecialCard();
+                guiBattlegroundSpecials[i] = new SpecialCardControl();
                 countBattlegroundSpecials++;
                 return;
             }
@@ -181,7 +177,7 @@ public class Playground {
         for(int i = 0; i < ROW; i++) {
             if(battlegroundSpecials[i] == special) {
                 battlegroundSpecials[i] = null;
-                guiBattlegroundSpecials[i] = new SpecialCard();
+                guiBattlegroundSpecials[i] = new SpecialCardControl();
                 countBattlegroundSpecials--;
                 return true;
             }
@@ -194,6 +190,7 @@ public class Playground {
             if(battlegroundMonster[i] == oldCard){
                 battlegroundMonster[i] = newCard;
                 guiObservableBattlegroundMonster.add(i, newCard);
+                //guiObservableBattlegroundMonster.add(i, newCard);
                 return true;
             }
         }
@@ -228,8 +225,8 @@ public class Playground {
 
     private void createFieldsPlaceholder() {
         guiObservableBattlegroundMonster = FXCollections.observableArrayList();
-        for(int i=0; i < battlegroundMonster.length; i++)
-            guiObservableBattlegroundMonster.add(i, new GameCard());
+       // for(int i=0; i < battlegroundMonster.length; i++)
+            //guiObservableBattlegroundMonster.add(i, new GamecardControl());
        /* guiBattlegroundMonster = new ListView<>();
         guiBattlegroundMonster.setOrientation(Orientation.HORIZONTAL);
         guiObservableBattlegroundMonster = FXCollections.observableArrayList();
@@ -277,13 +274,13 @@ public class Playground {
         return null;
     }
 
-    public ObservableList<Card> getGuiObservableBattlegroundMonster() {
+    public ObservableList<GameCard> getGuiObservableBattlegroundMonster() {
         return guiObservableBattlegroundMonster;
     }
 
 
 
-    public SpecialCard[] getGuiBattlegroundSpecials() {
+    public SpecialCardControl[] getGuiBattlegroundSpecials() {
         return guiBattlegroundSpecials;
     }
 

@@ -34,18 +34,6 @@ public class SpecialCard extends Card {
         this.effects = new LinkedList<>(effects);
         this.gameCards = new IdentityHashSet<>();
 
-        if (effects != null && effects.size() > 0) {
-            getgDescription().add(new Label("ALLGEMEINE EFFEKTE:"));
-            for (Effect e : effects) {
-                if (e != null) {
-
-                    getgDescription().add(new Label(e.getDescription()));
-                }
-
-            }
-
-            getgDescription().add(new Label("***************************************"));
-        }
 
     }
 
@@ -54,14 +42,7 @@ public class SpecialCard extends Card {
         this.gameCards = new IdentityHashSet<>(gameCards);
     }
 
-    /**
-     * Platzhalterklasse - Definiert eine leere Karte als Schablone
-     */
-    public SpecialCard(){
-        super();        
-        this.effects = new LinkedList<>();
-        this.gameCards = new IdentityHashSet<>();
-    }
+
     /**
      * Copy-Konstruktor
      *
@@ -118,18 +99,5 @@ public class SpecialCard extends Card {
     public String toString() {
         return super.toString() + " " + effects.toString() + " \n";
     }
-
-    @Override
-    protected void positionAdditionalElements() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    protected void setAdditionalSizesAndPosition() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-  
-    
 
 }
