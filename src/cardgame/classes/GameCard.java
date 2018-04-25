@@ -58,6 +58,7 @@ public class GameCard extends Card {
      */
     private Set<SpecialCard> specialCards;
 
+    /*Angriffspunkte zum GUI Binden*/
     private SimpleIntegerProperty pAtk;
 
 
@@ -76,7 +77,7 @@ public class GameCard extends Card {
      */
     public GameCard(final int id, final String name, final String description, final Type type, final byte[] image, final int atk, final Shield evolutionShields, final Shield shields, final GameCard evolution, final Effect[] effects, final Effect[] evoEffects) {
         super(id, name, description, type, image);
-        this.pAtk = new SimpleIntegerProperty(atk);
+        this.pAtk = null;
         this.atk = atk;
         this.evolutionShields = new Shield(evolutionShields);
         this.shields = new Shield(shields);
@@ -186,8 +187,11 @@ public class GameCard extends Card {
     }
 
     public void setpAtk(int atk) {
-        Platform.runLater(()->this.pAtk.setValue(atk));
-    }
+        if(this.pAtk == null  || this.pAtk.intValue() != atk){
+               //Platform.runLater(()->this.pAtk.setValue(atk));
+               this.pAtk.setValue(atk);
+        }
+     }
 
 
     @Override

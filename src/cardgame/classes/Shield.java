@@ -20,9 +20,6 @@ public class Shield {
     private int currentShields;
     /* Schwarze Schilder - Schutzschilder **/
     private StringProperty gShield;
-//    
-//    /** Aktuelle Anzahl an Schildern, GUI-Element. **/
-//    private IntegerProperty pCurrentShields;
 
     /**
      * Konstruktor

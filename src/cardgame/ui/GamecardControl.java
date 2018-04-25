@@ -52,14 +52,15 @@ public class GamecardControl extends CardControl {
     public GamecardControl(GameCard card){
         this(card.getEvolutionShields().toString(), card.getShields().toString(),card.getName(), card.getDescription(), Integer.toString(card.getAtk()), card.getType(), card.getImage(),card.getEffects(),card.getEvoEffects());
         atk.textProperty().bind(card.getpAtk().asString());
-        card.getpAtk().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                card_black_shield.setText(t1.toString());
-                atk.setText(t1.toString());
-                System.out.println("new atk:"+card.getName() + "-" +card.getpAtk().toString());
-            }
-        });
+        
+//        card.getpAtk().addListener(new ChangeListener<Number>() {
+//            @Override
+//            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+//                card_black_shield.setText(t1.toString());
+//                atk.setText(t1.toString());
+//                System.out.println("new atk:"+card.getName() + "-" +card.getpAtk().toString());
+//            }
+//        });
     }
 
     public GamecardControl(String blackshield, String whiteshield, String name, String description, String atk, Type type, byte[] raw, Effect[] effects, Effect[] evoeffects) {
