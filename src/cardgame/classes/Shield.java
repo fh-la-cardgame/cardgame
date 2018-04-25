@@ -1,7 +1,6 @@
 package cardgame.classes;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.control.Label;
 
 /**
@@ -20,7 +19,7 @@ public class Shield {
      */
     private int currentShields;
     /* Schwarze Schilder - Schutzschilder **/
-    private Label gShield;
+    private StringProperty gShield;
 //    
 //    /** Aktuelle Anzahl an Schildern, GUI-Element. **/
 //    private IntegerProperty pCurrentShields;
@@ -44,7 +43,7 @@ public class Shield {
         this.currentShields = current;
         // this.pCurrentShields = new SimpleIntegerProperty(current);
         this.maxShields = max;
-        this.gShield = new Label(this.toString());
+        this.gShield = null;
     }
 
     /**
@@ -112,14 +111,14 @@ public class Shield {
         return getCurrentShields() + "/" + getMaxShields();
     }
 
-    public Label getgShield() {
+    public StringProperty getgShield() {
         return gShield;
     }
     private void setgShield() {
         if(this.toString() == null || this.toString().isEmpty()){
-            this.gShield.setText("-/-");
+            this.gShield.set("-/-");
         }
-        this.gShield.setText(this.toString());
+        this.gShield.set(this.toString());
     }
 
 }
