@@ -3,6 +3,8 @@ package cardgame.classes;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.Label;
 
+import java.util.Objects;
+
 /**
  * Klasse zur Abbildung der aktuellen und max. Schilder.
  *
@@ -34,7 +36,7 @@ public class Shield {
      * Konstruktor
      *
      * @param current Aktuelle Schilderanzahl
-     * @param max Maximale Schilderanzahl
+     * @param max     Maximale Schilderanzahl
      */
     public Shield(final int current, final int max) {
         this.currentShields = current;
@@ -103,19 +105,34 @@ public class Shield {
 
     }
 
-    @Override
-    public String toString() {
-        return getCurrentShields() + "/" + getMaxShields();
-    }
 
     public StringProperty getgShield() {
         return gShield;
     }
+
     private void setgShield() {
-        if(this.toString() == null || this.toString().isEmpty()){
-            this.gShield.set("-/-");
+        if (this.toString() == null || this.toString().isEmpty()) {
+            //this.gShield.set("-/-");
         }
-        this.gShield.set(this.toString());
+       // this.gShield.set(this.toString());
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Shield shield = (Shield) o;
+        return maxShields == shield.maxShields &&
+                currentShields == shield.currentShields;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(maxShields, currentShields);
+    }
+
+    @Override
+    public String toString() {
+        return getCurrentShields() + "/" + getMaxShields();
+    }
 }

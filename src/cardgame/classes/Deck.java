@@ -1,9 +1,8 @@
 package cardgame.classes;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
+import cardgame.db.DbCard;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -41,10 +40,9 @@ public class Deck {
     }
 
     public Card popCard() throws GameEndException {
-        reduceCountCards();
-        if(cards.isEmpty()) {
-            throw new GameEndException();
-        }
+        //reduceCountCards();
+        if(cards.isEmpty()) throw new GameEndException();
+        if(countCards != null) reduceCountCards();
         return cards.remove(0);
     }
 
@@ -81,11 +79,25 @@ public class Deck {
     }
 
     public void reduceCountCards() {
-        if(countCards.getValue() > 0)
-            Platform.runLater(()-> this.countCards.setValue(countCards.getValue()-1));
-        System.out.println("countCards:"+countCards.getValue());
+        //if(countCards.getValue() > 0)
+        //Platform.runLater(()-> this.countCards.setValue(countCards.getValue()-1));
+        //System.out.println("countCards:"+countCards.getValue());
     }
 
-    
-    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Deck deck = (Deck) o;
+        //Prüft ob die gleichen Elemente enthalten sind !
+        List<Card> thisCards = new ArrayList<>(cards);
+        List<Card> thatCard = new ArrayList<>(deck.cards);
+        thatCard.sort(null);
+        thisCards.sort(null);
+        return thisCards.equals(thatCard);
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(cards);
+    }
 }

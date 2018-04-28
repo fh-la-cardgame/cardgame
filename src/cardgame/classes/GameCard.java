@@ -20,15 +20,6 @@ public class GameCard extends Card {
      * Angriffspunkte.
      **/
     private int atk;
-//    /**
-//     * Angriffspunkte, GUI ATK
-//     **/
-//    private IntegerProperty pAtk;
-    
-    /* Angriffstaerke **/
-   // private Label gAtk;
-    /* Button zur Kampfsteuerung **/
-    private Button fight;
     /**
      * Notwendige und erreichte Schilder fuer Evolution der Karte.
      **/
@@ -53,10 +44,6 @@ public class GameCard extends Card {
      * Effect der noch ausgefuert werden muss
      **/
     private Effect nextEffect = null;
-    /**
-     * Liste aller SpecialCards die auf diese Karte wirken.
-     */
-    private Set<SpecialCard> specialCards;
 
     /*Angriffspunkte zum GUI Binden*/
     private SimpleIntegerProperty pAtk;
@@ -81,24 +68,11 @@ public class GameCard extends Card {
         this.atk = atk;
         this.evolutionShields = new Shield(evolutionShields);
         this.shields = new Shield(shields);
-        this.evolution = evolution;
-        this.effects = effects.clone();
+        if(evolution != null){
+            this.evolution = new GameCard(evolution);
+        }else this.evolution = null;
+        this.effects = effects;
         this.evoEffects = evoEffects;
-        this.specialCards = new IdentityHashSet<>();
-        
-
-    }
-
-    private GameCard(final int id, final String name, final String description, final Type type, final byte[] image, final int atk, final Shield evolutionShields, final Shield shields, final GameCard evolution, final Effect[] effects, final Effect[] evoEffects, final Set<SpecialCard> specialcard) {
-       this(id, name, description, type, image, atk, evolutionShields, shields, evolution, effects, evoEffects);
-        //this.pAtk = new SimpleIntegerProperty(atk);
-//        this.atk = atk;
-//        this.evolutionShields = new Shield(evolutionShields);
-//        this.shields = new Shield(shields);
-//        this.evolution = evolution;
-//        this.effects = effects.clone();
-//        this.evoEffects = evoEffects;
-        this.specialCards = new IdentityHashSet<>(specialcard);
     }
 
     /**
@@ -110,16 +84,16 @@ public class GameCard extends Card {
         this(c.getCid(), c.getName(), c.getDescription(), c.getType(), c.getImage(), c.getAtk(), c.getEvolutionShields(), c.getShields(), c.getEvolution(), c.getEffects(), c.getEvoEffects());
     }
 
-/*
-    /**
-     * Basiskonstruktor
-     *
-     */
+    /*
+        /**
+         * Basiskonstruktor
+         *
+         */
     public GameCard() {
         this(-1, "", "", Type.human, new byte[1], 0, new Shield(0), new Shield(0), null, new Effect[0], new Effect[0]);
     }
 
-/*
+    /**
      * Ändert die Atk Punkte um den Wert add.
      *
      * @param add Die Atk punkte die hinzugefügt oder abgezogen werden sollen.
@@ -128,25 +102,7 @@ public class GameCard extends Card {
         this.atk += add;
         if (atk < 0) atk = 0;
         setpAtk(atk);
-        getpAtk().setValue(this.atk);
-    }
-
-    public void addSpecialCard(SpecialCard s) {
-        if(!specialCards.contains(s)) specialCards.add(s);
-    }
-
-    public void removeSpecialCard(SpecialCard s) {
-        Iterator<SpecialCard> iterator = specialCards.iterator();
-        while (iterator.hasNext()) {
-            if (iterator.next() == s) {
-                iterator.remove();
-                return;
-            }
-        }
-    }
-
-    public Set<SpecialCard> getSpecialCards() {
-        return specialCards;
+        //getpAtk().setValue(this.atk);
     }
 
     public boolean isAlive() {
@@ -170,7 +126,7 @@ public class GameCard extends Card {
     }
 
     public Effect[] getEffects() {
-        return effects; // Offene Frage: Clonen ?
+        return effects;
     }
 
     public void setAtk(int atk) {
@@ -178,26 +134,21 @@ public class GameCard extends Card {
     }
 
     public Effect[] getEvoEffects() {
-        return evoEffects;    //Offene Frage: Clonen?
+        return evoEffects;
     }
 
 
     public IntegerProperty getpAtk() {
-    return pAtk;
+        return pAtk;
     }
 
-    public void setpAtk(int atk) {
-        if(this.pAtk == null  || this.pAtk.intValue() != atk){
-               //Platform.runLater(()->this.pAtk.setValue(atk));
-               this.pAtk.setValue(atk);
+    private void setpAtk(int atk) {
+        if (this.pAtk != null && this.pAtk.intValue() != atk) {
+            //Platform.runLater(()->this.pAtk.setValue(atk));
+            this.pAtk.setValue(atk);
         }
-     }
-
-
-    @Override
-    public String toString() {
-        return super.toString() + " " + getAtk() + " " + getEvolutionShields() + " " + getShields() + " \nEvo: " + getEvolution() + "\nEffects: " + Arrays.toString(getEffects()) + "\nEvoEffects: " + Arrays.toString(evoEffects) + "\n\n";
     }
+
 
     /**
      * Erniedrigt die Schilder um ein Schild.
@@ -261,7 +212,8 @@ public class GameCard extends Card {
         nextEffect = null;
         return e;
     }
-//    
+
+    //
 //    /**
 //     * Getter 
 //     * @return Angrisspunkte 
@@ -270,16 +222,43 @@ public class GameCard extends Card {
 //        return gAtk;
 //    }
 
-    /**
-     * Getter
-     * @return Kampfbutton 
-     */
-    public Button getFight() {
-        return fight;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        GameCard gameCard = (GameCard) o;
+
+        if (atk != gameCard.atk) return false;
+        if (!Objects.equals(evolutionShields, gameCard.evolutionShields)) return false;
+        if (!Objects.equals(shields, gameCard.shields)) return false;
+        return true;
     }
 
+    @Override
+    public int compareTo(Card card){
+        int wert = super.compareTo(card);
+        if(wert != 0) return wert;
+        //Geht davon aus das GameCard und Specialcards verschieden cIds haben
+        GameCard gameCard = (GameCard) card;
+        if(atk != gameCard.atk) return atk - gameCard.atk;
+        if(shields.getCurrentShields() != gameCard.shields.getCurrentShields())
+            return  shields.getCurrentShields() - gameCard.shields.getCurrentShields();
+        if(evolutionShields.getCurrentShields() != gameCard.evolutionShields.getCurrentShields())
+            return evolutionShields.getCurrentShields() - gameCard.evolutionShields.getCurrentShields();
+        return 0;
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), atk, evolutionShields, shields);
+    }
 
-  
+    @Override
+    public String toString() {
+        return super.toString() + " " + getAtk() + " " + getEvolutionShields() + " " + getShields() + " \nEvo: " + getEvolution() + "\nEffects: " + Arrays.toString(getEffects()) + "\nEvoEffects: " + Arrays.toString(evoEffects) + "\n\n";
+    }
+
 
 }

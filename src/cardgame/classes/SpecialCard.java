@@ -1,7 +1,6 @@
 package cardgame.classes;
 
 import java.util.*;
-import javafx.scene.control.Label;
 
 /**
  * Klasse zur Abbildung der Struktur einer Spezialkarte.
@@ -15,33 +14,26 @@ public class SpecialCard extends Card {
      */
     private List<Effect> effects;
 
+
     /**
-     * Liste die alle Monsterkarten speichert auf denen der Effekt angewendet wurde.
+     * Speichert die Anzahl der Monsterkarten auf die diese SpecialCard wirkt.
      */
-    private Set<GameCard> gameCards;
+    private int countGameCards;
 
     /**
      * Konstruktor
      *
-     * @param id Indentifikationsnummer
-     * @param name Name der Spezialkarte
-     * @param description Beschriebung
-     * @param type Typ
-     * @param effects Effekte der Spezialkarte
+     * @param id          Indentifikationsnummer
+     * @param name        Name der Spezialkarte
+     * @param description BeschriebungGame
+     * @param type        Typ
+     * @param effects     Effekte der Spezialkarte
      */
     public SpecialCard(final int id, final String name, final String description, final Type type, final byte[] image, final List<Effect> effects) {
         super(id, name, description, type, image);
         this.effects = new LinkedList<>(effects);
-        this.gameCards = new IdentityHashSet<>();
-
-
+        this.countGameCards = 0;
     }
-
-    private SpecialCard(final int id, final String name, final String description, final Type type, final byte[] image, final List<Effect> effects, final Set<GameCard> gameCards) {
-        this(id, name, description, type, image, effects);
-        this.gameCards = new IdentityHashSet<>(gameCards);
-    }
-
 
     /**
      * Copy-Konstruktor
@@ -49,41 +41,24 @@ public class SpecialCard extends Card {
      * @param s Spezialkarte
      */
     public SpecialCard(final SpecialCard s) {
-        this(s.getCid(), s.getName(), s.getDescription(), s.getType(), s.getImage(), s.getEffects(), s.getGameCard());
+        this(s.getCid(), s.getName(), s.getDescription(), s.getType(), s.getImage(), s.getEffects());
+        countGameCards = s.countGameCards;
     }
 
-    public Set<GameCard> getGameCard() {
-        return gameCards;
-    }
-
-    /**
-     * @return the effects
-     */
     public List<Effect> getEffects() {
-        return effects; // ?? Frage offen: ob Kopie noetig
+        return effects;
     }
 
-    public void addGameCard(List<GameCard> cards) {
-        gameCards.addAll(cards);
-        /*cards.stream()
-				.filter(card -> !gameCards.contains(card))
-				.forEach(gameCards::add);*/
-
+    public void removeGameCard() {
+        countGameCards--;
     }
 
-    public void removeGameCard(GameCard g) {
-        gameCards.remove(g);
-        /*Iterator<GameCard> iterator = gameCards.iterator();
-		while(iterator.hasNext()){
-			if(iterator.next() == g) {
-				iterator.remove();
-				return;
-			}
-		}*/
+    public void addGameCard() {
+        countGameCards++;
     }
 
     public boolean hasGameCards() {
-        return !gameCards.isEmpty();
+        return countGameCards > 0;
     }
 
     public boolean needGameCard() {

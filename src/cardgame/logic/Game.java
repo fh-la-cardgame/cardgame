@@ -1,6 +1,7 @@
 package cardgame.logic;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import cardgame.classes.*;
 
@@ -18,9 +19,9 @@ public class Game {
      * Playground von Spieler 2.
      */
     private final Playground side2;
-    
+
     private final int side1PlayerId;
-    
+
     private final int side2PlayerId;
 
     /**
@@ -34,11 +35,15 @@ public class Game {
      */
     // Voschlag Verwendung eines Enums
     private int phase;
-    
-    /** Phasen des 1. Spielers **/
+
+    /**
+     * Phasen des 1. Spielers
+     **/
     private IntegerProperty player1Phase;
-    
-    /** Phasen des 2. Spielers **/
+
+    /**
+     * Phasen des 2. Spielers
+     **/
     private IntegerProperty player2Phase;
 
     /**
@@ -50,21 +55,25 @@ public class Game {
      * True wenn der Spieler der dran ist eine Monstercard gespielt hat.
      */
     private boolean playedMonstercard;
-    
-    private boolean gameEnd = false;
-    
-    private int playerWon = -1;
 
+    private boolean gameEnd = false;
+
+    private int playerWon = -1;
     /**
-     * Alle Karten mit denen in diesem Zug schon angegriffen wurde.
+     * Speichert die Links zwischen Karte und Specialcard als Indexe
+     * Index groeser als Row (aus Playground) ist side2
+     */
+    private final Map<Integer, Set<Integer>> cardLinks;
+    /**
+     * Alle Indizes von Karten mit denen in diesem Zug schon angegriffen wurde.
      * Muss am Ende des Spielzugs geleert werden.
      */
-    private Set<GameCard> CardsHaveAttack = new IdentityHashSet<>();
-    
-    public Game(Player player1, Player player2, Deck deck1, Deck deck2){
-    	this(player1, player2, deck1, deck2, false);
+    private boolean[] cardsHaveAttack;
+
+    public Game(Player player1, Player player2, Deck deck1, Deck deck2) {
+        this(player1, player2, deck1, deck2, false);
     }
-    
+
     /**
      * Konstruktor noch nicht fertig.
      */
@@ -76,9 +85,27 @@ public class Game {
         playersTurn = player1.getId();
         player1Phase = new SimpleIntegerProperty(0);
         player2Phase = new SimpleIntegerProperty(2);
+        cardLinks = new HashMap<>();
+        cardsHaveAttack = new boolean[Playground.getRow()];
         //Unsauber!:
         round = -1;
-        
+    }
+
+    public Game(Game g) {
+        side1 = new Playground(g.side1);
+        side2 = new Playground(g.side2);
+        side1PlayerId = g.side1PlayerId;
+        side2PlayerId = g.side2PlayerId;
+        playersTurn = g.playersTurn;
+        playedMonstercard = g.playedMonstercard;
+        gameEnd = g.gameEnd;
+        playerWon = g.playerWon;
+        phase = g.phase;
+        round = g.round;
+        cardLinks = g.cardLinks.entrySet()
+                .stream()
+                .collect(Collectors.toMap(k -> k.getKey(), v -> new HashSet<Integer>(v.getValue())));
+        cardsHaveAttack = g.cardsHaveAttack.clone();
     }
 
     /**
@@ -88,7 +115,7 @@ public class Game {
      * @param myCardRow    Zeilennummer der Karte mit der Angegriffen werden soll.
      * @param enemyCardRow Zeilennummer der Karte die angegriffen werden soll (-1 Angriff auf Spieler).
      */
-    public void attack(int id, int myCardRow, int enemyCardRow) throws LogicException{
+    public void attack(int id, int myCardRow, int enemyCardRow) throws LogicException {
         GameCard myCard = getMyField(id).getBattlegroundMonster()[myCardRow];
         if (myCard == null) {
             throw new LogicException("Bei Zeilennummer keine Karte");
@@ -113,7 +140,7 @@ public class Game {
      * @param enemyCard Karte die angegriffen werden soll (null Angriff auf Spieler).
      */
     // Noch keine Implementierung mit Effekten
-    public void attack (int id, GameCard myCard, GameCard enemyCard) throws LogicException {
+    public void attack(int id, GameCard myCard, GameCard enemyCard) throws LogicException {
         turn(id);
 
         //Phase wird in Angriff geaendert
@@ -130,25 +157,20 @@ public class Game {
             throw new LogicException("Erste Runde Kein Angriff moeglich");
         }
 
-        //Abfrage ob mit Karte schon angegriffen wurde
-        if(CardsHaveAttack.contains(myCard)) throw new LogicException("Mit dieser Karte wurde schon angegriffen !");
-        /*for (GameCard g : CardsHaveAttack) {
-            if (myCard == g) {
-                throw new LogicException("Mit dieser Karte wurde schon angegriffen");
-            }
-        }*/
         GameCard[] enemyBattleground = getEnemyField(id).getBattlegroundMonster();
         GameCard[] myBattleground = getMyField(id).getBattlegroundMonster();
 
-
         //Abfrage, ob Karte auf dem Feld
         gameCardInField(myCard, myBattleground);
-
+        //Abfrage ob mit Karte schon angegriffen wurde
+        int cardIndex = getMyField(id).indexOfBattlegroundMonster(myCard);
+        if (cardsHaveAttack[cardIndex]) throw new LogicException("Mit dieser Karte wurde schon angegriffen !");
 
         //Angriff direkt auf den Gegner
         if (enemyCard == null) {
             //Pruefen ob Gegner noch Karten auf Spielfeld
-            if(getEnemyField(id).getCountBattlegroundMonster() != 0)throw new LogicException("Kein Angriff direkt auf den Spieler moeglich");
+            if (getEnemyField(id).getCountBattlegroundMonster() != 0)
+                throw new LogicException("Kein Angriff direkt auf den Spieler moeglich");
 
 
             //Gegner verliert ein Schield
@@ -158,12 +180,12 @@ public class Game {
             //Ueberpruefen ob gewonnen ???
             if (shield.getCurrentShields() == 0) {
 //                System.out.println("Spieler hat gewonnen");
-              //TODO
+                //TODO
                 gameEnd = true;
-                if(id == side1PlayerId) {
-                	playerWon = side1PlayerId;
+                if (id == side1PlayerId) {
+                    playerWon = side1PlayerId;
                 } else {
-                	playerWon = side2PlayerId;
+                    playerWon = side2PlayerId;
                 }
             }
 
@@ -171,7 +193,7 @@ public class Game {
             addEvoSchieldAndEffect(id, myCard, null);
             //TODO destroy Effect kann auf keine Karte wirken???? wird nicht ausgefuehrt???
 
-            CardsHaveAttack.add(myCard);
+            cardsHaveAttack[cardIndex] = true;
             return;
         }
         //Angriff auf eine Karte
@@ -181,7 +203,7 @@ public class Game {
         if (myCard.getAtk() > enemyCard.getAtk()) {
 
             //Gegner Schild entfernen
-        	dropShieldAndEffect(getEnemyId(id), enemyCard, myCard);
+            dropShieldAndEffect(getEnemyId(id), enemyCard, myCard);
 
             //Eigene Evolutionschilder erhoehen
             addEvoSchieldAndEffect(id, myCard, enemyCard);
@@ -189,30 +211,29 @@ public class Game {
         } else if (myCard.getAtk() == enemyCard.getAtk()) {
 
             //Gegner Schield entfernen
-        	dropShieldAndEffect(getEnemyId(id), enemyCard, myCard);
+            dropShieldAndEffect(getEnemyId(id), enemyCard, myCard);
 
             //Eigene Schield entfernen
-        	dropShieldAndEffect(id, myCard, enemyCard);
+            dropShieldAndEffect(id, myCard, enemyCard);
 
             //Eigene Evolutionschilder erhoehen
-        	addEvoSchieldAndEffect(id, myCard, enemyCard);
-        	
+            addEvoSchieldAndEffect(id, myCard, enemyCard);
+
             //Gegnerische Evolutionschilder erhoehen
-            addEvoSchieldAndEffect(getEnemyId(id) ,enemyCard, myCard);
-            
+            addEvoSchieldAndEffect(getEnemyId(id), enemyCard, myCard);
+
 
         } else if (myCard.getAtk() < enemyCard.getAtk()) {
 
             //Eigene Schield entfernen
-        	dropShieldAndEffect(id, myCard, enemyCard);
-        	
-        	//Gegnerische Evolutionschilder erhoehen
-            addEvoSchieldAndEffect(getEnemyId(id) ,enemyCard, myCard);
-        	
+            dropShieldAndEffect(id, myCard, enemyCard);
+
+            //Gegnerische Evolutionschilder erhoehen
+            addEvoSchieldAndEffect(getEnemyId(id), enemyCard, myCard);
+
         }
 
-        CardsHaveAttack.add(myCard);
-
+        cardsHaveAttack[cardIndex] = true;
     }
 
     /**
@@ -225,7 +246,8 @@ public class Game {
         if (card instanceof GameCard) {
             turn(id);
             if (phase != 0) throw new LogicException("Kann nur am Anfang Karten legen !");
-            if (playedMonstercard) throw new LogicException("Es darf nur 1 mal pro Zug eine Monsterkarte gelegt werden !");
+            if (playedMonstercard)
+                throw new LogicException("Es darf nur 1 mal pro Zug eine Monsterkarte gelegt werden !");
             getMyField(id).addMonsterCard((GameCard) card);
             playedMonstercard = true;
         } else playSpecialCard(id, (SpecialCard) card, null);
@@ -233,45 +255,93 @@ public class Game {
 
 
     public void playSpecialCard(int id, SpecialCard card, GameCard enemyCard) throws LogicException {
-        turn(id);
+        /*turn(id);
         if (phase != 0) throw new LogicException("Kann nur am Anfang Karten legen !");
-        //Effekt ausfuehren
         List<Effect> allEffects = card.getEffects();
         for (Effect e : allEffects) {
-            List<GameCard> cardsEffect = getCardsForEffect(id,e,enemyCard,enemyCard);
-            List<GameCard> cardsDeath =  EffectsAssignment.useEffect(e,cardsEffect);
-            if(e.getEffectType() == EffectType.destroy){
+            List<GameCard> cardsEffect = getCardsForEffect(id, e, enemyCard, enemyCard);
+            List<GameCard> cardsDeath = EffectsAssignment.useEffect(e, cardsEffect);
+            if (e.getEffectType() == EffectType.destroy) {
                 cardsDeath.forEach(this::removeGameCardFormField);
-            }else{
-                cardsEffect.forEach(c-> c.addSpecialCard(card));
+            } else {
+                cardsEffect.forEach(c -> c.addSpecialCard(card));
                 card.addGameCard(cardsEffect);
             }
         }
-        if(card.hasGameCards()) getMyField(id).addSpecialCardToField(card);
+        if (card.hasGameCards()) getMyField(id).addSpecialCardToField(card);
         else {
-            if(!getMyField(id).getCardsOnHand().contains(card)) throw new IllegalArgumentException("Karte nicht auf der Hand");
+            if (!getMyField(id).getCardsOnHand().contains(card))
+                throw new IllegalArgumentException("Karte nicht auf der Hand");
             getMyField(id).removeCardFromHand(card);
+        }*/
+        int indexSpecial = getMyField(id).getCardsOnHand().indexOf(card);
+        int indexEnemy = -1;
+        if (enemyCard != null) {
+            indexEnemy = getMyField(id).indexOfBattlegroundMonster(enemyCard);
+            if (indexEnemy == -1) {
+                indexEnemy = getEnemyField(id).indexOfBattlegroundMonster(enemyCard) + Playground.getRow();
+            }
         }
+        playSpecialCard(id, indexSpecial, indexEnemy);
     }
-    
+
+    public void playSpecialCard(int id, int specialCard, int enemyCard) throws LogicException {
+        turn(id);
+        if (phase != 0) throw new LogicException("Kann nur am Anfang Karten legen !");
+        if (specialCard < 0) throw new IllegalArgumentException("Keine Special Karte zum Spielen angegeben !");
+        SpecialCard card = (SpecialCard) getMyField(id).getCardsOnHand().get(specialCard);
+        int index = getMyField(id).addSpecialCardToField(specialCard);
+        for (Effect e : card.getEffects()) {
+            int offset = idToIndex(id);
+            if (offset != 0 && enemyCard >= 0) {
+                if (enemyCard < Playground.getRow()) enemyCard += offset;
+                else enemyCard -= offset;
+            }
+            GameCard[] cardIndex = getIndexOfCardsForEffect(id, e, enemyCard, enemyCard);
+            List<GameCard> cardsDeath = EffectsAssignment.useEffect(e, Arrays.asList(cardIndex));
+            if (e.getEffectType() == EffectType.destroy) {
+                cardsDeath.forEach(this::removeGameCardFormField);
+            } else {
+                int off = offset + index;
+                for (int i = 0; i < cardIndex.length; i++) {
+                    if (cardIndex[i] != null) {
+                        Set<Integer> get = cardLinks.get(i);
+                        if (get != null) {
+                            get.add(off);
+                            card.addGameCard();
+                        } else {
+                            get = new HashSet<>();
+                            get.add(off);
+                            card.addGameCard();
+                            cardLinks.put(i, get);
+                        }
+                    }
+                }
+            }
+        }
+        if (!card.hasGameCards()) getMyField(id).removeBattlegroundSpecial(index);
+    }
+
+
     /**
      * Gibt zu einer Effektkarte die Karten zurück auf denen dieser Effekt angewendet wird.
-     * @param id Id des Spielers von GameCard effectTriggered.
-     * @param effect Effekt der angewendet werden soll.
+     *
+     * @param id              Id des Spielers von GameCard effectTriggered.
+     * @param effect          Effekt der angewendet werden soll.
      * @param effectTriggered Karte die den Effekt ausgeloest hat.
-     * @param enemyCard Karte die angegriffen worden ist.
-     * @return Liste der GameKarten. 
+     * @param enemyCard       Karte die angegriffen worden ist.
+     * @return Liste der GameKarten.
      */
-    private List<GameCard> getCardsForEffect(int id,Effect effect,GameCard effectTriggered,GameCard enemyCard) throws LogicException{
+    private List<GameCard> getCardsForEffect(int id, Effect effect, GameCard effectTriggered, GameCard enemyCard) throws LogicException {
         List<GameCard> allCards = new ArrayList<>();
         EffectType type = effect.getEffectType();
-        if(effect.getEffectType() == EffectType.destroy){
-            if(effect.getEffectNumber() > 0) allCards.add(Objects.requireNonNull(effectTriggered));
+        if (effect.getEffectType() == EffectType.destroy) {
+            if (effect.getEffectNumber() > 0) allCards.add(Objects.requireNonNull(effectTriggered));
             else allCards.add(Objects.requireNonNull(enemyCard));
             return allCards;
         }
-        String number  = type.toString().split("_")[1];
-        switch(number){
+        String number = type.toString().split("_")[1];
+        switch (number) {
             case "one":
                 allCards.add(effectTriggered);
                 break;
@@ -279,18 +349,18 @@ public class Game {
                 GameCard[] enemyBattleground = getEnemyField(id).getBattlegroundMonster();
                 GameCard[] myBattleground = getMyField(id).getBattlegroundMonster();
                 int length = myBattleground.length;
-                for(int i=0;i<length;i++){
-                    if(myBattleground[i] != null) allCards.add(myBattleground[i]);
-                    if(enemyBattleground[i] != null) allCards.add(enemyBattleground[i]);
+                for (int i = 0; i < length; i++) {
+                    if (myBattleground[i] != null) allCards.add(myBattleground[i]);
+                    if (enemyBattleground[i] != null) allCards.add(enemyBattleground[i]);
                 }
                 break;
             case "deck":
-                for(GameCard c:getMyField(id).getBattlegroundMonster())
-                    if(c != null) allCards.add(c);
+                for (GameCard c : getMyField(id).getBattlegroundMonster())
+                    if (c != null) allCards.add(c);
                 break;
             case "deckenemy":
-                for(GameCard c:getEnemyField(id).getBattlegroundMonster())
-                    if(c != null) allCards.add(c);
+                for (GameCard c : getEnemyField(id).getBattlegroundMonster())
+                    if (c != null) allCards.add(c);
                 break;
             default:
                 throw new IllegalArgumentException();
@@ -298,15 +368,128 @@ public class Game {
         return allCards;
     }
 
-
-
-    private void removeGameCardFromSpecialCard(GameCard gameCard){
-        Set<SpecialCard> specialCardGCards = gameCard.getSpecialCards();
-        for(SpecialCard sCard:specialCardGCards){
-            sCard.removeGameCard(gameCard);
-            if(!sCard.hasGameCards()){
-                removeSpecialCardFromField(sCard);
+    /**
+     * Gibt zu einer Effektkarte die Indexe der Karten zurück auf denen dieser Effekt angewendet wird.
+     *
+     * @param id              Id des Spielers von GameCard effectTriggered.
+     * @param effect          Effekt der angewendet werden soll.
+     * @param effectTriggered Karte die den Effekt ausgeloest hat.
+     * @param enemyCard       Karte die angegriffen worden ist.
+     * @return Liste der GameKarten.
+     */
+    private GameCard[] getIndexOfCardsForEffect(int id, Effect effect, int effectTriggered, int enemyCard) throws LogicException {
+        GameCard[] allCards = new GameCard[10];
+        EffectType type = effect.getEffectType();
+        if (effect.getEffectType() == EffectType.destroy) {
+            if (effectTriggered == -1) throw new IllegalArgumentException("Effekt benötigt zusätzlich Karte");
+            if (effect.getEffectNumber() > 0)
+                allCards[effectTriggered] = getCard(effectTriggered);
+            else {
+                if (enemyCard == -1)
+                    throw new IllegalArgumentException("Es wird eine Karte benötigt auf die der Effekt ausgeführt wird !");
+                allCards[enemyCard] = getCard(enemyCard);
             }
+            return allCards;
+        }
+        String number = type.toString().split("_")[1];
+        switch (number) {
+            case "one":
+                allCards[effectTriggered] = getCard(effectTriggered);
+                break;
+            case "all":
+                GameCard[] battelgroundSide1 = side1.getBattlegroundMonster();
+                GameCard[] battlegroundSide2 = side2.getBattlegroundMonster();
+                int length = battelgroundSide1.length;
+                for (int i = 0; i < length; i++) {
+                    allCards[i] = battelgroundSide1[i];
+                    allCards[i + length] = battlegroundSide2[i];
+                }
+                break;
+            case "deck":
+                int offset = idToIndex(id);
+                GameCard[] battleground = getMyField(id).getBattlegroundMonster();
+                for (int i = 0; i < battleground.length; i++) {
+                    allCards[offset] = battleground[i];
+                    offset++;
+                }
+                break;
+            case "deckenemy":
+                int off = idToIndex(id);
+                GameCard[] battlegroundEnemy = getMyField(id).getBattlegroundMonster();
+                for (int i = 0; i < battlegroundEnemy.length; i++) {
+                    allCards[off] = battlegroundEnemy[i];
+                    off++;
+                }
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
+        return allCards;
+    }
+
+    /**
+     * Gibt die GameCard zu einem Index zurück
+     *
+     * @param index zwischen 0 und 2*Row -1
+     * @return
+     */
+    private GameCard getCard(int index) {
+        if (index < Playground.getRow()) {
+            return side1.getBattlegroundMonster()[index];
+        } else {
+            return side2.getBattlegroundMonster()[index - Playground.getRow()];
+        }
+    }
+
+    /**
+     * Gibt den Offset an der dazu addiert werden muss wenn die Karte in side2 liegt
+     *
+     * @param id Id des Spielers
+     * @return
+     */
+    private int idToIndex(int id) {
+        if (id == side1PlayerId) {
+            return 0;
+        } else if (id == side2PlayerId) {
+            return Playground.getRow();
+        } else throw new IllegalArgumentException("Id nicht vorhanden");
+    }
+
+    private void removeGameCardFromSpecialCard(GameCard gameCard) {
+        int index = side1.indexOfBattlegroundMonster(gameCard);
+        if (index == -1) {
+            index = side2.indexOfBattlegroundMonster(gameCard) + Playground.getRow();
+        }
+        removeGameCardLink(index);
+    }
+
+    /**
+     * Entfernt einen Link von einer GameCard auf die Specialcard.
+     * Wenn die Specialcard keinen Link mehr hat, also es keine GameCard
+     * auf den Feld mehr gibt auf den diese Karte wirkt wird sie entfernt
+     *
+     * @param index Index der GameCard
+     */
+    private void removeGameCardLink(int index) {
+        Set<Integer> set = cardLinks.get(index);
+        if (set != null) {
+            for (int sIndex : set) {
+                if (sIndex < Playground.getRow()) {
+                    SpecialCard s = side1.getBattlegroundSpecials()[sIndex];
+                    s.removeGameCard();
+                    if (!s.hasGameCards()) {
+                        side1.removeBattlegroundSpecial(sIndex);
+                    }
+                } else {
+                    sIndex = sIndex - Playground.getRow();
+                    SpecialCard s = side2.getBattlegroundSpecials()[sIndex];
+                    s.removeGameCard();
+                    if (!s.hasGameCards()) {
+                        side2.removeBattlegroundSpecial(sIndex);
+                    }
+                }
+            }
+            cardLinks.remove(index);
         }
     }
 
@@ -316,7 +499,7 @@ public class Game {
      * @param id Id des Spielers
      * @return Die Karten des Spielers.
      */
-    public List<Card> getCardsOnHand(int id) throws LogicException{
+    public List<Card> getCardsOnHand(int id) throws LogicException {
         return getMyField(id).getCardsOnHand();
     }
 
@@ -327,14 +510,14 @@ public class Game {
      * @return Gegnerisches Spielfeld.
      */
 
-    public Playground getEnemyField(int id) throws LogicException{
+    public Playground getEnemyField(int id) throws LogicException {
         if (side1PlayerId == id) {
             return side2;
         }
         if (side2PlayerId == id) {
             return side1;
         }
-        throw new LogicException("PlayerId not exists");
+        throw new LogicException("Id existiert nicht");
     }
 
     /**
@@ -350,7 +533,7 @@ public class Game {
         if (side2PlayerId == id) {
             return side2;
         }
-        throw new LogicException("PlayerId not exists");
+        throw new LogicException("Id existiert nicht");
     }
 
     /**
@@ -364,8 +547,8 @@ public class Game {
             throw new LogicException("Spieler ist nicht am Zug");
         }
         if (gameEnd) {
-        	// Beim Distribution of Odds auskommentieren:
-        	throw new LogicException("Spiel zu Ende");
+            // Beim Distribution of Odds auskommentieren:
+            throw new LogicException("Spiel zu Ende");
         }
     }
 
@@ -383,48 +566,41 @@ public class Game {
         }
         throw new LogicException("Karte nicht auf dem Feld");
     }
-    
+
     /**
      * Entfernt eine GameCard vom Spielfeld.
+     *
      * @param g GameCard zum entferen
      */
     private void removeGameCardFormField(GameCard g) {
-    	removeGameCardFromSpecialCard(g);
-    	side1.removeBattlegroundMonster(g);
-    	side2.removeBattlegroundMonster(g);
+        removeGameCardFromSpecialCard(g);
+        side1.removeBattlegroundMonster(g);
+        side2.removeBattlegroundMonster(g);
     }
 
     /**
-     * Entfernt SpecialCard vom Spielfeld.
-     * @param special
-     */
-    private void removeSpecialCardFromField(SpecialCard special){
-        if(!side1.removeBattlegroundSpecial(special));
-            side2.removeBattlegroundSpecial(special);
-    }
-    
-    /**
      * Entfernt ein Shield von der GameCard und falls diese auf 0 fallen wird diese entfernt.
      * Fuehrt dabei alle notwendigen Effecte aus.
-     * @param id id des Spielers von GameCard g.
-     * @param g GameCard bei der Shield entfernt wird.
+     *
+     * @param id             id des Spielers von GameCard g.
+     * @param g              GameCard bei der Shield entfernt wird.
      * @param otherForEffect GameCard fuer destroy Effect.
      */
-    private void dropShieldAndEffect(int id, GameCard g, GameCard otherForEffect) throws LogicException{
-    	Effect effect;
-    	if (g.dropShield()) {
-    		effect = g.getNextEffect();
+    private void dropShieldAndEffect(int id, GameCard g, GameCard otherForEffect) throws LogicException {
+        Effect effect;
+        if (g.dropShield()) {
+            effect = g.getNextEffect();
         } else {
-        	effect = g.getNextEffect();
+            effect = g.getNextEffect();
             removeGameCardFormField(g);
         }
-    	if(effect != null) {
-    		List<GameCard> list = getCardsForEffect(id, effect, g, otherForEffect);
-    		EffectsAssignment.useEffect(effect, list).forEach( x->removeGameCardFormField(x) );
-    	}
-        
+        if (effect != null) {
+            List<GameCard> list = getCardsForEffect(id, effect, g, otherForEffect);
+            EffectsAssignment.useEffect(effect, list).forEach(x -> removeGameCardFormField(x));
+        }
+
     }
-    
+
 //   /**
 //    * Teilt die verschiedenen Effecttypen den GameCard g oder otherForEffect zu. 
 //    * @param effect Effect der ausgefuehrt werden soll.
@@ -446,22 +622,23 @@ public class Game {
 //        	EffectsAssignment.useEffect(effect, g);
 //        }
 //    }
-    
+
     /**
      * Erhoeht die EvoShields von der GameCard g und fuehrt falls notwendig den jeweiligen Effect aus.
-     * @param id Id des Spielers von GameCard g.
-     * @param g GameCard zum erhoehen der EvoShields.
+     *
+     * @param id             Id des Spielers von GameCard g.
+     * @param g              GameCard zum erhoehen der EvoShields.
      * @param otherForEffect andere fuer destroy Effect.
      */
     private void addEvoSchieldAndEffect(int id, GameCard g, GameCard otherForEffect) throws LogicException {
-    	GameCard evolution = g.addEvoShield();
+        GameCard evolution = g.addEvoShield();
         Effect effect = g.getNextEffect();
         if (effect != null) {
-        	//falls der Spieler angegriffen wurde wird destroy Effect ignoriert, da keine entsprechende Karte vorhanden ist
-        	if(otherForEffect != null || effect.getEffectType() != EffectType.destroy) {
-        		List<GameCard> list = getCardsForEffect(id, effect, g, otherForEffect);
-        		EffectsAssignment.useEffect(effect, list).forEach( x->removeGameCardFormField(x) );
-        	}
+            //falls der Spieler angegriffen wurde wird destroy Effect ignoriert, da keine entsprechende Karte vorhanden ist
+            if (otherForEffect != null || effect.getEffectType() != EffectType.destroy) {
+                List<GameCard> list = getCardsForEffect(id, effect, g, otherForEffect);
+                EffectsAssignment.useEffect(effect, list).forEach(x -> removeGameCardFormField(x));
+            }
         }
         //Karte kann schon nicht mehr vorhanden sein !.
         if (evolution != null && g.isAlive()) {
@@ -471,14 +648,15 @@ public class Game {
 
     /**
      * Gibt die gegnerische Id zuruek.
+     *
      * @param id eigene Id.
      * @throws IllegalArgumentException wenn Player id nicht existiert.
      */
     private int getEnemyId(int id) {
-        if(id == side1PlayerId) {
+        if (id == side1PlayerId) {
             return side2PlayerId;
         }
-        if(id == side2PlayerId) {
+        if (id == side2PlayerId) {
             return side1PlayerId;
         }
         throw new IllegalArgumentException("Player Id existiert nicht");
@@ -486,7 +664,8 @@ public class Game {
 
     /**
      * Fuehrt eine Evolution auf die GameCard old durch und ersetzt dabei diese durch GameCard evolution.
-     * @param old alte GameCard
+     *
+     * @param old       alte GameCard
      * @param evolution GameCard zum ersetzen
      */
     private void makeEvolution(GameCard old, GameCard evolution) {
@@ -508,8 +687,16 @@ public class Game {
                 return;
             }
         }*/
-        if(side1.updateBattlegroundMonster(old,evolution) || side2.updateBattlegroundMonster(old,evolution)) removeGameCardFromSpecialCard(old);
-        else throw new IllegalArgumentException("GameCard wurde im Playground nicht gefunden");
+        if (side1.updateBattlegroundMonster(old, evolution)) {
+            int index = side1.indexOfBattlegroundMonster(evolution);
+            if (playersTurn == side1PlayerId) cardsHaveAttack[index] = false;
+            removeGameCardLink(index);
+
+        } else if (side2.updateBattlegroundMonster(old, evolution)) {
+            int index = side2.indexOfBattlegroundMonster(evolution);
+            if (playersTurn == side2PlayerId) cardsHaveAttack[index] = false;
+            removeGameCardLink(Playground.getRow() + index);
+        } else throw new IllegalArgumentException("GameCard wurde im Playground nicht gefunden");
 
     }
 
@@ -518,36 +705,36 @@ public class Game {
     }
 
     public IntegerProperty getMyPhase(int id) {
-    	if(side1PlayerId == id)  {
-    		return player1Phase;
-    	}
-    	if(side2PlayerId == id) {
-    		return player2Phase;
-    	}
+        if (side1PlayerId == id) {
+            return player1Phase;
+        }
+        if (side2PlayerId == id) {
+            return player2Phase;
+        }
         throw new IllegalArgumentException("Id existiert nicht");
     }
-    
+
     public IntegerProperty getEnemyPhase(int id) {
-    	if(side1PlayerId == id)  {
-    		return player2Phase;
-    	}
-    	if(side2PlayerId == id) {
-    		return player1Phase;
-    	}
+        if (side1PlayerId == id) {
+            return player2Phase;
+        }
+        if (side2PlayerId == id) {
+            return player1Phase;
+        }
         throw new IllegalArgumentException("Id existiert nicht");
     }
 
     public void setMyPhase(int id, int phase1) {
-    	if(side1PlayerId == id)  {
-    		this.player1Phase.setValue(phase1);
-    	}else if(side2PlayerId == id) {
-    		this.player2Phase.setValue(phase1);
-    	}else throw new IllegalArgumentException("Id existiert nicht");
-        
+        if (side1PlayerId == id) {
+            this.player1Phase.setValue(phase1);
+        } else if (side2PlayerId == id) {
+            this.player2Phase.setValue(phase1);
+        } else throw new IllegalArgumentException("Id existiert nicht");
+
     }
 
     public boolean isGameRunning() {
-    	return !gameEnd;
+        return !gameEnd;
     }
 
     public void setGameEnd(boolean gameEnd) {
@@ -566,8 +753,9 @@ public class Game {
         return round;
     }
 
-    public Set<GameCard> getCardsHaveAttack() {
-        return CardsHaveAttack;
+    public boolean hasAttacked(int id, GameCard c) throws LogicException{
+        int index = getMyField(id).indexOfBattlegroundMonster(c);
+        return cardsHaveAttack[index];
     }
 
     public void changePlayer(int id) {
@@ -575,6 +763,43 @@ public class Game {
         phase = 0;
         playersTurn = id;
         playedMonstercard = false;
-        CardsHaveAttack.clear();
+        for (int i = 0; i < cardsHaveAttack.length; i++)
+            cardsHaveAttack[i] = false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Game game = (Game) o;
+
+        if (round != game.round || phase != game.phase) return false;
+        if (playersTurn != game.playersTurn) return false;
+        if (playedMonstercard != game.playedMonstercard) return false;
+        if (gameEnd != game.gameEnd || playerWon != game.playerWon) return false;
+        if (!side1.equals(game.side1) || !side2.equals(game.side2)) return false;
+        if (!cardLinks.equals(game.cardLinks)) return false;
+        GameCard[] g1;
+        GameCard[] g2;
+        try {
+            g1 = getMyField(playersTurn).getBattlegroundMonster();
+            g2 = game.getMyField(game.playersTurn).getBattlegroundMonster();
+        }catch (LogicException e){
+            throw new IllegalArgumentException(e);
+        }
+        List<GameCard> g1Cards = new ArrayList<>(5);
+        List<GameCard> g2Cards = new ArrayList<>(5);
+        for (int i = 0; i < g1.length; i++) {
+            if (cardsHaveAttack[i] && g1[i] != null) g1Cards.add(g1[i]);
+            if (game.cardsHaveAttack[i] && g2[i] != null) g2Cards.add(g2[i]);
+        }
+        g1Cards.sort(null);
+        g2Cards.sort(null);
+        return g1Cards.equals(g2Cards);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(side1, side2);
     }
 }
