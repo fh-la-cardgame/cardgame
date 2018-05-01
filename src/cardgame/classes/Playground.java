@@ -21,7 +21,7 @@ public class Playground {
     /**
      * Anzahl an Karten der Arrays
      **/
-    private final static int ROW = 4;
+    public final static int ROW = 4;
     private final static int CARDSONHANDSTART = 4;
     private final static int MAXCARDSONHAND = 5;
 

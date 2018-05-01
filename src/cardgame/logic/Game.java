@@ -802,4 +802,8 @@ public class Game {
     public int hashCode() {
         return Objects.hash(side1, side2);
     }
+    
+    public int getPlayersTurn(){
+    	return playersTurn;
+    }
 }

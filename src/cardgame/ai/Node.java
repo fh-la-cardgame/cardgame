@@ -11,21 +11,69 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cardgame.classes.Card;
+import cardgame.classes.GameCard;
+import cardgame.logic.Game;
+
 
 public class Node {
     
-    private List<Node> children;
+	private Game game;
+	private KiPlayer p1;
+	private KiPlayer p2;
+	private String transition;
+	private List<Node> children;
     private int wins = 0;
     private int simulations = 0;
     private Node parent;
     private boolean terminal;
     
     
-    public Node(Node parent, boolean terminal){
+    public Node(Node parent, boolean terminal, Game game){
         this.parent = parent;
         this.terminal = terminal;
         children = new ArrayList<>();
+        this.game = new Game(game);
     }
+    
+    
+   
+    public KiPlayer getP1() {
+		return p1;
+	}
+
+
+	public void setP1(KiPlayer p1) {
+		this.p1 = p1;
+	}
+
+
+	public KiPlayer getP2() {
+		return p2;
+	}
+
+
+	public void setP2(KiPlayer p2) {
+		this.p2 = p2;
+	}
+
+    
+    public void setTransition(String transition){
+    	this.transition = transition;
+    }
+    
+    public String getTransition(){
+    	return transition;
+    }
+    
+    public void setGame(Game game){
+    	this.game = game;
+    }
+    
+    public Game getGame(){
+    	return game;
+    }
+	
     
     
     public boolean isLeaf() {

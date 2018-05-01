@@ -84,6 +84,8 @@ public class GameTest {
 	}
 	
 	
+	
+	
 	//TODO
 	/** 2 Spieler haben den selben Namen.
 	 * 
@@ -443,6 +445,23 @@ public class GameTest {
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(3));
 		game.attack(p2.getId(), game.getMyField(p2.getId()).getBattlegroundMonster()[0], game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 		game.playSpecialCard(p2.getId(), (SpecialCard)game.getCardsOnHand(p2.getId()).get(0), game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
+	}
+	
+	@Ignore
+	@Test
+	public void testPlayCard_PlayCardAfterPlaySpecialcard() throws GameEndException, LogicException{
+		for(int i = 0; i < 3; i++){
+			Card swap = c2.get(c2.size()-(i+1));
+			c2.set(c2.size()-(i+1), c2.get(i));
+			c2.set(i, swap);
+		}
+		Deck d3 = new Deck(2, "TestDeck3", c2);
+		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), d3, true);
+		game.changePlayer(p1.getId());
+		game.getMyField(p1.getId()).addCard();
+		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
+		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(4));
+		System.out.println(game.getMyField(p1.getId()).getBattlegroundMonster()[0]);
 	}
 	
 	/**Meherere SpecialKarten hintereinander spielen.
