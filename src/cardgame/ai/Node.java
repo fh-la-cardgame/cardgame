@@ -28,12 +28,20 @@ public class Node {
     private Node parent;
     private boolean terminal;
     
-    
     public Node(Node parent, boolean terminal, Game game){
+    	 this.parent = parent;
+         this.terminal = terminal;
+         this.game = game;
+    }
+    
+    
+    public Node(Node parent, boolean terminal, Game game, KiPlayer p1, KiPlayer p2){
         this.parent = parent;
         this.terminal = terminal;
         children = new ArrayList<>();
-        this.game = new Game(game);
+        this.game = game;
+        this.p1 = p1;
+        this.p2 = p2;
     }
     
     
