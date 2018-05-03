@@ -9,6 +9,8 @@ import java.util.*;
  */
 public class SpecialCard extends Card {
 
+
+    public static SpecialCard DUMMY = new SpecialCard(-1,"","",Type.human,new byte[1],new LinkedList<>());
     /**
      * Liste der Effekte der Spezialkarte. *
      */

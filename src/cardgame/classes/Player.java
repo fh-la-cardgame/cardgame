@@ -27,7 +27,6 @@ public class Player {
      **/
     private final String name;
 
-    private final StringProperty pName;
     /**
      * Schutzschilder des Spielers.
      **/
@@ -51,7 +50,6 @@ public class Player {
     public Player(final int id, final String name) {
         this.id = id;
         this.name = name;
-        this.pName = new SimpleStringProperty(name);
         this.shields = new Shield(MAX_SHIELD);
     }
 
@@ -59,16 +57,8 @@ public class Player {
         this.id = player.id;
         this.name = player.name;
         this.shields = new Shield(player.shields);
-        this.pName = null;
     }
 
-    public StringProperty getpName() {
-        return pName;
-    }
-
-    public void setpName(String s) {
-        pName.setValue(s);
-    }
 
     public int getId() {
         return id;

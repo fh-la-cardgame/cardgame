@@ -499,7 +499,7 @@ public class Game {
      * @param id Id des Spielers
      * @return Die Karten des Spielers.
      */
-    public List<Card> getCardsOnHand(int id) throws LogicException {
+    public List<Card> getCardsOnHand(int id) {
         return getMyField(id).getCardsOnHand();
     }
 
@@ -510,14 +510,14 @@ public class Game {
      * @return Gegnerisches Spielfeld.
      */
 
-    public Playground getEnemyField(int id) throws LogicException {
+    public Playground getEnemyField(int id) {
         if (side1PlayerId == id) {
             return side2;
         }
         if (side2PlayerId == id) {
             return side1;
         }
-        throw new LogicException("Id existiert nicht");
+        throw new IllegalArgumentException("Id existiert nicht");
     }
 
     /**
@@ -526,14 +526,14 @@ public class Game {
      * @param id Eigne Spieler Id.
      * @return Eigenes Spielfeld.
      */
-    public Playground getMyField(int id) throws LogicException{
+    public Playground getMyField(int id){
         if (side1PlayerId == id) {
             return side1;
         }
         if (side2PlayerId == id) {
             return side2;
         }
-        throw new LogicException("Id existiert nicht");
+        throw new IllegalArgumentException("Id existiert nicht");
     }
 
     /**
@@ -781,12 +781,12 @@ public class Game {
         if (!cardLinks.equals(game.cardLinks)) return false;
         GameCard[] g1;
         GameCard[] g2;
-        try {
+        //try {
             g1 = getMyField(playersTurn).getBattlegroundMonster();
             g2 = game.getMyField(game.playersTurn).getBattlegroundMonster();
-        }catch (LogicException e){
-            throw new IllegalArgumentException(e);
-        }
+        //}catch (LogicException e){
+        //    throw new IllegalArgumentException(e);
+        //}
         List<GameCard> g1Cards = new ArrayList<>(5);
         List<GameCard> g2Cards = new ArrayList<>(5);
         for (int i = 0; i < g1.length; i++) {

@@ -1,6 +1,7 @@
 package cardgame.ui;
 
 import cardgame.classes.Card;
+import cardgame.classes.SpecialCard;
 import cardgame.classes.Type;
 import cardgame.classes.Effect;
 import java.io.ByteArrayInputStream;
@@ -41,7 +42,9 @@ public class SpecialCardControl extends CardControl {
 
 
     }
-    
+    public SpecialCardControl(SpecialCard s){
+        this(s.getName(),s.getDescription(),s.getType(),s.getImage(),s.getEffects());
+    }
     public SpecialCardControl(){
         this("", "", Type.human, new byte[1], null);
     }

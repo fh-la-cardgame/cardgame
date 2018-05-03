@@ -1,5 +1,8 @@
 package cardgame.classes;
 
+import javafx.application.Platform;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.Label;
 
@@ -80,7 +83,7 @@ public class Shield {
         if (currentShields > 0) {
             //setpCurrentShields(--currentShields);
             currentShields--;
-            setgShield();
+            if(gShield != null) changegShield();
             return true;
         } else {
             return false;
@@ -97,7 +100,7 @@ public class Shield {
         if (currentShields < maxShields) {
             //setpCurrentShields(++currentShields);
             currentShields++;
-            setgShield();
+            if(gShield != null) changegShield();
             return true;
         } else {
             return false;
@@ -110,11 +113,16 @@ public class Shield {
         return gShield;
     }
 
-    private void setgShield() {
-        if (this.toString() == null || this.toString().isEmpty()) {
-            //this.gShield.set("-/-");
-        }
-       // this.gShield.set(this.toString());
+    public void setgShield() {
+        this.gShield = new SimpleStringProperty(toString());
+    }
+
+    private void changegShield() {
+        Platform.runLater(()-> this.gShield.setValue(toString()));
+    }
+
+    public StringProperty gShieldProperty() {
+        return gShield;
     }
 
     @Override

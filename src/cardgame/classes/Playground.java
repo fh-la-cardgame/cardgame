@@ -46,13 +46,6 @@ public class Playground {
      **/
     private final SpecialCard[] battlegroundSpecials = new SpecialCard[ROW];
 
-    /** Array fuer  Monsterkarten**/
-    //private final GameCard[] guiBattlegroundMonster = new GameCard[ROW];
-    /**
-     * Array fuer die Zauber- bzw. Fallenkarten
-     **/
-    private final SpecialCardControl[] guiBattlegroundSpecials = new SpecialCardControl[ROW];
-
     /**
      * Anzahl der SpecialCards auf den Feld.
      */
@@ -63,12 +56,12 @@ public class Playground {
      */
     private int countBattlegroundMonster;
 
-    /**
-     * GUI
-     **/
-    private Card example;
-    // private ListView<Card> guiBattlegroundMonster;
-    ObservableList<GameCard> guiObservableBattlegroundMonster;
+
+    private ObservableList<GameCard> observableBattlegroundMonster;
+
+    private ObservableList<SpecialCard> observableBattlegroundSpecials;
+
+    private ObservableList<Card> observableCardsOnHand;
 
 
     /**
@@ -140,6 +133,7 @@ public class Playground {
     }
 
     public Card removeCardFromHand(int index) {
+        removeObservableCardsOnHand(index);
         return cardsOnHand.remove(index);
     }
 
@@ -149,7 +143,9 @@ public class Playground {
      */
     public void addCard() throws GameEndException {
         if (cardsOnHand.size() < MAXCARDSONHAND) {
-            cardsOnHand.add(deck.popCard());
+            Card card = deck.popCard();
+            cardsOnHand.add(card);
+            addObservableCardsOnHand(card);
         }
     }
 
@@ -160,14 +156,12 @@ public class Playground {
      */
     public void addMonsterCard(GameCard card) {
         if (!getCardsOnHand().contains(card)) throw new IllegalArgumentException("Monsterkarte nicht in der Hand !");
-        removeCardFromHand(card);
+        removeCardFromHand(indexOfBattlegroundMonster(card));
         //Karten werden von links nach rechts gelegt Eventuell von mitte aus starten !
         for (int i = 0; i < battlegroundMonster.length; i++) {
             if (battlegroundMonster[i] == null) {
-                battlegroundMonster[i] = card; //Clonen ?
-
-                int e = i;
-                //Platform.runLater(() -> guiObservableBattlegroundMonster.add(e, card));
+                battlegroundMonster[i] = card;
+                changeObservableBattlegroudMonster(i,card);
                 countBattlegroundMonster++;
                 return;
             }
@@ -176,13 +170,13 @@ public class Playground {
     }
 
     public int addSpecialCardToField(int index) {
-        Card card = cardsOnHand.remove(index);
+        Card card = removeCardFromHand(index);
         if (!(card instanceof SpecialCard)) throw new IllegalArgumentException("Special Karte nicht in der Hand");
         SpecialCard c = (SpecialCard) card;
         for (int i = 0; i < battlegroundSpecials.length; i++) {
             if (battlegroundSpecials[i] == null) {
-                battlegroundSpecials[i] = c; //Clonen ?
-                // guiBattlegroundSpecials[i] = new SpecialCardControl();
+                battlegroundSpecials[i] = c;
+                changeObservableBattlegroudSpecial(i,c);
                 countBattlegroundSpecials++;
                 return i;
             }
@@ -200,9 +194,7 @@ public class Playground {
         for (int i = 0; i < ROW; i++) {
             if (battlegroundMonster[i] == gameCard) {
                 battlegroundMonster[i] = null;
-                int e = i;
-                //Platform.runLater(() -> guiObservableBattlegroundMonster.set(e, new GameCard()));
-                //guiBattlegroundMonster.getItems().add(i, new GameCard());
+                changeObservableBattlegroudMonster(i,GameCard.DUMMY);
                 countBattlegroundMonster--;
                 return;
             }
@@ -219,6 +211,7 @@ public class Playground {
     public boolean removeBattlegroundSpecial(int index) {
         if (battlegroundSpecials[index] == null) return false;
         battlegroundSpecials[index] = null;
+        changeObservableBattlegroudSpecial(index,SpecialCard.DUMMY);
         countBattlegroundSpecials--;
         return true;
     }
@@ -242,8 +235,7 @@ public class Playground {
         for (int i = 0; i < ROW; i++) {
             if (battlegroundMonster[i] == oldCard) {
                 battlegroundMonster[i] = newCard;
-                //guiObservableBattlegroundMonster.add(i, newCard);
-                //guiObservableBattlegroundMonster.add(i, newCard);
+                changeObservableBattlegroudMonster(i,newCard);
                 return true;
             }
         }
@@ -284,64 +276,49 @@ public class Playground {
         return countBattlegroundMonster;
     }
 
-    private void createFieldsPlaceholder() {
-        guiObservableBattlegroundMonster = FXCollections.observableArrayList();
-        // for(int i=0; i < battlegroundMonster.length; i++)
-        //guiObservableBattlegroundMonster.add(i, new GamecardControl());
-       /* guiBattlegroundMonster = new ListView<>();
-        guiBattlegroundMonster.setOrientation(Orientation.HORIZONTAL);
-        guiObservableBattlegroundMonster = FXCollections.observableArrayList();
-        //guiObservableBattlegroundMonster = FXCollections.observableArrayList(this.cardsOnHand);
-        guiBattlegroundMonster.setItems(guiObservableBattlegroundMonster);
-        
-                for(int i=0; i < battlegroundMonster.length; i++){            	        
-                guiObservableBattlegroundMonster.add(i, new GameCard());
-                System.out.println("Size:"+guiObservableBattlegroundMonster.size());
+
+    public void setObservableBattlegroundMonster() {
+        this.observableBattlegroundMonster = FXCollections.observableArrayList();
+        for(int i=0;i<ROW;i++){
+            observableBattlegroundMonster.add(GameCard.DUMMY);
         }
-        
-        for(int i=0; i < guiBattlegroundSpecials.length; i++){
-            guiBattlegroundSpecials[i] = new SpecialCard();
+    }
+
+    public void setObservableBattlegroundSpecials() {
+        this.observableBattlegroundSpecials = FXCollections.observableArrayList();
+        for(int i=0;i<ROW;i++){
+            observableBattlegroundSpecials.add(SpecialCard.DUMMY);
         }
-    
-        
-        
-        guiBattlegroundMonster.setCellFactory(new Callback<ListView<Card>,ListCell<Card>>(){
-            @Override
-            public ListCell<Card> call(ListView<Card> param) {
-                 ListCell<Card> cell = new ListCell<Card>(){
-                     
-                     @Override
-                     protected void updateItem(Card item, boolean empty){
-                     super.updateItem(item, empty);
-                     if(item!=null){
-                         System.out.println("Item NICHT NULL" + System.currentTimeMillis());
-                         System.out.println(item.toString()); 
-                     }else{
-                         
-//                         System.out.println("-----------------");
-//                         System.out.println(item.toString());
-                         System.out.println("Item NULL" + System.currentTimeMillis());
-                     }
-                     }
-                 };
-                 
-                 return cell;
-            }
-        });*/
-
     }
 
-    public ListView<Card> getGuiBattlegroundMonster() {
-        return null;
+    public void setObservableCardsOnHand() {
+        this.observableCardsOnHand = FXCollections.observableArrayList(cardsOnHand);
     }
 
-    public ObservableList<GameCard> getGuiObservableBattlegroundMonster() {
-        return guiObservableBattlegroundMonster;
+    private void changeObservableBattlegroudMonster(int index, GameCard card){
+        if(observableBattlegroundMonster != null) Platform.runLater(()->observableBattlegroundMonster.set(index,card));
     }
 
+    private void changeObservableBattlegroudSpecial(int index,SpecialCard card){
+        if(observableBattlegroundSpecials != null) Platform.runLater(()->observableBattlegroundSpecials.set(index,card));
+    }
+    private void addObservableCardsOnHand(Card card){
+        if(observableCardsOnHand != null) Platform.runLater(()->observableCardsOnHand.add(card));
+    }
+    private void removeObservableCardsOnHand(int index){
+        if(observableCardsOnHand != null) Platform.runLater(()->observableCardsOnHand.remove(index));
+    }
 
-    public SpecialCardControl[] getGuiBattlegroundSpecials() {
-        return guiBattlegroundSpecials;
+    public ObservableList<GameCard> getObservableBattlegroundMonster() {
+        return observableBattlegroundMonster;
+    }
+
+    public ObservableList<SpecialCard> getObservableBattlegroundSpecials() {
+        return observableBattlegroundSpecials;
+    }
+
+    public ObservableList<Card> getObservableCardsOnHand() {
+        return observableCardsOnHand;
     }
 
     public static int getRow() {

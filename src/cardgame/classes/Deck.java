@@ -32,15 +32,13 @@ public class Deck {
         this.id = id;
         this.name = name;
         this.cards = new LinkedList<>();
-        for(Card c:cards){
-            if(c instanceof GameCard) this.cards.add(new GameCard((GameCard) c));
+        for(Card c:cards) {
+            if (c instanceof GameCard) this.cards.add(new GameCard((GameCard) c));
             else this.cards.add(new SpecialCard((SpecialCard) c));
-        }        
-        this.countCards = new SimpleIntegerProperty(this.cards.size());
+        }
     }
 
     public Card popCard() throws GameEndException {
-        //reduceCountCards();
         if(cards.isEmpty()) throw new GameEndException();
         if(countCards != null) reduceCountCards();
         return cards.remove(0);
@@ -79,9 +77,11 @@ public class Deck {
     }
 
     public void reduceCountCards() {
-        //if(countCards.getValue() > 0)
-        //Platform.runLater(()-> this.countCards.setValue(countCards.getValue()-1));
-        //System.out.println("countCards:"+countCards.getValue());
+        Platform.runLater(()-> this.countCards.setValue(cards.size()));
+    }
+
+    public void setCountCards() {
+        this.countCards = new SimpleIntegerProperty(cards.size());
     }
 
     @Override

@@ -16,6 +16,8 @@ import javafx.scene.control.Button;
  */
 public class GameCard extends Card {
 
+    public static GameCard DUMMY = new GameCard();
+
     /**
      * Angriffspunkte.
      **/
@@ -101,8 +103,7 @@ public class GameCard extends Card {
     public void changeAtk(int add) {
         this.atk += add;
         if (atk < 0) atk = 0;
-        setpAtk(atk);
-        //getpAtk().setValue(this.atk);
+        if(pAtk != null) changepAtk();
     }
 
     public boolean isAlive() {
@@ -142,13 +143,19 @@ public class GameCard extends Card {
         return pAtk;
     }
 
-    private void setpAtk(int atk) {
-        if (this.pAtk != null && this.pAtk.intValue() != atk) {
-            //Platform.runLater(()->this.pAtk.setValue(atk));
-            this.pAtk.setValue(atk);
-        }
+
+    private void changepAtk() {
+            Platform.runLater(()->this.pAtk.setValue(this.atk));
     }
 
+    public void setpAtk(){
+        this.pAtk = new SimpleIntegerProperty(atk);
+    }
+
+
+    public SimpleIntegerProperty pAtkProperty() {
+        return pAtk;
+    }
 
     /**
      * Erniedrigt die Schilder um ein Schild.
@@ -241,6 +248,7 @@ public class GameCard extends Card {
         int wert = super.compareTo(card);
         if(wert != 0) return wert;
         //Geht davon aus das GameCard und Specialcards verschieden cIds haben
+        if(card instanceof SpecialCard) return -1;
         GameCard gameCard = (GameCard) card;
         if(atk != gameCard.atk) return atk - gameCard.atk;
         if(shields.getCurrentShields() != gameCard.shields.getCurrentShields())
