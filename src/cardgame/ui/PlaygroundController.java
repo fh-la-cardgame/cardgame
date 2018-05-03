@@ -192,6 +192,7 @@ public class PlaygroundController implements Initializable {
         }
         clearStyle();
         stretchElements();
+        initGame();
         setBindings();
         Thread task = new GameThread(g);
         task.start();
@@ -291,7 +292,7 @@ public class PlaygroundController implements Initializable {
      *
      * @throws LogicException
      */
-    private void setCardsOnHandPlayer() throws LogicException {
+    private void setCardsOnHandPlayer(){
         GameCard gc;
         SpecialCard sc;
         String whiteShield = "";
@@ -355,7 +356,7 @@ public class PlaygroundController implements Initializable {
 
     private void setBindings() {
         initBindings();
-
+        bindPlayground();
     }
 
     private void bindPlayground() {
@@ -365,7 +366,8 @@ public class PlaygroundController implements Initializable {
                 while (change.next()) {
                     if (change.wasReplaced()) {
                         int from = change.getFrom();
-                        GamecardControl c = new GamecardControl();
+
+                        GamecardControl c = new GamecardControl(change.getList().get(from));
                         setCardonMyField(c, from);
                     } else {
                         for (int i = change.getFrom(); i < change.getTo(); i++) {
@@ -385,12 +387,11 @@ public class PlaygroundController implements Initializable {
                 while (change.next()) {
                     if (change.wasReplaced()) {
                         int from = change.getFrom();
-                        GamecardControl c = new GamecardControl();
+                        SpecialCardControl c = new SpecialCardControl(change.getList().get(from));
                         setCardonMyField(c, from);
                     } else {
                         for (int i = change.getFrom(); i < change.getTo(); i++) {
                             SpecialCard from = change.getList().get(i);
-                            // GamecardControl c = new GamecardControl("x/x", "y/y", from.getName(), from.getImage(), from.getEffects(), from.getEvoEffects(), true);
                             SpecialCardControl c = new SpecialCardControl(from);
                             setCardonMyField(c, i);
                         }
@@ -405,12 +406,11 @@ public class PlaygroundController implements Initializable {
                 while (change.next()) {
                     if (change.wasReplaced()) {
                         int from = change.getFrom();
-                        GamecardControl c = new GamecardControl();
+                        GamecardControl c = new GamecardControl(change.getList().get(from));
                         setCardsOnEnemyField(c, from);
                     } else {
                         for (int i = change.getFrom(); i < change.getTo(); i++) {
                             GameCard from = change.getList().get(i);
-                            // GamecardControl c = new GamecardControl("x/x", "y/y", from.getName(), from.getImage(), from.getEffects(), from.getEvoEffects(), true);
                             GamecardControl c = new GamecardControl(from);
                             setCardsOnEnemyField(c, i);
                         }
@@ -425,14 +425,14 @@ public class PlaygroundController implements Initializable {
                 while (change.next()) {
                     if (change.wasReplaced()) {
                         int from = change.getFrom();
-                        GamecardControl c = new GamecardControl();
-                        setCardonMyField(c, from);
+                        SpecialCardControl c = new SpecialCardControl(change.getList().get(from));
+                        setCardsOnEnemyField(c, from);
                     } else {
                         for (int i = change.getFrom(); i < change.getTo(); i++) {
                             SpecialCard from = change.getList().get(i);
                             // GamecardControl c = new GamecardControl("x/x", "y/y", from.getName(), from.getImage(), from.getEffects(), from.getEvoEffects(), true);
                             SpecialCardControl c = new SpecialCardControl(from);
-                            setCardonMyField(c, i);
+                            setCardsOnEnemyField(c, i);
                         }
                     }
 

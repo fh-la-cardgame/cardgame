@@ -51,7 +51,7 @@ public class GamecardControl extends CardControl {
     }
     public GamecardControl(GameCard card){
         this(card.getEvolutionShields().toString(), card.getShields().toString(),card.getName(), card.getDescription(), Integer.toString(card.getAtk()), card.getType(), card.getImage(),card.getEffects(),card.getEvoEffects());
-        atk.textProperty().bind(card.getpAtk().asString());
+        //atk.textProperty().bind(card.getpAtk().asString());
         
 //        card.getpAtk().addListener(new ChangeListener<Number>() {
 //            @Override

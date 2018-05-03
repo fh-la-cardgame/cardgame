@@ -111,7 +111,7 @@ public class GameTest {
 				have.add(game.getCardsOnHand(p1.getId()).get(i).getCid());
 				i++;
 			}
-		} catch (LogicException e) {
+		} catch (IllegalArgumentException e) {
 			fail();
 		}
 		assertEquals(have, want);	
@@ -130,7 +130,7 @@ public class GameTest {
 		GameCard card = null;
 		try {
 			card = (GameCard)game.getCardsOnHand(1).get(2);
-		} catch (LogicException e) {
+		} catch (IllegalArgumentException e) {
 			fail();
 		}
 		int gameCardId_want = 73;
@@ -211,7 +211,7 @@ public class GameTest {
 		try {
 			cardFirst = (GameCard)game.getCardsOnHand(1).get(2);
 			cardSecond = (GameCard)game.getCardsOnHand(1).get(3);
-		} catch (LogicException e) {
+		} catch (IllegalArgumentException e) {
 			System.out.println("Fehler: PlayingSeveralCards");
 		}
 		game.playCard(p1.getId(), Objects.requireNonNull(cardFirst));
@@ -246,7 +246,7 @@ public class GameTest {
 		GameCard card = null;
 		try {
 			card = (GameCard)game.getCardsOnHand(p1.getId()).get(2);
-		} catch (LogicException e) {
+		} catch (IllegalArgumentException e) {
 			System.out.println("Fehler");
 		}
 		game.playCard(p1.getId(), card);
@@ -255,7 +255,7 @@ public class GameTest {
 		game.getMyField(p2.getId()).addCard();
 		try {
 			card = (GameCard)game.getCardsOnHand(p2.getId()).get(2);
-		} catch (LogicException e) {
+		} catch (IllegalArgumentException e) {
 			System.out.println("Fehler");
 		}
 		game.playCard(p2.getId(), card);
@@ -265,7 +265,7 @@ public class GameTest {
 		game.attack(p1.getId(), game.getMyField(p1.getId()).getBattlegroundMonster()[0], game.getEnemyField(p1.getId()).getBattlegroundMonster()[0]);
 		try {
 			card = (GameCard)game.getCardsOnHand(p1.getId()).get(2);
-		} catch (LogicException e) {
+		} catch (IllegalArgumentException e) {
 			System.out.println("Fehler");
 		}
 		game.playCard(p1.getId(), card);
@@ -286,7 +286,7 @@ public class GameTest {
 			game.getMyField(p1.getId()).addCard();
 			try {
 				card = (GameCard)game.getCardsOnHand(p1.getId()).get(2);
-			} catch (LogicException e) {
+			} catch (IllegalArgumentException e) {
 				System.out.println("Fehler");
 			}
 			game.playCard(p1.getId(), card);
@@ -295,7 +295,7 @@ public class GameTest {
 			game.getMyField(p2.getId()).addCard();
 			try {
 				card = (GameCard)game.getCardsOnHand(p2.getId()).get(2);
-			} catch (LogicException e) {
+			} catch (IllegalArgumentException e) {
 				System.out.println("Fehler");
 			}
 			game.playCard(p2.getId(), card);
