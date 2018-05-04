@@ -47,15 +47,13 @@ public class MonteCarloTreeSearch {
         while (!stack.isEmpty()) {
             Node current = stack.remove();
             for (Node child : current.getChildren()) {
-                if (!child.isTerminal()) {
-                    stack.add(child);
-                    tempValue = child.getWins(0) / (double) child.getSimulations() + C * Math.sqrt(Math.log(simulations) / child.getSimulations());
-                    if (tempValue > bestValue) {
-                        bestValue = tempValue;
-                        bestNode = child;
-                    }
-                }
+                tempValue = child.getWins(0) / (double) child.getSimulations() + C * Math.sqrt(Math.log(simulations) / child.getSimulations());
+                if (tempValue > bestValue) {
+                    bestValue = tempValue;
+                    bestNode = child;
+                } 
             }
+            stack.add(bestNode);
         }
         return bestNode;
     }
@@ -101,9 +99,9 @@ public class MonteCarloTreeSearch {
             while (g.getMyField(n.getP1().getId()).getPlayer().getShields().getCurrentShields() > 0
                     && g.getMyField(n.getP2().getId()).getPlayer().getShields().getCurrentShields() > 0) {
                 card = g.getMyField(self_id).getBattlegroundMonster()[i];
-                final GameCard tempCard = card;
+                
                 //FEHLER!
-                if (card != null && !cardsAttack.stream().anyMatch(gc -> gc == tempCard)) {
+                if (card != null && !g.hasAttacked(self_id, card)) {
                     transition.append("g" + i + "-1");
                     g.attack(self_id, card, null);
 

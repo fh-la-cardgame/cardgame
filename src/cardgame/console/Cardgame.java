@@ -68,7 +68,7 @@ public class Cardgame {
 		newNode = mcts.makeTransition(new Node(null, false, g, p1, p2));
 		log(g, newNode);
 //		try{
-			while(g.getMyField(newNode.getP1().getId()).getPlayer().getShields().getCurrentShields() > 0 && 
+			while(g.isGameRunning() && g.getMyField(newNode.getP1().getId()).getPlayer().getShields().getCurrentShields() > 0 && 
 					g.getEnemyField(newNode.getP1().getId()).getPlayer().getShields().getCurrentShields() > 0){
 				System.out.println("Shield:"+g.getEnemyField(newNode.getP1().getId()).getPlayer().getShields().getCurrentShields());
 				System.out.println("Shield:"+g.getMyField(newNode.getP1().getId()).getPlayer().getShields().getCurrentShields());
@@ -82,6 +82,11 @@ public class Cardgame {
 				newNode = mcts.makeTransition(newNode);
 				log(g, newNode);
 				
+				if(g.isGameRunning() && g.getMyField(newNode.getP1().getId()).getPlayer().getShields().getCurrentShields() == 0 || 
+						g.getEnemyField(newNode.getP1().getId()).getPlayer().getShields().getCurrentShields() == 0){
+						break;
+					}
+				
 				g.changePlayer(p1.getId());
 				g.getMyField(p1.getId()).addCard();
 				newNode.setGame(g);
@@ -93,7 +98,9 @@ public class Cardgame {
 //			throw new Exception();
 //		}
 		
-		
+		System.out.println("Ende");
+		System.out.println(g.getMyField(p1.getId()).getPlayer().getShields().getCurrentShields());
+		System.out.println(g.getEnemyField(p1.getId()).getPlayer().getShields().getCurrentShields());
                 
    }
     
