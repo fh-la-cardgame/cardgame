@@ -156,11 +156,11 @@ public class Playground {
      */
     public void addMonsterCard(GameCard card) {
         if (!getCardsOnHand().contains(card)) throw new IllegalArgumentException("Monsterkarte nicht in der Hand !");
-        removeCardFromHand(cardsOnHand.indexOf(card));
+        GameCard c = (GameCard)removeCardFromHand(cardsOnHand.indexOf(card));
         //Karten werden von links nach rechts gelegt Eventuell von mitte aus starten !
         for (int i = 0; i < battlegroundMonster.length; i++) {
             if (battlegroundMonster[i] == null) {
-                battlegroundMonster[i] = card;
+                battlegroundMonster[i] = c;
                 changeObservableBattlegroudMonster(i,card);
                 countBattlegroundMonster++;
                 return;
