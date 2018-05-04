@@ -14,174 +14,171 @@ import java.util.Map;
 import cardgame.classes.Card;
 import cardgame.classes.GameCard;
 import cardgame.logic.Game;
-
+import java.util.LinkedList;
 
 public class Node {
-    
-	private Game game;
-	private KiPlayer p1;
-	private KiPlayer p2;
-	private String transition;
-	private List<Node> children;
+
+    private Game game;
+    private KiPlayer p1;
+    private KiPlayer p2;
+    private String transition;
+    private LinkedList<Node> children;
     private int wins = 0;
     private int simulations = 0;
     private Node parent;
     private boolean terminal;
-    
-    public Node(Node parent, boolean terminal, Game game){
-    	 this.parent = parent;
-         this.terminal = terminal;
-         this.game = game;
-    }
-    
-    
-    public Node(Node parent, boolean terminal, Game game, KiPlayer p1, KiPlayer p2){
+
+    public Node(Node parent, boolean terminal, Game game) {
         this.parent = parent;
         this.terminal = terminal;
-        children = new ArrayList<>();
+        this.game = game;
+    }
+
+    public Node(Node parent, boolean terminal, Game game, KiPlayer p1, KiPlayer p2) {
+        this.parent = parent;
+        this.terminal = terminal;
+        children = new LinkedList<>();
         this.game = game;
         this.p1 = p1;
         this.p2 = p2;
     }
-    
-    
-   
+
     public KiPlayer getP1() {
-		return p1;
-	}
-
-
-	public void setP1(KiPlayer p1) {
-		this.p1 = p1;
-	}
-
-
-	public KiPlayer getP2() {
-		return p2;
-	}
-
-
-	public void setP2(KiPlayer p2) {
-		this.p2 = p2;
-	}
-
-    
-    public void setTransition(String transition){
-    	this.transition = transition;
+        return p1;
     }
-    
-    public String getTransition(){
-    	return transition;
+
+    public void setP1(KiPlayer p1) {
+        this.p1 = p1;
     }
-    
-    public void setGame(Game game){
-    	this.game = game;
+
+    public KiPlayer getP2() {
+        return p2;
     }
-    
-    public Game getGame(){
-    	return game;
+
+    public void setP2(KiPlayer p2) {
+        this.p2 = p2;
     }
-	
-    
-    
+
+    public void setTransition(String transition) {
+        this.transition = transition;
+    }
+
+    public String getTransition() {
+        return transition;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
     public boolean isLeaf() {
         return children.isEmpty();
     }
-    
-    public long getSimulations(){
+
+    public long getSimulations() {
         return simulations;
     }
-    
-    /**Return wins.
-     * Can return wins for both players.
-     * Node stores only the wins of the player who takes action in this node.
+
+    /**
+     * Return wins. Can return wins for both players. Node stores only the wins
+     * of the player who takes action in this node.
+     *
      * @param player 0 for current player of this node, anything else.
      * @return the wins of this node.
      */
     public long getWins(int player) {
-         if(player == 0)
+        if (player == 0) {
             return wins;
-         return (simulations - wins);
-        
+        }
+        return (simulations - wins);
+
     }
-    /**ARGUMENT WINNER NOCH DEFINIEREN!
-     * 
-     * @param winner 
-     */
-    public void result(int winner) {
-        simulations++;
-        wins++;
-    }
-        
+
     /**
-     *  Gibt die Map aller Transitions und das Kind dieses Knotens zurueck.
+     * ARGUMENT WINNER NOCH DEFINIEREN!
+     *
+     * @param winner bei true, hat der Knoten gewonnen, bei false nicht
+     *
+     */
+    public void result(boolean winner) {
+        simulations++;
+        if (winner == true) {
+            wins++;
+        }
+    }
+
+    /**
+     * Gibt die Map aller Transitions und das Kind dieses Knotens zurueck.
+     *
      * @return
      */
 //    public Map<Transition, Node> getTransitionsAndNodes() {
 //        return children;
 //    }
-    
     /**
-     *  Gibt eine Collection aller Kinder dieses Knotes zurueck.
+     * Gibt eine Collection aller Kinder dieses Knotes zurueck.
+     *
      * @return
      */
-    public List<Node> getChildren() {
-        return children;       
+    public LinkedList<Node> getChildren() {
+        return children;
     }
-    
+
     /**
-     *  Gibt den Kindsknoten, welcher durch die Transition erreicht wird zurueck.
+     * Gibt den Kindsknoten, welcher durch die Transition erreicht wird zurueck.
+     *
      * @param transition
      * @return
      */
 //    public Node getNode(Transition transition){
 //        return children.get(transition);
 //    }
-
     /**
-     *  Ein Knoten ist terminal, wenn es kein Kind zu erkunden gibt.
+     * Ein Knoten ist terminal, wenn es kein Kind zu erkunden gibt.
+     *
      * @return
      */
-
-    public boolean isTerminal(){
+    public boolean isTerminal() {
         return this.terminal;
     }
-    
-    public void setTerminal(boolean terminal){
+
+    public void setTerminal(boolean terminal) {
         this.terminal = terminal;
     }
-    
+
     /**
-     *  Fuegt ein Kind zum Knoten hinzu und assoziert dieses mit der
-     *  uebergebenen Transition.
+     * Fuegt ein Kind zum Knoten hinzu und assoziert dieses mit der uebergebenen
+     * Transition.
+     *
      * @param transition Die Transition, die zum Kind fuehrt.
      * @param child Das Kind.
      */
 //    public void addChildNote(Transition transition, Node child){
 //       getTransitionsAndNodes().put(transition, child);
 //   }
-   
     /**
-     *  evtl. unnoetig, das UCT-Methode dafuer da ist.
-     *  Holt den Wert des gewaehlten Spielers.
-     *  Der Knoten, mit dem groesseren Wert wird ausgewaehlt.
+     * evtl. unnoetig, das UCT-Methode dafuer da ist. Holt den Wert des
+     * gewaehlten Spielers. Der Knoten, mit dem groesseren Wert wird
+     * ausgewaehlt.
+     *
      * @param player
      * @return
      */
     /*public abstract double value(int player);*/
-    
-    public Node getParent(){
+    public Node getParent() {
         return parent;
     }
-    
+
     /**
-     *  Macht diesen Knoten zur Wurzelknoten, indem er die Referent des Elternknotens loescht.
+     * Macht diesen Knoten zur Wurzelknoten, indem er die Referenz des
+     * Elternknotens loescht.
      */
-    public void makeRoot(){
+    public void makeRoot() {
         this.parent = null;
     }
-    
-    
-    
-    
+
 }
