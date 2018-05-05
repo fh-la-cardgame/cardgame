@@ -15,10 +15,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import cardgame.classes.Card;
-import cardgame.classes.GameCard;
-import cardgame.classes.Playground;
-import cardgame.classes.SpecialCard;
+import cardgame.classes.*;
 import cardgame.logic.Game;
 import cardgame.logic.LogicException;
 
@@ -350,6 +347,45 @@ public class MonteCarloTreeSearch {
         while (lastNode.getParent() != null) {
             lastNode = lastNode.getParent();
             lastNode.result(winner);
+        }
+    }
+
+    public void simulation(Node n) {
+        Game g = new Game(n.getGame());
+
+        while(g.isGameRunning()) {
+
+            KiPlayer isPlaying;
+
+            if(g.getPlayersTurn() == n.getP1().getId()) {
+                isPlaying = n.getP2();
+            } else {
+                isPlaying = n.getP1();
+            }
+            g.changePlayer(isPlaying.getId());
+            try {
+                g.getMyField(isPlaying.getId()).addCard();
+            } catch (GameEndException e) {
+                g.setPlayerWon(isPlaying.getId());
+                g.setGameEnd(true);
+                break;
+            }
+            try {
+                isPlaying.yourTurn();
+
+            } catch (LogicException e) {
+                System.out.println(e);
+            }
+
+        }
+
+        int id = g.getPlayerWon();
+
+        //TODO Wer ist Gegner und wer ist bin ich ?????????????????????
+        if(id == n.getP1().getId()) {
+            backPropagation(path, true);
+        } else {
+            backPropagation(path, false);
         }
     }
 }
