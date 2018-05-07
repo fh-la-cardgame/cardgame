@@ -5,15 +5,8 @@
  */
 package cardgame.ai;
 
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Objects;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -362,41 +355,31 @@ public class MonteCarloTreeSearch {
     }
 
     public void simulation(Node n) {
-        Game g = new Game(n.getGame());
 
-        while(g.isGameRunning()) {
+        Map<Node, Future<Boolean>> map = new HashMap<>();
 
-            KiPlayer isPlaying;
+        ExecutorService ex = Executors.newCachedThreadPool();
 
-            if(g.getPlayersTurn() == n.getP1().getId()) {
-                isPlaying = n.getP2();
-            } else {
-                isPlaying = n.getP1();
-            }
-            g.changePlayer(isPlaying.getId());
-            try {
-                g.getMyField(isPlaying.getId()).addCard();
-            } catch (GameEndException e) {
-                g.setPlayerWon(isPlaying.getId());
-                g.setGameEnd(true);
-                break;
-            }
-            try {
-                isPlaying.yourTurn();
-
-            } catch (LogicException e) {
-                System.out.println(e);
-            }
-
+        for(Node node: n.getChildren()) {
+            map.put(node, ex.submit(new SimulationCallable(node, node.getGame().getPlayersTurn())));
         }
 
-        int id = g.getPlayerWon();
-
-        //TODO Wer ist Gegner und wer ist bin ich ?????????????????????
-        if(id == n.getP1().getId()) {
-            backPropagation(path, true);
-        } else {
-            backPropagation(path, false);
+        try {
+            if(!ex.awaitTermination(2, TimeUnit.SECONDS)) {
+                throw new RuntimeException("Takes to long to execute");
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
+
+        for(Map.Entry<Node, Future<Boolean>> entry: map.entrySet()) {
+            try {
+                entry.getKey().result(entry.getValue().get());
+                //TODO BackPropagation
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
     }
 }
