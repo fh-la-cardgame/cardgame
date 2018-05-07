@@ -7,11 +7,13 @@ package cardgame.ai;
 
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -23,7 +25,10 @@ public class MonteCarloTreeSearch {
 
     /*Unser Baum als LinkedList, die alle Knoten enthaelt.*/
     private Deque<Node> path = new LinkedList<>();
+    /**Wurzel aus 2**/
     private static final double C = Math.sqrt(2);
+    /**Anzahl der Iterationen(Child_Nodes) in expand**/
+    private static final int ITERATIONS = 20;
 
     /**
      * Sucht den Knoten mit dem hoechsten UCT Wert aus dem gesamten Baum.
@@ -64,9 +69,14 @@ public class MonteCarloTreeSearch {
     public void expand(Node n) throws Exception {
         Objects.requireNonNull(n);
         //simulate this transition
-        Node new_Node = makeTransition(n);
-        //add Node to Path
-        path.addLast(new_Node);
+        Set<Node> setOfNodes = new HashSet<>();
+        for(int i = 0; i < ITERATIONS; i++){
+	        Node new_Node = makeTransition(n);
+	        //add Node to Path
+	        if(setOfNodes.add(new_Node))
+	        	path.addLast(new_Node);
+        }
+
     }
 
     /**
@@ -97,7 +107,7 @@ public class MonteCarloTreeSearch {
                     && g.getMyField(n.getP2().getId()).getPlayer().getShields().getCurrentShields() > 0) {
                 card = g.getMyField(self_id).getBattlegroundMonster()[i];
                 
-                //FEHLER!
+                
                 if (card != null && !g.hasAttacked(self_id, card)) {
                     transition.append("g" + i + "-1");
                     g.attack(self_id, card, null);
@@ -106,7 +116,8 @@ public class MonteCarloTreeSearch {
                 }
                 i++;
             }
-            Node finish = new Node(n, true, g);
+            //haengt die Postion von p1 und p2 von der Node im Baum ab??
+            Node finish = new Node(n, true, g, n.getP1(), n.getP2());
             finish.setTransition(transition.toString());
             return finish;
         } else {

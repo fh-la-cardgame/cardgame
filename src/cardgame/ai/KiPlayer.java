@@ -6,7 +6,7 @@ import cardgame.logic.LogicException;
 
 //noch nicht entgueltig
 public interface KiPlayer {
-	public static boolean DELAY = true;
+	public static boolean DELAY = false;
 	public static int TIME_DELAY = 0;
 
 	void initialize();

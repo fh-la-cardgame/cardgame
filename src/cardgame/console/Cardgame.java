@@ -81,11 +81,20 @@ public class Cardgame {
 				newNode.setGame(g);
 				newNode = mcts.makeTransition(newNode);
 				log(g, newNode);
-				
+			//	try{
 				if(g.isGameRunning() && g.getMyField(newNode.getP1().getId()).getPlayer().getShields().getCurrentShields() == 0 || 
 						g.getEnemyField(newNode.getP1().getId()).getPlayer().getShields().getCurrentShields() == 0){
 						break;
 					}
+//				}catch(NullPointerException ex){
+//					System.out.println(g == null);
+//					System.out.println(newNode == null);
+//					System.out.println(newNode.getP1() == null);
+//					System.out.println(g.getEnemyField(newNode.getP1().getId()) == null);
+//					System.out.println(g.getEnemyField(newNode.getP1().getId()).getPlayer() == null);
+//					System.out.println(g.getEnemyField(newNode.getP1().getId()).getPlayer().getShields() == null);
+//					throw new Exception();
+//				}
 				
 				g.changePlayer(p1.getId());
 				g.getMyField(p1.getId()).addCard();
