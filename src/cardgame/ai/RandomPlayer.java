@@ -17,14 +17,14 @@ public class RandomPlayer implements KiPlayer {
     private final Random random;
 
 
-    public RandomPlayer(Game game, int id) throws LogicException {
+    public RandomPlayer(Game game, int id) {
         this.game = game;
         this.id = id;
         myPlayground = game.getMyField(id);
         random = new Random();
     }
 
-    public RandomPlayer(Game game, int id, long seed) throws LogicException {
+    public RandomPlayer(Game game, int id, long seed) {
         this.game = game;
         this.id = id;
         myPlayground = game.getMyField(id);

@@ -152,15 +152,14 @@ public class Playground {
     /**
      * Loescht die Karte aus der Hand und fuegt sie als Monsterkarte auf das Feld ein.
      *
-     * @param card Monsterkarte die eingefuegt werden soll.
+     * @param indexCard Index der Monsterkarte von der Hand die eingefuegt werden soll.
      */
-    public void addMonsterCard(GameCard card) {
-        if (!getCardsOnHand().contains(card)) throw new IllegalArgumentException("Monsterkarte nicht in der Hand !");
-        GameCard c = (GameCard)removeCardFromHand(cardsOnHand.indexOf(card));
+    public void addMonsterCard(int indexCard){
+        GameCard card = (GameCard)removeCardFromHand(indexCard);
         //Karten werden von links nach rechts gelegt Eventuell von mitte aus starten !
         for (int i = 0; i < battlegroundMonster.length; i++) {
             if (battlegroundMonster[i] == null) {
-                battlegroundMonster[i] = c;
+                battlegroundMonster[i] = card;
                 changeObservableBattlegroudMonster(i,card);
                 countBattlegroundMonster++;
                 return;
@@ -226,6 +225,15 @@ public class Playground {
     public int indexOfBattlegroundMonster(GameCard gameCard) {
         for (int i = 0; i < battlegroundMonster.length; i++) {
             if (battlegroundMonster[i] == gameCard) return i;
+        }
+        return -1;
+    }
+
+    public int indexOfCardsOnHand(Card card){
+        int counter = 0;
+        for (Card c:cardsOnHand) {
+            if(c == card) return counter;
+            counter++;
         }
         return -1;
     }

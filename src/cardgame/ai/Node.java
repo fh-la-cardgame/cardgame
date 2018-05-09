@@ -43,6 +43,7 @@ public class Node {
         this.p2 = p2;
     }
 
+
     public KiPlayer getP1() {
         return p1;
     }
@@ -173,6 +174,9 @@ public class Node {
         return parent;
     }
 
+    public int getWins() {
+        return wins;
+    }
     /**
      * Macht diesen Knoten zur Wurzelknoten, indem er die Referenz des
      * Elternknotens loescht.

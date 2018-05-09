@@ -15,13 +15,47 @@ import cardgame.logic.Game;
 import cardgame.logic.LogicException;
 
 public class MonteCarloTreeSearch {
-
+    /**
+     * Zeit nach dem die Suche abgebrochen wird in ms.
+     */
+    private static int TIME_LIMIT = 1000;
     /*Unser Baum als LinkedList, die alle Knoten enthaelt.*/
     private Deque<Node> path = new LinkedList<>();
-    /**Wurzel aus 2**/
+    /**
+     * Wurzel aus 2
+     **/
     private static final double C = Math.sqrt(2);
-    /**Anzahl der Iterationen(Child_Nodes) in expand**/
+    /**
+     * Anzahl der Iterationen(Child_Nodes) in expand
+     **/
     private static final int ITERATIONS = 20;
+
+    private final int myId;
+
+    private final int enemyId;
+
+    public MonteCarloTreeSearch(int myId, int enemyId) {
+        this.myId = myId;
+        this.enemyId = enemyId;
+    }
+
+    public String run(Game game) throws LogicException {
+        Node root = new Node(null, false, game, new RandomPlayer(game, myId), new RandomPlayer(game, enemyId));
+        long endtime = System.currentTimeMillis() + TIME_LIMIT;
+        while (System.currentTimeMillis() < endtime) {
+            selection(root);
+        }
+
+        int wins = 0;
+        String transition = null;
+        for(Node n:root.getChildren()){
+           if(n.getWins() > wins){
+                wins = n.getWins();
+                transition = n.getTransition();
+           }
+        }
+        return transition;
+    }
 
     /**
      * Sucht den Knoten mit dem hoechsten UCT Wert aus dem gesamten Baum.
@@ -46,7 +80,7 @@ public class MonteCarloTreeSearch {
                 if (tempValue > bestValue) {
                     bestValue = tempValue;
                     bestNode = child;
-                } 
+                }
             }
             stack.add(bestNode);
         }
@@ -59,15 +93,15 @@ public class MonteCarloTreeSearch {
      * @param t Die ausgefuehrte Transition.
      * @throws Exception
      */
-    public void expand(Node n) throws Exception {
+    public void expand(Node n) throws LogicException {
         Objects.requireNonNull(n);
         //simulate this transition
         Set<Node> setOfNodes = new HashSet<>();
-        for(int i = 0; i < ITERATIONS; i++){
-	        Node new_Node = makeTransition(n);
-	        //add Node to Path
-	        if(setOfNodes.add(new_Node))
-	        	path.addLast(new_Node);
+        for (int i = 0; i < ITERATIONS; i++) {
+            Node new_Node = makeTransition(n);
+            //add Node to Path
+            if (setOfNodes.add(new_Node))
+                path.addLast(new_Node);
         }
 
     }
@@ -80,8 +114,8 @@ public class MonteCarloTreeSearch {
      * Bedingungen: - Enemy hat keine Karten mehr auf Battleground. - Enemy hat
      * weniger Schilde, als self Karten, die noch nicht angegriffen haben.
      *
-     * @param g, aktuelles Game.
-     * @param n, zugehoerige Node.
+     * @param g,                aktuelles Game.
+     * @param n,                zugehoerige Node.
      * @param playedCardIndixes
      * @throws LogicException
      */
@@ -99,8 +133,8 @@ public class MonteCarloTreeSearch {
             while (g.getMyField(n.getP1().getId()).getPlayer().getShields().getCurrentShields() > 0
                     && g.getMyField(n.getP2().getId()).getPlayer().getShields().getCurrentShields() > 0) {
                 card = g.getMyField(self_id).getBattlegroundMonster()[i];
-                
-                
+
+
                 if (card != null && !g.hasAttacked(self_id, card)) {
                     transition.append("g" + i + "-1");
                     g.attack(self_id, card, null);
@@ -127,7 +161,7 @@ public class MonteCarloTreeSearch {
      * @return Node (neue, aus alter resultierende Node)
      * @throws Exception
      */
-    public Node makeTransition(Node n) throws Exception {
+    public Node makeTransition(Node n) throws LogicException {
         Node newNode = null;
         Game g = n.getGame();
         Random random = new Random();
@@ -150,9 +184,9 @@ public class MonteCarloTreeSearch {
             Card card = cardsOnHand.get(random.nextInt(cardsOnHand.size()));
             //Wenn Karte eine Specialkarte ist:
             if (card instanceof SpecialCard && g.getMyField(self_id).getCountBattlegroundSpecials() < Playground.ROW) {
-                if (random.nextInt(2) == 0) {	//Zufaellig auswaehlen ob Karte gespielt wird.
+                if (random.nextInt(2) == 0) {    //Zufaellig auswaehlen ob Karte gespielt wird.
                     //--------------
-                    temp = random.nextInt(2);	//Zufaellig auswahlen welches Deck die SpecialKarte betrifft.
+                    temp = random.nextInt(2);    //Zufaellig auswahlen welches Deck die SpecialKarte betrifft.
                     if (temp == 0 && n.getGame().getMyField(self_id).getCountBattlegroundMonster() > 0) {
                         int choosen = 0 + random.nextInt(n.getGame().getMyField(self_id).getCountBattlegroundMonster());
                         //Garantieren das es dazwischen keine null gibt: Keine Gleichverteilung!
@@ -181,13 +215,13 @@ public class MonteCarloTreeSearch {
                         //Garantieren das es dazwischen keine null gibt
                         for (int k = 0; k < choosen + 1 - 4; k++) {
                             try {
-                                if (g.getEnemyField(self_id).getBattlegroundMonster()[k] == null) {			//Korrektur von Myfield zu EnemyField
+                                if (g.getEnemyField(self_id).getBattlegroundMonster()[k] == null) {            //Korrektur von Myfield zu EnemyField
                                     choosen++;
                                 }
                                 //Fehler behoben?
                             } catch (Exception ex) {
                                 System.out.println(g.getEnemyField(self_id).getBattlegroundMonster());
-                                throw new Exception("Nullpointer");
+                                //throw new Exception("Nullpointer");
                             }
                         }
                         //richtigen Index zuweisen: Wichtig immer aktuellen Index verwenden!
@@ -223,7 +257,7 @@ public class MonteCarloTreeSearch {
                             if ((newNode = spTr(g, n, CardsAttacked, transition)) != null) {
                                 return newNode;
                             }
-                            g.playCard(self_id, card); 	//Referenzen?
+                            g.playCard(self_id, card);    //Referenzen?
                             break;
                         }
                         index++;
@@ -331,16 +365,16 @@ public class MonteCarloTreeSearch {
         return newNode;
     }
 
-    
-    
+
+
     /*simulation() -Methode*/
-    
+
 
     /**
      * Laeuft den Baum vom letzten erstellten Knoten zurueck und erneuert seine
      * simulation/win - counts
      *
-     * @param path Baum
+     * @param path   Baum
      * @param winner Gewinner?(true = gewonnen, false = verloren).
      */
     public void backPropagation(Deque<Node> path, boolean winner) {
@@ -361,8 +395,8 @@ public class MonteCarloTreeSearch {
 
         ExecutorService ex = Executors.newCachedThreadPool();
 
-        for(Node node: n.getChildren()) {
-            list.add(ex.submit( new SimulationCallable( node, node.getGame().getPlayersTurn() ) ) );
+        for (Node node : n.getChildren()) {
+            list.add(ex.submit(new SimulationCallable(node, node.getGame().getPlayersTurn())));
             //map.put(node, ex.submit(new SimulationCallable(node, node.getGame().getPlayersTurn())));
         }
 
@@ -378,9 +412,9 @@ public class MonteCarloTreeSearch {
         int wins = 0;
         int simulations = list.size();
 
-        for(Future<Boolean> f: list) {
+        for (Future<Boolean> f : list) {
             try {
-                if(f.get()) {
+                if (f.get()) {
                     wins++;
                 }
             } catch (Exception e) {

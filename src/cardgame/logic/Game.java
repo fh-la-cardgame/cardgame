@@ -7,6 +7,7 @@ import cardgame.classes.*;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import sun.rmi.runtime.Log;
 
 public class Game {
 
@@ -243,14 +244,26 @@ public class Game {
      * @param card Karte die aufs Feld gelegt werden soll.
      */
     public void playCard(int id, Card card) throws LogicException {
-        if (card instanceof GameCard) {
+       /* if (card instanceof GameCard) {
             turn(id);
             if (phase != 0) throw new LogicException("Kann nur am Anfang Karten legen !");
             if (playedMonstercard)
                 throw new LogicException("Es darf nur 1 mal pro Zug eine Monsterkarte gelegt werden !");
             getMyField(id).addMonsterCard((GameCard) card);
             playedMonstercard = true;
-        } else playSpecialCard(id, (SpecialCard) card, null);
+        } else playSpecialCard(id, (SpecialCard) card, null);*/
+        playCard(id,getMyField(id).indexOfCardsOnHand(card));
+    }
+
+    public void playCard(int id,int cardIndex)throws LogicException{
+        Card card = getMyField(id).getCardsOnHand().get(cardIndex);
+        if(card instanceof GameCard){
+            turn(id);
+            if(phase != 0) throw new LogicException("Kann nur am Anfang Karte legen !");
+            if(playedMonstercard) throw new LogicException("Es darf nur 1 mal pro Zug eine Monsterkarte gelegt werden");
+            getMyField(id).addMonsterCard(cardIndex);
+            playedMonstercard = true;
+        }else playSpecialCard(id,cardIndex,-1);
     }
 
 
@@ -274,7 +287,8 @@ public class Game {
                 throw new IllegalArgumentException("Karte nicht auf der Hand");
             getMyField(id).removeCardFromHand(card);
         }*/
-        int indexSpecial = getMyField(id).getCardsOnHand().indexOf(card);
+        //int indexSpecial = getMyField(id).getCardsOnHand().indexOf(card);
+        int indexSpecial = getMyField(id).indexOfCardsOnHand(card);
         int indexEnemy = -1;
         if (enemyCard != null) {
             indexEnemy = getMyField(id).indexOfBattlegroundMonster(enemyCard);
