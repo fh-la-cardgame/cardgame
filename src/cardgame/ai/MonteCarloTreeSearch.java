@@ -356,30 +356,49 @@ public class MonteCarloTreeSearch {
 
     public void simulation(Node n) {
 
-        Map<Node, Future<Boolean>> map = new HashMap<>();
+        //Map<Node, Future<Boolean>> map = new HashMap<>();
+        List<Future<Boolean>> list = new LinkedList<>();
 
         ExecutorService ex = Executors.newCachedThreadPool();
 
         for(Node node: n.getChildren()) {
-            map.put(node, ex.submit(new SimulationCallable(node, node.getGame().getPlayersTurn())));
+            list.add(ex.submit( new SimulationCallable( node, node.getGame().getPlayersTurn() ) ) );
+            //map.put(node, ex.submit(new SimulationCallable(node, node.getGame().getPlayersTurn())));
         }
 
+        /*
         try {
             if(!ex.awaitTermination(2, TimeUnit.SECONDS)) {
                 throw new RuntimeException("Takes to long to execute");
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-        }
+        } */
 
-        for(Map.Entry<Node, Future<Boolean>> entry: map.entrySet()) {
+        int wins = 0;
+        int simulations = list.size();
+
+        for(Future<Boolean> f: list) {
             try {
-                entry.getKey().result(entry.getValue().get());
-                //TODO BackPropagation
+                if(f.get()) {
+                    wins++;
+                }
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
+
+        //TODO BackPropagation
+
+        /*
+        for(Map.Entry<Node, Future<Boolean>> entry: map.entrySet()) {
+            try {
+                entry.getKey().result(entry.getValue().get());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        */
 
     }
 }
