@@ -95,26 +95,20 @@ public class MonteCarloTreeSearch {
      */
     public HashSet<Node> expand(Node n) throws LogicException {
         Objects.requireNonNull(n);
-        int enemyId = n.getP1().getId() == n.getGame().getPlayersTurn() ? n.getP2().getId() : n.getP1().getId();
         Set<Node> setOfNodes = new HashSet<>();
         n.getGame().changePlayer(enemyId);
-        try{
-        	n.getGame().getMyField(enemyId).addCard();
-        }catch(GameEndException ex){		
-        	setOfNodes.add(n);
-        	return (HashSet<Node>) setOfNodes;
-        }
+        
         //simulate this transition
         
         Node new_Node = null;
         for (int i = 0; i < ITERATIONS; i++) {
         	try{
         		new_Node = makeTransition(n);
+        		
         	}catch(GameEndException ex){
         		setOfNodes.add(new_Node);
         		return (HashSet<Node>) setOfNodes;
         	}
-            //add Node to Path
             setOfNodes.add(new_Node);
         }
         return (HashSet<Node>) setOfNodes;
@@ -158,7 +152,11 @@ public class MonteCarloTreeSearch {
                 }
                 i++;
             }
+            //TODO:
             //haengt die Postion von p1 und p2 von der Node im Baum ab??
+            int enemyId = n.getP1().getId() == g.getPlayersTurn() ? n.getP2().getId() : n.getP1().getId();
+            g.changePlayer(enemyId);
+            g.getMyField(enemyId).addCard();
             Node finish = new Node(n, true, g, n.getP1(), n.getP2());
             finish.setTransition(transition.toString());
             return finish;
@@ -179,7 +177,7 @@ public class MonteCarloTreeSearch {
      */
     public Node makeTransition(Node n) throws LogicException, GameEndException {
         Node newNode = null;
-        Game g = n.getGame();
+        Game g = new Game(n.getGame());
         Random random = new Random();
         StringBuilder transition = new StringBuilder();
         int temp = 0;
@@ -376,6 +374,9 @@ public class MonteCarloTreeSearch {
             }
         }
         System.out.println("Transition:" + transition.toString());
+        int enemyId = n.getP1().getId() == g.getPlayersTurn() ? n.getP2().getId() : n.getP1().getId();
+        g.changePlayer(enemyId);
+        g.getMyField(enemyId).addCard();
         newNode = new Node(n, false, g, n.getP1(), n.getP2());
         newNode.setTransition(transition.toString());
         return newNode;
