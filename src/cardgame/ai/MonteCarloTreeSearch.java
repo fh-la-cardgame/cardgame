@@ -95,12 +95,21 @@ public class MonteCarloTreeSearch {
      */
     public HashSet<Node> expand(Node n) throws LogicException {
         Objects.requireNonNull(n);
-        //simulate this transition
+        int enemyId = n.getP1().getId() == n.getGame().getPlayersTurn() ? n.getP2().getId() : n.getP1().getId();
         Set<Node> setOfNodes = new HashSet<>();
+        n.getGame().changePlayer(enemyId);
+        try{
+        	n.getGame().getMyField(enemyId).addCard();
+        }catch(GameEndException ex){		
+        	setOfNodes.add(n);
+        	return (HashSet<Node>) setOfNodes;
+        }
+        //simulate this transition
+        
         Node new_Node = null;
         for (int i = 0; i < ITERATIONS; i++) {
         	try{
-            new_Node = makeTransition(n);
+        		new_Node = makeTransition(n);
         	}catch(GameEndException ex){
         		setOfNodes.add(new_Node);
         		return (HashSet<Node>) setOfNodes;
