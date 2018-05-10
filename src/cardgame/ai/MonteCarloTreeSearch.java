@@ -93,16 +93,22 @@ public class MonteCarloTreeSearch {
      * @param t Die ausgefuehrte Transition.
      * @throws Exception
      */
-    public void expand(Node n) throws LogicException {
+    public HashSet<Node> expand(Node n) throws LogicException {
         Objects.requireNonNull(n);
         //simulate this transition
         Set<Node> setOfNodes = new HashSet<>();
+        Node new_Node = null;
         for (int i = 0; i < ITERATIONS; i++) {
-            Node new_Node = makeTransition(n);
+        	try{
+            new_Node = makeTransition(n);
+        	}catch(GameEndException ex){
+        		setOfNodes.add(new_Node);
+        		return (HashSet<Node>) setOfNodes;
+        	}
             //add Node to Path
-            if (setOfNodes.add(new_Node))
-                path.addLast(new_Node);
+            setOfNodes.add(new_Node);
         }
+        return (HashSet<Node>) setOfNodes;
 
     }
 
@@ -119,7 +125,7 @@ public class MonteCarloTreeSearch {
      * @param playedCardIndixes
      * @throws LogicException
      */
-    private Node spTr(Game g, Node n, List<GameCard> cardsAttack, StringBuilder transition) throws LogicException {
+    private Node spTr(Game g, Node n, List<GameCard> cardsAttack, StringBuilder transition) throws LogicException, GameEndException {
 
         if (g.getRound() == -1) {
             return null;
@@ -159,9 +165,10 @@ public class MonteCarloTreeSearch {
      *
      * @param n Node n(alte Node)
      * @return Node (neue, aus alter resultierende Node)
+     * @throws GameEndException 
      * @throws Exception
      */
-    public Node makeTransition(Node n) throws LogicException {
+    public Node makeTransition(Node n) throws LogicException, GameEndException {
         Node newNode = null;
         Game g = n.getGame();
         Random random = new Random();
