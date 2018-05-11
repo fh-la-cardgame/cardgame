@@ -24,7 +24,7 @@ public class TestPlayer implements KiPlayer {
     private final Game game;
     private final Playground myPlayground;
     
-    public TestPlayer(Game game,int id) throws LogicException{
+    public TestPlayer(Game game,int id) {
         this.game = game;
         this.id = id;
         myPlayground = game.getMyField(id);

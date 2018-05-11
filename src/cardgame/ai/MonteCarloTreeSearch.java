@@ -413,7 +413,7 @@ public class MonteCarloTreeSearch {
         ExecutorService ex = Executors.newCachedThreadPool();
 
         for (Node node : n.getChildren()) {
-            list.add(ex.submit(new SimulationCallable(node, node.getGame().getPlayersTurn())));
+            list.add(ex.submit(new SimulationCallable(node, myId, enemyId)));
             //map.put(node, ex.submit(new SimulationCallable(node, node.getGame().getPlayersTurn())));
         }
 
