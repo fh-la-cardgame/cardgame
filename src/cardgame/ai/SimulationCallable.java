@@ -11,32 +11,31 @@ public class SimulationCallable implements Callable<java.lang.Boolean> {
 
     private final int myId;
 
-    SimulationCallable(Node node, int myId) {
+    private final int enemyId;
+
+    SimulationCallable(Node node, int myId, int enemyId) {
         this.node = node;
         this.myId = myId;
+        this.enemyId = enemyId;
     }
 
     @Override
     public java.lang.Boolean call() {
-        Game g = new Game(node.getGame());
+        Game game = new Game(node.getGame());
 
-        while(g.isGameRunning()) {
+        KiPlayer myPlayer = new TestPlayer(game, myId); // ? RandomPlayer
+        KiPlayer enemyPlayer = new TestPlayer(game, enemyId);
 
-            KiPlayer isPlaying;
+        KiPlayer isPlaying;
 
-            if(g.getPlayersTurn() == node.getP1().getId()) {
-                isPlaying = node.getP2();
-            } else {
-                isPlaying = node.getP1();
-            }
-            g.changePlayer(isPlaying.getId());
-            try {
-                g.getMyField(isPlaying.getId()).addCard();
-            } catch (GameEndException e) {
-                g.setPlayerWon(isPlaying.getId());
-                g.setGameEnd(true);
-                break;
-            }
+        if(game.getPlayersTurn() == myPlayer.getId()) {
+            isPlaying = myPlayer;
+        } else {
+            isPlaying = enemyPlayer;
+        }
+
+        while(true) {
+
             try {
                 isPlaying.yourTurn();
 
@@ -44,9 +43,28 @@ public class SimulationCallable implements Callable<java.lang.Boolean> {
                 throw new RuntimeException(e);
             }
 
+            if(!game.isGameRunning()) {
+                break;
+            }
+
+            if(isPlaying == myPlayer) {
+                isPlaying = enemyPlayer;
+            } else {
+                isPlaying = myPlayer;
+            }
+
+            game.changePlayer(isPlaying.getId());
+            try {
+                game.getMyField(isPlaying.getId()).addCard();
+            } catch (GameEndException e) {
+                game.setPlayerWon(isPlaying.getId());
+                game.setGameEnd(true);
+                break;
+            }
+
         }
 
-        int id = g.getPlayerWon();
+        int id = game.getPlayerWon();
 
         if(id == myId) {
             node.result(true);
