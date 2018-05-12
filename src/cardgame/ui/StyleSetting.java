@@ -1,5 +1,7 @@
 package cardgame.ui;
 
+import javafx.scene.control.ListView;
+
 /**
  * Klasse zum Stylen der Controllelemente
  */
@@ -22,5 +24,14 @@ public class StyleSetting {
     public static void resetCardCss(CardControl c){
         c.setId("card_css");
         c.getgName().setId("card_name");
+    }
+
+
+    /**
+     * Beschreibungsaussehen setzen.
+     * @param l
+     */
+    public static void setDescriptionCss(ListView l){
+        l.setId("description_css");
     }
 }

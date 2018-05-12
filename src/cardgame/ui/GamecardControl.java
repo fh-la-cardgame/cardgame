@@ -63,7 +63,9 @@ public class GamecardControl extends CardControl {
         this.atk = new Label(atk);
 
         if (effects != null && effects.length > 0) {
-            this.getgDescription().add(new Label("Schwarze Schildereffekte:"));
+            Label l = new Label("SCHWARZE SCHILDEFFEKTE:");
+            l.setId("boldtext_css");
+            this.getgDescription().add(l);
             for (int i = 0; i < effects.length; i++) {
                 if (effects[i] != null) {
 
@@ -72,11 +74,13 @@ public class GamecardControl extends CardControl {
 
             }
 
-            this.getgDescription().add(new Label("***************************************"));
+            this.getgDescription().add(new Label(""));
         }
 
         if (evoeffects != null && evoeffects.length > 0) {
-            this.getgDescription().add(new Label("Evo Schildereffekte:"));
+            Label l = new Label("EVO SCHILDEFFEKTE:");
+            l.setId("boldtext_css");
+            this.getgDescription().add(l);
             for (int i = 0; i < evoeffects.length; i++) {
                 if (evoeffects[i] != null) {
 

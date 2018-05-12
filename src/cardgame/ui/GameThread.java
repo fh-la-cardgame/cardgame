@@ -34,7 +34,8 @@ public class GameThread extends Thread {
                 } catch (LogicException e) {
                     System.out.println(e);
                 }
-        } catch (LogicException ex) {
+        //} catch (LogicException ex) {
+        } catch (Exception ex) {
             System.out.println(ex);
         }
     }

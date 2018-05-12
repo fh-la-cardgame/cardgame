@@ -29,7 +29,9 @@ public class SpecialCardControl extends CardControl {
         super(name, description, type, raw);
 
         if (effects != null && effects.size() > 0) {
-            getgDescription().add(new Label("ALLGEMEINE EFFEKTE:"));
+            Label l = new Label("ALLGEMEINE EFFEKTE:");
+            l.setId("boldtext_css");
+            getgDescription().add(l);
             for (Effect e : effects) {
                 if (e != null) {
 
@@ -38,7 +40,7 @@ public class SpecialCardControl extends CardControl {
 
             }
 
-            getgDescription().add(new Label("***************************************"));
+            getgDescription().add(new Label(""));
         }
 
 

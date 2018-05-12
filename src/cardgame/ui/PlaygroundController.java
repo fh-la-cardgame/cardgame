@@ -83,59 +83,59 @@ public class PlaygroundController implements Initializable {
     private Game g;
 
     @FXML
-    private Label pl1_specialcard1;
+    private Label enemy_specialcard1;
     @FXML
-    private Label pl1_specialcard2;
+    private Label enemy_specialcard2;
     @FXML
-    private Label pl1_specialcard3;
+    private Label enemy_specialcard3;
     @FXML
-    private Label pl1_specialcard4;
+    private Label enemy_specialcard4;
     @FXML
-    private Label pl1_card1;
+    private Label enemy_card1;
     @FXML
-    private Label pl1_card2;
+    private Label enemy_card2;
     @FXML
-    private Label pl1_card3;
+    private Label enemy_card3;
     @FXML
-    private Label pl1_card4;
+    private Label enemy_card4;
     @FXML
-    private Label pl2_card2;
+    private Label my_card1;
     @FXML
-    private Label pl2_card3;
+    private Label my_card2;
     @FXML
-    private Label pl2_card4;
+    private Label my_card3;
     @FXML
-    private Label pl2_specialcard1;
+    private Label my_card4;
     @FXML
-    private Label pl2_specialcard2;
+    private Label my_specialcard1;
     @FXML
-    private Label pl2_specialcard3;
+    private Label my_specialcard2;
     @FXML
-    private Label pl2_specialcard4;
+    private Label my_specialcard3;
+    @FXML
+    private Label my_specialcard4;
     @FXML
     private StackPane cardPreviewPane;
     @FXML
-    private ListView<PlayerShieldControl> pl2_shields;
+    private ListView<PlayerShieldControl> my_shields;
     @FXML
-    private ListView<PlayerShieldControl> pl1_shields;
+    private ListView<PlayerShieldControl> enemy_shields;
     @FXML
-    private ListView<EnemyGamecardControl> pl1_cardsOnHand;
+    private ListView<EnemyGamecardControl> enemy_cardsOnHand;
     @FXML
-    private ListView<CardControl> pl2_cardsOnHand;
+    private ListView<CardControl> my_cardsOnHand;
 
-    List<EnemyGamecardControl> pl1_l;
-    List<CardControl> pl2_l;
+    List<EnemyGamecardControl> enemy_l;
+    List<CardControl> my_l;
 
 
-    ObservableList<EnemyGamecardControl> pl1_observ_list;
+    ObservableList<EnemyGamecardControl> enemy_observ_list;
 
-    List<PlayerShieldControl> pl1_l_shields;
-    List<PlayerShieldControl> pl2_l_shields;
+    List<PlayerShieldControl> enemy_l_shields;
+    List<PlayerShieldControl> my_l_shields;
 
-    ObservableList<PlayerShieldControl> pl2_observ_list_shields;
-    ObservableList<PlayerShieldControl> pl1_observ_list_shields;
-
-    ObservableList<Card> pl2_ObservablecardsOnHand;
+    ObservableList<PlayerShieldControl> my_observ_list_shields;
+    ObservableList<PlayerShieldControl> enemy_observ_list_shields;
 
     GamecardControl[] my_card_field;
     SpecialCardControl[] my_scard_field;
@@ -153,8 +153,6 @@ public class PlaygroundController implements Initializable {
      * My ID
      */
     int myID = 2;
-    @FXML
-    private Label pl2_card1;
 
     /**
      * Initializes the controller class.
@@ -191,6 +189,7 @@ public class PlaygroundController implements Initializable {
             Logger.getLogger(PlaygroundController.class.getName()).log(Level.SEVERE, null, ex);
         }
         clearStyle();
+        setStyle();
         stretchElements();
         initGame();
         setBindings();
@@ -211,23 +210,29 @@ public class PlaygroundController implements Initializable {
     }
 
     /**
+     * Stylesetzung auf Elemente.
+     */
+    private void setStyle() {
+        StyleSetting.setDescriptionCss(description);
+    }
+
+    /**
      * Erzeugung von Spielerschildern
      *
      * @throws LogicException
      */
     private void setPlayerShields() throws LogicException {
 
-        pl2_l_shields = new ArrayList();
+        my_l_shields = new ArrayList();
 
         int size = g.getMyField(enemyID).getPlayer().getShields().getCurrentShields();
         for (int i = 0; i < size; i++) {
-            pl2_l_shields.add(new PlayerShieldControl());
+            my_l_shields.add(new PlayerShieldControl());
 
         }
 
-        pl2_observ_list_shields = FXCollections.observableArrayList(pl2_l_shields);
-        pl2_shields.setItems(pl2_observ_list_shields);
-        System.out.println("pl1_observ_list size:" + pl2_observ_list_shields.size());
+        my_observ_list_shields = FXCollections.observableArrayList(my_l_shields);
+        my_shields.setItems(my_observ_list_shields);
     }
 
     /**
@@ -237,17 +242,17 @@ public class PlaygroundController implements Initializable {
      */
     private void setEnemyPlayerShields() throws LogicException {
 
-        pl1_l_shields = new ArrayList<>();
+        enemy_l_shields = new ArrayList<>();
 
         int size = g.getEnemyField(enemyID).getPlayer().getShields().getCurrentShields();
         for (int i = 0; i < size; i++) {
-            pl1_l_shields.add(new PlayerShieldControl());
+            enemy_l_shields.add(new PlayerShieldControl());
 
         }
 
-        pl1_observ_list_shields = FXCollections.observableArrayList(pl1_l_shields);
-        pl1_shields.setItems(pl1_observ_list_shields);
-        //System.out.println("pl1_observ_list size:" + pl1_observ_list_shields.size());
+        enemy_observ_list_shields = FXCollections.observableArrayList(enemy_l_shields);
+        enemy_shields.setItems(enemy_observ_list_shields);
+        //System.out.println("enemy_observ_list size:" + enemy_observ_list_shields.size());
     }
 
     private void initGame() {
@@ -257,9 +262,9 @@ public class PlaygroundController implements Initializable {
         /*myField.setObservableCardsOnHand();
         for(Card card:myField.getCardsOnHand()){
             if(card instanceof GameCard){
-                pl2_cardsOnHand.getItems().add(new GamecardControl((GameCard) card));
+                my_cardsOnHand.getItems().add(new GamecardControl((GameCard) card));
             }else{
-                pl2_cardsOnHand.getItems().add(new SpecialCardControl((SpecialCard)card));
+                my_cardsOnHand.getItems().add(new SpecialCardControl((SpecialCard)card));
             }
         }*/
         enemyField.getDeck().setCountCards();
@@ -278,14 +283,14 @@ public class PlaygroundController implements Initializable {
      * @throws LogicException
      */
     private void setCardsOnHandEnemy() throws LogicException {
-        pl1_l = new ArrayList();
+        enemy_l = new ArrayList();
         int size = g.getEnemyField(enemyID).getCardsOnHand().size();
         for (int i = 0; i < size; i++) {
-            pl1_l.add(new EnemyGamecardControl());
+            enemy_l.add(new EnemyGamecardControl());
 
         }
-        pl1_observ_list = FXCollections.observableArrayList(pl1_l);
-        pl1_cardsOnHand.setItems(pl1_observ_list);
+        enemy_observ_list = FXCollections.observableArrayList(enemy_l);
+        enemy_cardsOnHand.setItems(enemy_observ_list);
 
     }
 
@@ -303,10 +308,10 @@ public class PlaygroundController implements Initializable {
                         }
                     }
                 });*/
-                pl2_cardsOnHand.getItems().add(new GamecardControl((GameCard) c));
+                my_cardsOnHand.getItems().add(new GamecardControl((GameCard) c));
 
             } else {
-                pl2_cardsOnHand.getItems().add(new SpecialCardControl((SpecialCard) c));
+                my_cardsOnHand.getItems().add(new SpecialCardControl((SpecialCard) c));
             }
         }
     }
@@ -340,12 +345,10 @@ public class PlaygroundController implements Initializable {
     private void setCardsOnHandPlayer() {
         myField.setObservableCardsOnHand();
         initCardsOnHandStart();
-        System.out.println("setCardsOnHandPlayer");
 
         myField.getObservableCardsOnHand().addListener(new ListChangeListener<Card>() {
             @Override
             public void onChanged(Change<? extends Card> change) {
-                System.out.println("Änderung: "+change.toString());
                 while (change.next()) {
                     if (change.wasAdded()) {
                         int from = change.getFrom();
@@ -360,15 +363,11 @@ public class PlaygroundController implements Initializable {
                         }
 
                     } else if(change.wasRemoved()){
-                        System.out.println("Karte entfernt: \n" + change.toString() );
                         int from = change.getFrom();
-                        System.out.println("Zu entfernen Index:" + from);
-                        System.out.println("Größe 3:" + myField.getObservableCardsOnHand().size());
-                        //Platform.runLater(()->pl2_cardsOnHand.getItems().remove(from));
-                        pl2_cardsOnHand.getItems().remove(from);
+                        //Platform.runLater(()->my_cardsOnHand.getItems().remove(from));
+                        my_cardsOnHand.getItems().remove(from);
 
                     }else{
-                        System.out.println("AUSNAHME:");/*
                         for (int i = change.getFrom(); i < change.getTo(); i++) {
                             Card from = change.getList().get(i);
                             if(from instanceof GameCard){
@@ -379,14 +378,14 @@ public class PlaygroundController implements Initializable {
                                 SpecialCardControl s = new SpecialCardControl((SpecialCard) from);
                                 setCardOnMyHand(s, i);
                             }
-                        }*/
+                        }
                     }
 
                 }
             }
         });
 
-        pl2_cardsOnHand.getSelectionModel().selectedItemProperty()
+        my_cardsOnHand.getSelectionModel().selectedItemProperty()
                 .addListener(new ChangeListener<CardControl>() {
 
                     @Override
@@ -655,25 +654,25 @@ public class PlaygroundController implements Initializable {
         setPrefSizeMax(countCards1);
         setPrefSizeMax(countCards2);
 
-        setPrefSizeMax(pl1_specialcard1);
-        setPrefSizeMax(pl1_specialcard2);
-        setPrefSizeMax(pl1_specialcard3);
-        setPrefSizeMax(pl1_specialcard4);
+        setPrefSizeMax(enemy_specialcard1);
+        setPrefSizeMax(enemy_specialcard2);
+        setPrefSizeMax(enemy_specialcard3);
+        setPrefSizeMax(enemy_specialcard4);
 
-        setPrefSizeMax(pl2_specialcard1);
-        setPrefSizeMax(pl2_specialcard2);
-        setPrefSizeMax(pl2_specialcard3);
-        setPrefSizeMax(pl2_specialcard4);
+        setPrefSizeMax(my_specialcard1);
+        setPrefSizeMax(my_specialcard2);
+        setPrefSizeMax(my_specialcard3);
+        setPrefSizeMax(my_specialcard4);
 
-        setPrefSizeMax(pl1_card1);
-        setPrefSizeMax(pl1_card2);
-        setPrefSizeMax(pl1_card3);
-        setPrefSizeMax(pl1_card4);
+        setPrefSizeMax(enemy_card1);
+        setPrefSizeMax(enemy_card2);
+        setPrefSizeMax(enemy_card3);
+        setPrefSizeMax(enemy_card4);
 
-        setPrefSizeMax(pl2_card1);
-        setPrefSizeMax(pl2_card2);
-        setPrefSizeMax(pl2_card3);
-        setPrefSizeMax(pl2_card4);
+        setPrefSizeMax(my_card1);
+        setPrefSizeMax(my_card2);
+        setPrefSizeMax(my_card3);
+        setPrefSizeMax(my_card4);
 
         cardPreviewPane.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
@@ -693,10 +692,10 @@ public class PlaygroundController implements Initializable {
      * Entfernung des vordefinierten Styles.
      */
     private void clearStyle() {
-        pl1_shields.getStyleClass().clear();
-        pl2_shields.getStyleClass().clear();
-        pl2_cardsOnHand.getStyleClass().clear();
-        pl1_cardsOnHand.getStyleClass().clear();
+        enemy_shields.getStyleClass().clear();
+        my_shields.getStyleClass().clear();
+        my_cardsOnHand.getStyleClass().clear();
+        enemy_cardsOnHand.getStyleClass().clear();
 
     }
 
@@ -707,11 +706,11 @@ public class PlaygroundController implements Initializable {
         }
         if (gc instanceof GamecardControl) {
             //my_card_field[where] = (GamecardControl) gc;
-            pl2_cardsOnHand.getItems().add(where, (GamecardControl)gc);
+            my_cardsOnHand.getItems().add(where, (GamecardControl)gc);
 
         } else {
             //my_scard_field[i] = (SpecialCardControl) gc;
-            pl2_cardsOnHand.getItems().add(where, (SpecialCardControl)gc);
+            my_cardsOnHand.getItems().add(where, (SpecialCardControl)gc);
         }
     }
 

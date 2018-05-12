@@ -30,13 +30,26 @@
                      -fx-border-color: black;
                      -fx-font-size: 11px;
                      -fx-background-color: white;
+                     -fx-margin: 4 4 4 4;
                  }
          #card_css_chosen{
-                            -fx-border-width: 1;
+                            -fx-border-width: 3;
                              -fx-border-color: red;
                              -fx-font-size: 11px;
                              -fx-background-color: white;
+                             -fx-margin: 4 4 4 4;
                          }
+        #description_css .list-cell:even{
+                             -fx-font-size: 11px;
+        }
+        #description_css .list-cell:odd{
+                             -fx-font-size: 11px;
+        }
+        #boldtext_css{
+
+            -fx-label-font-weight:bold;
+            -fx-font-weight:bold;
+        }
         #card_name{
             -fx-label-font-weight:bold;
             -fx-font-weight:bold;

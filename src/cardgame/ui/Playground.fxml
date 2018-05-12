@@ -148,83 +148,83 @@
          </GridPane.margin>
       </Label>
       
-      <Label fx:id="pl1_specialcard1" alignment="CENTER" contentDisplay="CENTER" layoutX="412.0" layoutY="171.0" text="Special Card 2" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+      <Label fx:id="enemy_specialcard1" alignment="CENTER" contentDisplay="CENTER" layoutX="412.0" layoutY="171.0" text="Special Card 2" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
          <GridPane.margin>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </GridPane.margin>
       </Label>
-      <Label fx:id="pl1_specialcard2" alignment="CENTER" contentDisplay="CENTER" layoutX="412.0" layoutY="171.0" text="Special Card 2" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+      <Label fx:id="enemy_specialcard2" alignment="CENTER" contentDisplay="CENTER" layoutX="412.0" layoutY="171.0" text="Special Card 2" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
          <GridPane.margin>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </GridPane.margin>
       </Label>
-      <Label fx:id="pl1_specialcard3" alignment="CENTER" contentDisplay="CENTER" layoutX="506.0" layoutY="171.0" text="Special Card 3" GridPane.columnIndex="8" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+      <Label fx:id="enemy_specialcard3" alignment="CENTER" contentDisplay="CENTER" layoutX="506.0" layoutY="171.0" text="Special Card 3" GridPane.columnIndex="8" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
          <GridPane.margin>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </GridPane.margin>
       </Label>
-      <Label fx:id="pl1_specialcard4" alignment="CENTER" contentDisplay="CENTER" layoutX="620.0" layoutY="171.0" text="Special Card 4" GridPane.columnIndex="10" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+      <Label fx:id="enemy_specialcard4" alignment="CENTER" contentDisplay="CENTER" layoutX="620.0" layoutY="171.0" text="Special Card 4" GridPane.columnIndex="10" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
          <GridPane.margin>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </GridPane.margin>
       </Label>
-      <Label fx:id="pl1_card1" alignment="CENTER" contentDisplay="CENTER" layoutX="732.0" layoutY="170.0" text="Card 1" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+      <Label fx:id="enemy_card1" alignment="CENTER" contentDisplay="CENTER" layoutX="732.0" layoutY="170.0" text="Card 1" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
          <GridPane.margin>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </GridPane.margin>
       </Label>
-      <Label fx:id="pl1_card2" alignment="CENTER" contentDisplay="CENTER" layoutX="411.0" layoutY="305.0" text="Card 2" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+      <Label fx:id="enemy_card2" alignment="CENTER" contentDisplay="CENTER" layoutX="411.0" layoutY="305.0" text="Card 2" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
          <GridPane.margin>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </GridPane.margin>
       </Label>
-      <Label fx:id="pl1_card3" alignment="CENTER" contentDisplay="CENTER" layoutX="524.0" layoutY="305.0" text="Card 3" GridPane.columnIndex="8" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+      <Label fx:id="enemy_card3" alignment="CENTER" contentDisplay="CENTER" layoutX="524.0" layoutY="305.0" text="Card 3" GridPane.columnIndex="8" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
          <GridPane.margin>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </GridPane.margin>
       </Label>
-      <Label fx:id="pl1_card4" alignment="CENTER" contentDisplay="CENTER" layoutX="638.0" layoutY="305.0" text="Card 4" GridPane.columnIndex="10" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+      <Label fx:id="enemy_card4" alignment="CENTER" contentDisplay="CENTER" layoutX="638.0" layoutY="305.0" text="Card 4" GridPane.columnIndex="10" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
          <GridPane.margin>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </GridPane.margin>
       </Label>
 
-      <Label fx:id="pl2_card1" alignment="CENTER" contentDisplay="CENTER" layoutX="524.0" layoutY="304.0" text="Card 2" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="CENTER">
+      <Label fx:id="my_card1" alignment="CENTER" contentDisplay="CENTER" layoutX="524.0" layoutY="304.0" text="Card 2" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="CENTER">
          <GridPane.margin>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </GridPane.margin>
       </Label>
-      <Label fx:id="pl2_card2" alignment="CENTER" contentDisplay="CENTER" layoutX="524.0" layoutY="304.0" text="Card 2" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="CENTER">
+      <Label fx:id="my_card2" alignment="CENTER" contentDisplay="CENTER" layoutX="524.0" layoutY="304.0" text="Card 2" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="CENTER">
          <GridPane.margin>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </GridPane.margin>
       </Label>
-      <Label fx:id="pl2_card3" alignment="CENTER" contentDisplay="CENTER" layoutX="637.0" layoutY="304.0" text="Card 3" GridPane.columnIndex="8" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="CENTER">
+      <Label fx:id="my_card3" alignment="CENTER" contentDisplay="CENTER" layoutX="637.0" layoutY="304.0" text="Card 3" GridPane.columnIndex="8" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="CENTER">
          <GridPane.margin>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </GridPane.margin>
       </Label>
-      <Label fx:id="pl2_card4" alignment="CENTER" contentDisplay="CENTER" layoutX="750.0" layoutY="304.0" text="Card 4" GridPane.columnIndex="10" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="CENTER">
+      <Label fx:id="my_card4" alignment="CENTER" contentDisplay="CENTER" layoutX="750.0" layoutY="304.0" text="Card 4" GridPane.columnIndex="10" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="CENTER">
          <GridPane.margin>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </GridPane.margin>
       </Label>
-      <Label fx:id="pl2_specialcard1" alignment="CENTER" contentDisplay="CENTER" layoutX="392.0" layoutY="170.0" text="Special Card 1" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+      <Label fx:id="my_specialcard1" alignment="CENTER" contentDisplay="CENTER" layoutX="392.0" layoutY="170.0" text="Special Card 1" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.rowSpan="2" GridPane.valignment="CENTER">
          <GridPane.margin>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </GridPane.margin>
       </Label>
-      <Label fx:id="pl2_specialcard2" alignment="CENTER" contentDisplay="CENTER" layoutX="505.0" layoutY="170.0" text="Special Card 2" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+      <Label fx:id="my_specialcard2" alignment="CENTER" contentDisplay="CENTER" layoutX="505.0" layoutY="170.0" text="Special Card 2" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.rowSpan="2" GridPane.valignment="CENTER">
          <GridPane.margin>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </GridPane.margin>
       </Label>
-      <Label fx:id="pl2_specialcard3" alignment="CENTER" contentDisplay="CENTER" layoutX="616.0" layoutY="170.0" text="Special Card 3" GridPane.columnIndex="8" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+      <Label fx:id="my_specialcard3" alignment="CENTER" contentDisplay="CENTER" layoutX="616.0" layoutY="170.0" text="Special Card 3" GridPane.columnIndex="8" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.rowSpan="2" GridPane.valignment="CENTER">
          <GridPane.margin>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </GridPane.margin>
       </Label>
-      <Label fx:id="pl2_specialcard4" alignment="CENTER" contentDisplay="CENTER" layoutX="730.0" layoutY="170.0" text="Special Card 4" GridPane.columnIndex="10" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+      <Label fx:id="my_specialcard4" alignment="CENTER" contentDisplay="CENTER" layoutX="730.0" layoutY="170.0" text="Special Card 4" GridPane.columnIndex="10" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.rowSpan="2" GridPane.valignment="CENTER">
          <GridPane.margin>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </GridPane.margin>
@@ -237,9 +237,9 @@
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding>
       </StackPane>
-      <ListView fx:id="pl2_shields" orientation="HORIZONTAL" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="12" />
-      <ListView fx:id="pl1_shields"  orientation="HORIZONTAL" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="12" />
-      <ListView fx:id="pl1_cardsOnHand" orientation="HORIZONTAL" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="11" GridPane.rowIndex="1">
+      <ListView fx:id="my_shields" orientation="HORIZONTAL" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+      <ListView fx:id="enemy_shields" orientation="HORIZONTAL" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="12" />
+      <ListView fx:id="enemy_cardsOnHand" orientation="HORIZONTAL" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="11" GridPane.rowIndex="1">
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding>
@@ -247,7 +247,7 @@
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </GridPane.margin>
       </ListView>
-      <ListView fx:id="pl2_cardsOnHand" orientation="HORIZONTAL" prefHeight="120.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="11" GridPane.halignment="CENTER" GridPane.rowIndex="11" GridPane.valignment="CENTER">
+      <ListView fx:id="my_cardsOnHand" orientation="HORIZONTAL" prefHeight="120.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="11" GridPane.halignment="CENTER" GridPane.rowIndex="11" GridPane.valignment="CENTER">
          <padding>
             <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
          </padding>
