@@ -196,17 +196,7 @@ public class PlaygroundController implements Initializable {
         Thread task = new GameThread(g);
         //task.start();
         g.changePlayer(myID);
-/*
-        try {
-            Card c = g.getMyField(enemyID).getCardsOnHand().stream().filter(e -> e instanceof GameCard).findFirst().get();
-            g.playCard(enemyID, c);
-            g.changePlayer(myID);
-            g.changePlayer(enemyID);
-            Card c2 = g.getMyField(enemyID).getCardsOnHand().stream().filter(e -> e instanceof GameCard).findFirst().get();
-            g.playCard(enemyID,c2);
-        } catch (LogicException ex) {
-            System.out.println(ex);
-        }*/
+        task.start();
     }
 
     /**
@@ -259,14 +249,6 @@ public class PlaygroundController implements Initializable {
         myField.getDeck().setCountCards();
         myField.setObservableBattlegroundMonster();
         myField.setObservableBattlegroundSpecials();
-        /*myField.setObservableCardsOnHand();
-        for(Card card:myField.getCardsOnHand()){
-            if(card instanceof GameCard){
-                my_cardsOnHand.getItems().add(new GamecardControl((GameCard) card));
-            }else{
-                my_cardsOnHand.getItems().add(new SpecialCardControl((SpecialCard)card));
-            }
-        }*/
         enemyField.getDeck().setCountCards();
         enemyField.setObservableCardsOnHand();
         enemyField.getDeck().setCountCards();
@@ -315,29 +297,7 @@ public class PlaygroundController implements Initializable {
             }
         }
     }
-        /**
-         * Auswahlbox
-         */
-        /*
-    void setEnemyGameCardsComboBox(double row, double col){
-        gameCardsSelection = new ComboBox();
-        System.out.println("Süso");
-        gameCardsSelection.getItems().add("test");
-        for(GameCard g : enemyField.getBattlegroundMonster()){
-            if(g !=  null && g.getName() != null){
-                gameCardsSelection.getItems().add(g.getName());
-                gameCardsSelection.setEditable(true);
-            }
 
-            //box.setOnAction((Event e) -> {
-               // selektiertes Item auswählen
-            //gameCardsSelection.getSelectionModel().getSelectedItem().toString();
-            //});
-        }
-        gridPlayGround.add(gameCardsSelection, 0,0,2,2);
-        //gameCardsSelection.setScaleX(row);
-        //gameCardsSelection.setScaleY(col);
-    }*/
     /**
      * Setzen der Handkarten bei dem Hauptspieler.
      * @throws LogicException
@@ -541,8 +501,8 @@ public class PlaygroundController implements Initializable {
         countCards2.textProperty().bind(g.getEnemyField(enemyID).getDeck().getCountCards().asString());
         countCards1.textProperty().bind(g.getMyField(enemyID).getDeck().getCountCards().asString());
 
-        bindPhases(main1, battle1, end1, g.getMyPhase(enemyID), g.getEnemyPhase(enemyID));
-        bindPhases(main2, battle2, end2, g.getEnemyPhase(enemyID), g.getMyPhase(enemyID));
+        BindSetting.bindPhases(main1, battle1, end1, g.getMyPhase(enemyID), g.getEnemyPhase(enemyID));
+        BindSetting.bindPhases(main2, battle2, end2, g.getEnemyPhase(enemyID), g.getMyPhase(enemyID));
 
 
     }
@@ -571,53 +531,6 @@ public class PlaygroundController implements Initializable {
         });
     }
 
-    /**
-     * Binding von Phasen
-     *
-     * @param m      Main-Phase Button
-     * @param b      Battle-Phase Button
-     * @param e      End-Phase Button
-     * @param phase1 Phase des 1. Spielers
-     * @param phase2 Phase des 2. Spielers
-     */
-    private void bindPhases(Button m, Button b, Button e, IntegerProperty phase1, IntegerProperty phase2) {
-        m.disableProperty().bind(new BooleanBinding() {
-            {
-                bind(phase1);
-            }
-
-            @Override
-            protected boolean computeValue() {
-                System.out.println("main: " + (phase1.getValue() != 0));
-
-                return phase1.getValue() != 0;
-            }
-        });
-
-        b.disableProperty().bind(new BooleanBinding() {
-            {
-                bind(phase1);
-            }
-
-            @Override
-            protected boolean computeValue() {
-
-                return phase1.getValue() == 2; // Hinweis: nicht in einzel Variable abspeichert
-            }
-        });
-        e.disableProperty().bind(new BooleanBinding() {
-            {
-                bind(phase1);
-            }
-
-            @Override
-            protected boolean computeValue() {
-                return phase1.getValue() == 2;
-            }
-        });
-
-    }
-
     @FXML
     private void battle1Action(ActionEvent event) {
         //g.setpPlayer1Phase(1);
@@ -644,47 +557,37 @@ public class PlaygroundController implements Initializable {
      * Sizing an das Parentelement.
      */
     private void stretchElements() {
-        setPrefSizeMax(main1);
-        setPrefSizeMax(main2);
-        setPrefSizeMax(end1);
-        setPrefSizeMax(end2);
-        setPrefSizeMax(battle1);
-        setPrefSizeMax(battle2);
+        StyleSetting.setPrefSizeMax(main1);
+        StyleSetting.setPrefSizeMax(main2);
+        StyleSetting.setPrefSizeMax(end1);
+        StyleSetting.setPrefSizeMax(end2);
+        StyleSetting.setPrefSizeMax(battle1);
+        StyleSetting.setPrefSizeMax(battle2);
 
-        setPrefSizeMax(countCards1);
-        setPrefSizeMax(countCards2);
+        StyleSetting.setPrefSizeMax(countCards1);
+        StyleSetting.setPrefSizeMax(countCards2);
 
-        setPrefSizeMax(enemy_specialcard1);
-        setPrefSizeMax(enemy_specialcard2);
-        setPrefSizeMax(enemy_specialcard3);
-        setPrefSizeMax(enemy_specialcard4);
+        StyleSetting.setPrefSizeMax(enemy_specialcard1);
+        StyleSetting.setPrefSizeMax(enemy_specialcard2);
+        StyleSetting.setPrefSizeMax(enemy_specialcard3);
+        StyleSetting.setPrefSizeMax(enemy_specialcard4);
 
-        setPrefSizeMax(my_specialcard1);
-        setPrefSizeMax(my_specialcard2);
-        setPrefSizeMax(my_specialcard3);
-        setPrefSizeMax(my_specialcard4);
+        StyleSetting.setPrefSizeMax(my_specialcard1);
+        StyleSetting.setPrefSizeMax(my_specialcard2);
+        StyleSetting.setPrefSizeMax(my_specialcard3);
+        StyleSetting.setPrefSizeMax(my_specialcard4);
 
-        setPrefSizeMax(enemy_card1);
-        setPrefSizeMax(enemy_card2);
-        setPrefSizeMax(enemy_card3);
-        setPrefSizeMax(enemy_card4);
+        StyleSetting.setPrefSizeMax(enemy_card1);
+        StyleSetting.setPrefSizeMax(enemy_card2);
+        StyleSetting.setPrefSizeMax(enemy_card3);
+        StyleSetting.setPrefSizeMax(enemy_card4);
 
-        setPrefSizeMax(my_card1);
-        setPrefSizeMax(my_card2);
-        setPrefSizeMax(my_card3);
-        setPrefSizeMax(my_card4);
+        StyleSetting.setPrefSizeMax(my_card1);
+        StyleSetting.setPrefSizeMax(my_card2);
+        StyleSetting.setPrefSizeMax(my_card3);
+        StyleSetting.setPrefSizeMax(my_card4);
 
         cardPreviewPane.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
-
-    }
-
-    /**
-     * Hilfsmethode zur Maximierung der Groesse im Parentcontainer.
-     *
-     * @param c Control
-     */
-    void setPrefSizeMax(Control c) {
-        c.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
     }
 
@@ -742,39 +645,6 @@ public class PlaygroundController implements Initializable {
                 gridPlayGround.add(gc, 4 + (2 * where), 3, 2, 1);
         }
 
-
-    }
-
-
-    /**
-     * Setzen einer Karte auf ein freies Feld.
-     *
-     * @param gc Spielerkarte/Spezialkarte
-     */
-    private void setPlayersField(CardControl gc) {
-        if (gc == null) {
-            throw new IllegalArgumentException("setPlayersField(GamecardControl gc) ist null");
-        }
-        if (gc instanceof GamecardControl) {
-            for (int i = 0; i < my_card_field.length; i++) {
-                System.out.println("my_card_field[i]:" + my_card_field[i]);
-                if (my_card_field[i] == null) {
-                    my_card_field[i] = (GamecardControl) gc;
-                    gridPlayGround.add(my_card_field[i], 4 + (2 * i), 7, 2, 1);
-                    break;
-                }
-            }
-        } else {
-            for (int i = 0; i < my_scard_field.length; i++) {
-                System.out.println("my_card_field[i]:" + my_card_field[i]);
-                if (my_scard_field[i] == null) {
-                    my_scard_field[i] = (SpecialCardControl) gc;
-                    gridPlayGround.add(my_scard_field[i], 4 + (2 * i), 9, 2, 2);
-                    break;
-                }
-            }
-
-        }
 
     }
 

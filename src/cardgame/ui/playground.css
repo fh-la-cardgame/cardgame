@@ -10,7 +10,7 @@
 	Background-color:black;
 	}
         
-        #pl2_cardsOnHand{
+        #my_cardsOnHand{
             -fx-padding: 0 0 0 0;
             -fx-background-color: #0093ff;
         }
@@ -25,7 +25,7 @@
             -fx-background-image: url("http://i65.tinypic.com/2n1su9d.jpg");
             -fx-text-fill: white; 
         }
-        #card_css, #pl1_specialcard4, #pl1_specialcard3, #pl1_specialcard2,#pl1_specialcard1, #pl2_specialcard4, #pl2_specialcard3, #pl2_specialcard2,#pl2_specialcard1 {
+        #card_css, #enemy_specialcard4, #enemy_specialcard3, #enemy_specialcard2,#enemy_specialcard1, #my_specialcard4, #my_specialcard3, #my_specialcard2,#my_specialcard1 {
                      -fx-border-width: 1;
                      -fx-border-color: black;
                      -fx-font-size: 11px;
@@ -37,7 +37,7 @@
                              -fx-border-color: red;
                              -fx-font-size: 11px;
                              -fx-background-color: white;
-                             -fx-margin: 4 4 4 4;
+                             -fx-margin: 10 10 10 10;
                          }
         #description_css .list-cell:even{
                              -fx-font-size: 11px;
@@ -54,14 +54,14 @@
             -fx-label-font-weight:bold;
             -fx-font-weight:bold;
         }
-        #pl1_card4, #pl1_card3, #pl1_card2,#pl1_card1, #pl2_card4, #pl2_card3, #pl2_card2,#pl2_card1 {
+        #enemy_card4, #enemy_card3, #enemy_card2,#enemy_card1, #my_card4, #my_card3, #my_card2,#my_card1 {
               -fx-border-width: 1;
             -fx-border-color: black;
             -fx-font-size: 11px;
             -fx-background-color: white;
         }
         
-        #pl2_cards_on_hand{
+        #my_cards_on_hand{
             -fx-padding: 2;
                         -fx-border-width: 1;
             -fx-border-color: black;

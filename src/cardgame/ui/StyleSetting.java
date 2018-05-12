@@ -1,5 +1,6 @@
 package cardgame.ui;
 
+import javafx.scene.control.Control;
 import javafx.scene.control.ListView;
 
 /**
@@ -30,8 +31,21 @@ public class StyleSetting {
     /**
      * Beschreibungsaussehen setzen.
      * @param l
+     *
      */
     public static void setDescriptionCss(ListView l){
         l.setId("description_css");
     }
+
+
+    /**
+     * Hilfsmethode zur Maximierung der Groesse im Parentcontainer.
+     *
+     * @param c Control
+     */
+    public static void setPrefSizeMax(Control c) {
+        c.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
+    }
+
 }
