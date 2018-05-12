@@ -38,15 +38,14 @@ public abstract class CardControl extends GridPane {
     private final Background bg;
     /* Button zum Spielen der Karte auf das Feld **/
     private final Button play;
-    
+
 
     /**
      * Konstruktor
-     *
-     * @param id Identifikationnummer
-     * @param name Name der Karte
-     * @param description Kartenbeschreibung
-     * @param type Typ der Karte
+     * @param name
+     * @param description
+     * @param type
+     * @param image
      */
     protected CardControl(final String name, final String description, final Type type, final byte[] image) {
         setAppearance();
@@ -101,7 +100,7 @@ public abstract class CardControl extends GridPane {
     private void posititionElements() {
         this.add(imageholder, 0, 0, 2, 1);
         this.add(gName, 0, 1, 2, 1);
-        this.add(play, 0, 4);
+        this.add(play, 0, 4, 2, 1);
 
     }
 

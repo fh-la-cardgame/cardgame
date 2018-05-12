@@ -64,7 +64,7 @@ public class Cardgame {
 		Game g = new Game(new Player(1, "Spieler1"), new Player(2, "Spieler2"), new Deck(d1), new Deck(d2), true);
 		KiPlayer p1 = new TestPlayerProtokoll(g, 1);
 		KiPlayer p2 = new TestPlayerProtokoll(g, 2);
-		MonteCarloTreeSearch mcts = new MonteCarloTreeSearch();
+		MonteCarloTreeSearch mcts = new MonteCarloTreeSearch(1,2);
 		newNode = mcts.makeTransition(new Node(null, false, g, p1, p2));
 		log(g, newNode);
 //		try{

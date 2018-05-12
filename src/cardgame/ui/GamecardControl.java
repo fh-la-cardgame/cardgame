@@ -39,32 +39,25 @@ public class GamecardControl extends CardControl {
     private Label card_black_shield;
     /* Weiße Schilder **/
     private Label card_white_shield;
-    /* Button zum Spielen der Karte auf das Feld **/
-    private Button play;
+    /* Button zum Kämpfen der Karte auf das Feld **/
+    private Button fight;
     /* Card Referenz */
     private GameCard card;
 
-    
-    public GamecardControl(){
+
+    private GamecardControl(){
         this("-/-","-/-","","","",Type.human, new byte[1],null,null);
         
     }
     public GamecardControl(GameCard card){
         this(card.getEvolutionShields().toString(), card.getShields().toString(),card.getName(), card.getDescription(), Integer.toString(card.getAtk()), card.getType(), card.getImage(),card.getEffects(),card.getEvoEffects());
-        //atk.textProperty().bind(card.getpAtk().asString());
-        
-//        card.getpAtk().addListener(new ChangeListener<Number>() {
-//            @Override
-//            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-//                card_black_shield.setText(t1.toString());
-//                atk.setText(t1.toString());
-//                System.out.println("new atk:"+card.getName() + "-" +card.getpAtk().toString());
-//            }
-//        });
+        this.card = card;
     }
 
-    public GamecardControl(String blackshield, String whiteshield, String name, String description, String atk, Type type, byte[] raw, Effect[] effects, Effect[] evoeffects) {
-        super(name, description, type, raw);        
+    private GamecardControl(String blackshield, String whiteshield, String name, String description, String atk, Type type, byte[] raw, Effect[] effects, Effect[] evoeffects) {
+        super(name, description, type, raw);
+        this.fight = new Button("Kämpfen");
+        this.fight.setVisible(false);
         this.card_black_shield = new Label(blackshield);
         this.card_white_shield = new Label(whiteshield);
         this.atk = new Label(atk);
@@ -112,6 +105,7 @@ public class GamecardControl extends CardControl {
         this.add(card_black_shield, 0, 3);
         this.add(card_white_shield, 1, 3);
         this.add(atk, 0, 2, 2, 1);
+        this.add(fight, 0, 4, 2, 1);
 
     }
 
@@ -165,6 +159,7 @@ public class GamecardControl extends CardControl {
         this.card = card;
     }
 
-    
-    
+    public Button getFight() {
+        return fight;
+    }
 }

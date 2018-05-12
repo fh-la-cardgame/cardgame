@@ -23,8 +23,9 @@ import javafx.scene.layout.BackgroundSize;
  */
 public class SpecialCardControl extends CardControl {
 
+    private SpecialCard card;
 
-    public SpecialCardControl(final String name, final String description, final Type type, final byte[] raw, final List<Effect> effects) {
+    private SpecialCardControl(final String name, final String description, final Type type, final byte[] raw, final List<Effect> effects) {
         super(name, description, type, raw);
 
         if (effects != null && effects.size() > 0) {
@@ -44,6 +45,7 @@ public class SpecialCardControl extends CardControl {
     }
     public SpecialCardControl(SpecialCard s){
         this(s.getName(),s.getDescription(),s.getType(),s.getImage(),s.getEffects());
+        this.card = s;
     }
     public SpecialCardControl(){
         this("", "", Type.human, new byte[1], null);
@@ -51,6 +53,10 @@ public class SpecialCardControl extends CardControl {
 
     @Override
     protected void positionAdditionalElements() {
+    }
+
+    public SpecialCard getCard() {
+        return card;
     }
 
     @Override

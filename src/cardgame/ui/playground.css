@@ -26,11 +26,17 @@
             -fx-text-fill: white; 
         }
         #card_css, #pl1_specialcard4, #pl1_specialcard3, #pl1_specialcard2,#pl1_specialcard1, #pl2_specialcard4, #pl2_specialcard3, #pl2_specialcard2,#pl2_specialcard1 {
-            -fx-border-width: 1;
-            -fx-border-color: black;
-            -fx-font-size: 11px;
-            -fx-background-color: white;
-        }
+                     -fx-border-width: 1;
+                     -fx-border-color: black;
+                     -fx-font-size: 11px;
+                     -fx-background-color: white;
+                 }
+         #card_css_chosen{
+                            -fx-border-width: 1;
+                             -fx-border-color: red;
+                             -fx-font-size: 11px;
+                             -fx-background-color: white;
+                         }
         #card_name{
             -fx-label-font-weight:bold;
             -fx-font-weight:bold;
