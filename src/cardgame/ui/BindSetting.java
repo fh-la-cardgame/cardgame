@@ -1,8 +1,10 @@
 package cardgame.ui;
 
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.binding.StringBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 
 /** Klasse zur Bindverwaltung.
  */
@@ -54,6 +56,15 @@ public class BindSetting {
             }
         });
 
+    }
+
+    /**
+     * Labelbinding
+     * @param l Label
+     * @param s Text
+     */
+    public static void bindLabel(Label l, StringBinding s){
+        l.textProperty().bind(s);
     }
 
 }

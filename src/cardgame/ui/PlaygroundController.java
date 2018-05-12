@@ -144,15 +144,14 @@ public class PlaygroundController implements Initializable {
     GamecardControl[] enemy_card_field;
     SpecialCardControl[] enemy_scard_field;
 
-    ComboBox gameCardsSelection;
-    /**
-     * KI ID
-     */
     int enemyID = 1;
-    /**
-     * My ID
-     */
     int myID = 2;
+
+
+
+    public static void main(String[] args) {
+        launch(args);
+    }
 
     /**
      * Initializes the controller class.
@@ -160,8 +159,6 @@ public class PlaygroundController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        enemyID = 1;
-        myID = 2;
         DbCard db = new DbCard();
         p1 = new Player(enemyID, "Dennis");
         p2 = new Player(myID, "David");
@@ -194,8 +191,7 @@ public class PlaygroundController implements Initializable {
         initGame();
         setBindings();
         Thread task = new GameThread(g);
-        //task.start();
-        g.changePlayer(myID);
+        //g.changePlayer(myID);
         task.start();
     }
 
@@ -276,6 +272,9 @@ public class PlaygroundController implements Initializable {
 
     }
 
+    /**
+     * Karten auf der Hand initialisieren.
+     */
     void initCardsOnHandStart() {
         for (Card c : myField.getObservableCardsOnHand()) {
             if (c instanceof GameCard) {
@@ -498,17 +497,13 @@ public class PlaygroundController implements Initializable {
         player1.setText(g.getMyField(enemyID).getPlayer().getName());
         player2.setText(g.getEnemyField(enemyID).getPlayer().getName());
         //Kartenanzahl Binding
-        countCards2.textProperty().bind(g.getEnemyField(enemyID).getDeck().getCountCards().asString());
-        countCards1.textProperty().bind(g.getMyField(enemyID).getDeck().getCountCards().asString());
+        BindSetting.bindLabel(countCards2, g.getEnemyField(enemyID).getDeck().getCountCards().asString());
+        BindSetting.bindLabel(countCards1,g.getMyField(enemyID).getDeck().getCountCards().asString());
 
         BindSetting.bindPhases(main1, battle1, end1, g.getMyPhase(enemyID), g.getEnemyPhase(enemyID));
         BindSetting.bindPhases(main2, battle2, end2, g.getEnemyPhase(enemyID), g.getMyPhase(enemyID));
 
 
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 
     /**
