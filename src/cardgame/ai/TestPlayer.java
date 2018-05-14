@@ -140,10 +140,10 @@ public class TestPlayer implements KiPlayer {
 				GameCard aggressor = null;
 				GameCard victim = null;
 				for(GameCard card: myField){
-					if(card != null){
+					if(card != null && !game.hasAttacked(id, card)){
 						if(aggressor != null){
 							aggressor = aggressor.getAtk() < card.getAtk() ? aggressor : card; 
-						}else{
+						}else if(!game.hasAttacked(id, card)){
 							aggressor = card;
 						}
 					}
