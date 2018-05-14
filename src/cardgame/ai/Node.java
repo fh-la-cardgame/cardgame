@@ -98,7 +98,15 @@ public class Node {
         return (simulations - wins);
 
     }
-
+    
+    public void addWins(int winner){
+        wins += winner;
+    }
+    
+    public void addSimulations(int simul){
+        simulations += simul;
+    }
+    
     /**
      * ARGUMENT WINNER NOCH DEFINIEREN!
      *

@@ -391,17 +391,30 @@ public class MonteCarloTreeSearch {
      * Laeuft den Baum vom letzten erstellten Knoten zurueck und erneuert seine
      * simulation/win - counts
      *
-     * @param path   Baum
-     * @param winner Gewinner?(true = gewonnen, false = verloren).
+     * @param startNode Knoten, von dem man startet.
+     * @param wins Anzahl der Gewinne des Spielers.
+     * @param simulations Anzahl der Simulationen.
      */
-    public void backPropagation(Deque<Node> path, boolean winner) {
-
-        Node lastNode = path.getLast();
-        lastNode.result(winner);
-
-        while (lastNode.getParent() != null) {
-            lastNode = lastNode.getParent();
-            lastNode.result(winner);
+    public void backPropagation(Node startNode, int wins, int simulations) {
+        
+        int playersTurn;
+        if(startNode.isTerminal()) {
+            playersTurn = startNode.getGame().getPlayersTurn();
+        }
+        
+        else {
+        Node childNode = startNode.getChildren().getFirst();                       
+        playersTurn = childNode.getGame().getPlayersTurn();                /*Spieler mit dem man vergleicht*/
+        }
+        
+        while (startNode != null) {
+            if(playersTurn == startNode.getGame().getPlayersTurn())
+            startNode.addWins(wins);
+            else {
+                startNode.addWins(simulations - wins);               
+            }
+            startNode.addSimulations(simulations);
+            startNode = startNode.getParent();
         }
     }
 
