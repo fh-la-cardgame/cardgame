@@ -2,6 +2,8 @@ package cardgame.ai;
 
 import cardgame.logic.Game;
 import cardgame.logic.LogicException;
+import javafx.beans.property.IntegerProperty;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,13 +29,13 @@ public class MCTSPlayer implements KiPlayer {
 
     @Override
     public void yourTurn() throws LogicException {
-        String best = mcts.run(game);
+        String best = mcts.run(new Game(game));
         List<String> commands = new ArrayList<>();
         StringBuilder build = new StringBuilder();
         boolean lastDigit = false;
         for (int i = 0; i < best.length(); i++) {
             char act = best.charAt(i);
-            if (Character.isDigit(act)) {
+            if (Character.isDigit(act) || act == '-') {
                 lastDigit = true;
                 build.append(act);
             } else if (act != '|') {
@@ -56,8 +58,12 @@ public class MCTSPlayer implements KiPlayer {
                 game.playSpecialCard(id,specialCardPlay,specialCardForEffect);
             }else if(command.startsWith("g")){
                 int attacker = charToInt(command.charAt(1));
-                int enemy = charToInt(command.charAt(2));
-                game.attack(id,attacker,enemy);
+                if(command.length() == 4){
+                    game.attack(id,attacker,Integer.parseInt(command.substring(2)));
+                }else {
+                    int enemy = charToInt(command.charAt(2));
+                    game.attack(id, attacker, enemy);
+                }
             }
         }
 
