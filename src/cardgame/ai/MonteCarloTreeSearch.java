@@ -62,8 +62,9 @@ public class MonteCarloTreeSearch {
      *
      * @param root Root Knoten.
      * @return Knoten mit dem hoechsten UCT Wert.
+     * @throws LogicException 
      */
-    public Node selection(Node root) {
+    public void selection(Node root) throws LogicException {
         Objects.requireNonNull(root);
         Node bestNode = root;
         long simulations = root.getSimulations();
@@ -75,6 +76,7 @@ public class MonteCarloTreeSearch {
 
         while (!stack.isEmpty()) {
             Node current = stack.remove();
+            bestValue = 0;
             for (Node child : current.getChildren()) {
                 tempValue = child.getWins(0) / (double) child.getSimulations() + C * Math.sqrt(Math.log(simulations) / child.getSimulations());
                 if (tempValue > bestValue) {
@@ -82,9 +84,18 @@ public class MonteCarloTreeSearch {
                     bestNode = child;
                 }
             }
+            if(bestNode.isLeaf()){
+	            break;
+            }
             stack.add(bestNode);
         }
-        return bestNode;
+        if(bestNode.isTerminal()){
+        	if(bestNode.getGame().getPlayerWon() == bestNode.getGame().getPlayersTurn())
+        		backPropagation(bestNode, 1, 1);
+        	else backPropagation(bestNode, 0, 1);
+        }else{
+        	expand(bestNode);
+        }
     }
 
     /**
@@ -93,7 +104,7 @@ public class MonteCarloTreeSearch {
      * @param t Die ausgefuehrte Transition.
      * @throws Exception
      */
-    public HashSet<Node> expand(Node n) throws LogicException {
+    public void expand(Node n) throws LogicException {
         Objects.requireNonNull(n);
         Set<Node> setOfNodes = new HashSet<>();
         n.getGame().changePlayer(enemyId);
@@ -104,14 +115,14 @@ public class MonteCarloTreeSearch {
         for (int i = 0; i < ITERATIONS; i++) {
         	try{
         		new_Node = makeTransition(n);
-        		
+        		setOfNodes.add(new_Node);
         	}catch(GameEndException ex){
         		setOfNodes.add(new_Node);
-        		return (HashSet<Node>) setOfNodes;
         	}
-            setOfNodes.add(new_Node);
+            
         }
-        return (HashSet<Node>) setOfNodes;
+       n.getChildren().addAll(setOfNodes);
+       simulation(n);
 
     }
 
@@ -463,6 +474,8 @@ public class MonteCarloTreeSearch {
             }
         }
         */
+        
+        backPropagation(n, wins, simulations);
 
     }
 }
