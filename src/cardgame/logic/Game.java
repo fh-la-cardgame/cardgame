@@ -47,6 +47,8 @@ public class Game {
      **/
     private IntegerProperty player2Phase;
 
+    private IntegerProperty playerWonProperity;
+
     /**
      * Spieler der am Zug ist.
      */
@@ -84,8 +86,6 @@ public class Game {
         side1PlayerId = player1.getId();
         side2PlayerId = player2.getId();
         playersTurn = player1.getId();
-        player1Phase = new SimpleIntegerProperty(0);
-        player2Phase = new SimpleIntegerProperty(2);
         cardLinks = new HashMap<>();
         cardsHaveAttack = new boolean[Playground.getRow()];
         //Unsauber!:
@@ -146,6 +146,13 @@ public class Game {
 
         //Phase wird in Angriff geaendert
         if (phase == 0) {
+            if(player1Phase != null){
+                if(playersTurn == side1PlayerId){
+                    player1Phase.set(1);
+                }else{
+                    player2Phase.set(1);
+                }
+            }
             phase = 1;
         }
         //Illegale Phasen
@@ -760,11 +767,16 @@ public class Game {
     }
 
     public void setPlayerWon(int playerWon) {
+        if(playerWonProperity != null) playerWonProperity.set(playerWon);
         this.playerWon = playerWon;
     }
 
     public int getRound() {
         return round;
+    }
+
+    public IntegerProperty getPlayerWonProperity() {
+        return playerWonProperity;
     }
 
     public boolean hasAttacked(int id, GameCard c) throws LogicException{
@@ -779,6 +791,15 @@ public class Game {
         playedMonstercard = false;
         for (int i = 0; i < cardsHaveAttack.length; i++)
             cardsHaveAttack[i] = false;
+        if(player1Phase != null){
+            if(id == side1PlayerId){
+                player1Phase.set(0);
+                player2Phase.set(2);
+            }else{
+                player1Phase.set(2);
+                player2Phase.set(0);
+            }
+        }
     }
 
     @Override
@@ -810,6 +831,15 @@ public class Game {
         g1Cards.sort(null);
         g2Cards.sort(null);
         return g1Cards.equals(g2Cards);
+    }
+
+    public void setPlayerPhases(){
+        player1Phase = new SimpleIntegerProperty();
+        player2Phase = new SimpleIntegerProperty();
+    }
+
+    public void setPlayerWonProperity(){
+        playerWonProperity = new SimpleIntegerProperty(-1);
     }
 
     @Override

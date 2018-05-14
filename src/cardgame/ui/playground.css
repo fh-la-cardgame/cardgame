@@ -33,17 +33,26 @@
                      -fx-margin: 4 4 4 4;
                  }
          #card_css_chosen{
-                            -fx-border-width: 3;
+                            -fx-border-width: 2;
                              -fx-border-color: red;
                              -fx-font-size: 11px;
                              -fx-background-color: white;
                              -fx-margin: 10 10 10 10;
                          }
+        #description_css{
+                     -fx-border-width: 1;
+                     -fx-border-color: black;
+        }
         #description_css .list-cell:even{
                              -fx-font-size: 11px;
         }
         #description_css .list-cell:odd{
                              -fx-font-size: 11px;
+        }
+        #cardPreviewPane{
+
+                     -fx-border-width: 1;
+                     -fx-border-color: black;
         }
         #boldtext_css{
 
@@ -67,6 +76,10 @@
             -fx-border-color: black;
             -fx-background-color: yellow;
             -fx-background-image: url("http://i65.tinypic.com/2n1su9d.jpg");
+        }
+
+        #button_css{
+                -fx-padding: 4 4 4 4;
         }
         
 }

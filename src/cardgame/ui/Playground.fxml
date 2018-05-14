@@ -46,7 +46,7 @@
       <RowConstraints maxHeight="395.8" minHeight="10.0" percentHeight="4.0" prefHeight="45.19997558593752" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <Button fx:id="main1" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" snapToPixel="false" text="MAIN" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+      <Button fx:id="enemy_main" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" snapToPixel="false" text="MAIN" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
          <GridPane.margin>
             <Insets bottom="6.0" left="4.0" right="4.0" top="6.0" />
          </GridPane.margin>
@@ -54,7 +54,7 @@
             <Font size="11.0" />
          </font>
       </Button>
-      <Button fx:id="battle1" alignment="CENTER" contentDisplay="CENTER" layoutX="478.0" layoutY="20.0" mnemonicParsing="false" onAction="#battle1Action" snapToPixel="false" text="BATTLE" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="7" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+      <Button fx:id="enemy_battle" alignment="CENTER" contentDisplay="CENTER" layoutX="478.0" layoutY="20.0" mnemonicParsing="false" onAction="#enemyBattleAction" snapToPixel="false" text="BATTLE" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="7" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
          <font>
             <Font size="11.0" />
          </font>
@@ -62,7 +62,7 @@
             <Insets bottom="6.0" left="4.0" right="4.0" top="6.0" />
          </GridPane.margin>
       </Button>
-      <Button fx:id="end1" alignment="CENTER" contentDisplay="CENTER" layoutX="580.0" layoutY="20.0" mnemonicParsing="false" onAction="#end1Action" snapToPixel="false" text="END" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="9" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+      <Button fx:id="enemy_end" alignment="CENTER" contentDisplay="CENTER" layoutX="580.0" layoutY="20.0" mnemonicParsing="false" onAction="#enemyEndAction" snapToPixel="false" text="END" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="9" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
          <font>
             <Font size="11.0" />
          </font>
@@ -70,7 +70,7 @@
             <Insets bottom="6.0" left="4.0" right="4.0" top="6.0" />
          </GridPane.margin>
       </Button>
-      <Button fx:id="main2" alignment="CENTER" contentDisplay="CENTER" layoutX="479.0" layoutY="20.0" mnemonicParsing="false" snapToPixel="false" text="MAIN" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="12" GridPane.valignment="CENTER">
+      <Button fx:id="my_main" alignment="CENTER" contentDisplay="CENTER" layoutX="479.0" layoutY="20.0" mnemonicParsing="false" snapToPixel="false" text="MAIN" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="12" GridPane.valignment="CENTER">
          <font>
             <Font size="11.0" />
          </font>
@@ -78,7 +78,7 @@
             <Insets bottom="6.0" left="4.0" right="4.0" top="6.0" />
          </GridPane.margin>
       </Button>
-      <Button fx:id="battle2" alignment="CENTER" contentDisplay="CENTER" layoutX="580.0" layoutY="20.0" mnemonicParsing="false" onAction="#battle2Action" snapToPixel="false" text="BATTLE" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="7" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="12" GridPane.valignment="CENTER">
+      <Button fx:id="my_battle" alignment="CENTER" contentDisplay="CENTER" layoutX="580.0" layoutY="20.0" mnemonicParsing="false" onAction="#myBattleAction" snapToPixel="false" text="BATTLE" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="7" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="12" GridPane.valignment="CENTER">
          <font>
             <Font size="11.0" />
          </font>
@@ -86,7 +86,7 @@
             <Insets bottom="6.0" left="4.0" right="4.0" top="6.0" />
          </GridPane.margin>
       </Button>
-      <Button fx:id="end2" alignment="CENTER" contentDisplay="CENTER" layoutX="695.0" layoutY="20.0" mnemonicParsing="false" onAction="#end2Action" snapToPixel="false" text="END" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="9" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="12" GridPane.valignment="CENTER">
+      <Button fx:id="my_end" alignment="CENTER" contentDisplay="CENTER" layoutX="695.0" layoutY="20.0" mnemonicParsing="false" onAction="#myEndAction" snapToPixel="false" text="END" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="9" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="12" GridPane.valignment="CENTER">
          <font>
             <Font size="11.0" />
          </font>

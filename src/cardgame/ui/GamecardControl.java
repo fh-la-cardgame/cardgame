@@ -50,7 +50,7 @@ public class GamecardControl extends CardControl {
         
     }
     public GamecardControl(GameCard card){
-        this(card.getEvolutionShields().toString(), card.getShields().toString(),card.getName(), card.getDescription(), Integer.toString(card.getAtk()), card.getType(), card.getImage(),card.getEffects(),card.getEvoEffects());
+        this(card.getShields().toString(), card.getEvolutionShields().toString(), card.getName(), card.getDescription(), Integer.toString(card.getAtk()), card.getType(), card.getImage(),card.getEffects(),card.getEvoEffects());
         this.card = card;
     }
 
@@ -96,6 +96,7 @@ public class GamecardControl extends CardControl {
 
         positionAdditionalElements();
         setAdditionalSizesAndPosition();
+        setAdditioanalCSS();
 
     }
 
@@ -113,6 +114,25 @@ public class GamecardControl extends CardControl {
 
     }
 
+    public void bindAll(){
+        card.setpAtk();
+        card.getShields().setgShield();
+        card.getEvolutionShields().setgShield();
+
+
+        BindSetting.bindLabel(this.atk, card.getpAtk().asString());
+        BindSetting.bindLabel(this.card_black_shield, card.getShields().getgShield());
+        BindSetting.bindLabel(this.card_white_shield, card.getEvolutionShields().getgShield());
+
+
+    }
+
+    public void unbindAll(){
+        BindSetting.unbindLabel(this.atk);
+        BindSetting.unbindLabel(this.card_black_shield);
+        BindSetting.unbindLabel(this.card_white_shield);
+    }
+
     /**
      * Anpassung der Groesse und Ausrichtung.
      */
@@ -121,7 +141,13 @@ public class GamecardControl extends CardControl {
         //Padding
         Insets i = new Insets(2, 2, 2, 2);
         this.card_black_shield.setPadding(i);
-        this.card_white_shield.setPadding(i);}
+        this.card_white_shield.setPadding(i);
+    }
+
+    private void setAdditioanalCSS(){
+
+        this.fight.setId("button");
+    }
 
     /**
      * Getter

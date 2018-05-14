@@ -20,7 +20,6 @@ public class GameThread extends Thread {
         try {
             KiPlayer p1 = new TestPlayer(game, 1);
             //KiPlayer p2 = new TestPlayer(game, 2);
-            int k = 0;
                 game.changePlayer(p1.getId());
                 try {
                     game.getMyField(p1.getId()).addCard();

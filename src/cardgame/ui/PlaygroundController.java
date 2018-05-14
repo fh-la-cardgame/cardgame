@@ -7,6 +7,8 @@ Log4J - Apache
  */
 package cardgame.ui;
 
+import cardgame.ai.KiPlayer;
+import cardgame.ai.RandomPlayer;
 import cardgame.classes.*;
 import cardgame.db.DbCard;
 import cardgame.logic.Game;
@@ -23,8 +25,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -35,8 +35,9 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
 
 /**
  * FXML Controller class
@@ -48,17 +49,17 @@ public class PlaygroundController implements Initializable {
     @FXML
     private GridPane gridPlayGround;
     @FXML
-    private Button main1;
+    private Button enemy_main;
     @FXML
-    private Button battle1;
+    private Button enemy_battle;
     @FXML
-    private Button end1;
+    private Button enemy_end;
     @FXML
-    private Button main2;
+    private Button my_main;
     @FXML
-    private Button battle2;
+    private Button my_battle;
     @FXML
-    private Button end2;
+    private Button my_end;
     @FXML
     private Label zuege;
     @FXML
@@ -144,10 +145,19 @@ public class PlaygroundController implements Initializable {
     GamecardControl[] enemy_card_field;
     SpecialCardControl[] enemy_scard_field;
 
+    GamecardControl myChosenGameCard;
+    SpecialCardControl myChosenSpecialCard;
+
+    EventHandler<MouseEvent> highlightMouseEvent;
+    EventHandler<MouseEvent> highlightMouseEventSpecialCard;
+
+
+    Thread task;
+
     int enemyID = 1;
     int myID = 2;
 
-
+    private KiPlayer kiPlayer;
 
     public static void main(String[] args) {
         launch(args);
@@ -166,11 +176,15 @@ public class PlaygroundController implements Initializable {
         d1 = new Deck(1, "Flora", db.getDeck("Flora"));
         d2 = new Deck(2, "David", db.getDeck("civitas diaboli"));
         g = new Game(p1, p2, d1, d2);
+        kiPlayer = new RandomPlayer(g,enemyID);
         myField = g.getMyField(myID);
         enemyField = g.getEnemyField(myID);
         cardPreviewPane = new StackPane();
         cardPreviewPane.setMinHeight(200);
         cardPreviewPane.setMinWidth(100);
+
+
+
 
         my_card_field = new GamecardControl[4];
         my_scard_field = new SpecialCardControl[4];
@@ -190,9 +204,11 @@ public class PlaygroundController implements Initializable {
         stretchElements();
         initGame();
         setBindings();
-        Thread task = new GameThread(g);
-        //g.changePlayer(myID);
-        task.start();
+        task = new GameThread(g);
+        g.changePlayer(myID);
+        //task.start();
+
+        //TEST
     }
 
     /**
@@ -242,6 +258,8 @@ public class PlaygroundController implements Initializable {
     }
 
     private void initGame() {
+        g.setPlayerPhases();
+        g.setPlayerWonProperity();
         myField.getDeck().setCountCards();
         myField.setObservableBattlegroundMonster();
         myField.setObservableBattlegroundSpecials();
@@ -277,6 +295,8 @@ public class PlaygroundController implements Initializable {
      */
     void initCardsOnHandStart() {
         for (Card c : myField.getObservableCardsOnHand()) {
+            GamecardControl gc;
+            SpecialCardControl sc;
             if (c instanceof GameCard) {
                 //GamecardControl gc = new GamecardControl((GameCard) c);
                 /*gc.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
@@ -289,10 +309,14 @@ public class PlaygroundController implements Initializable {
                         }
                     }
                 });*/
-                my_cardsOnHand.getItems().add(new GamecardControl((GameCard) c));
+                gc = new GamecardControl((GameCard) c);
+                setActionOnPlay(gc);
+                my_cardsOnHand.getItems().add(gc);
 
             } else {
-                my_cardsOnHand.getItems().add(new SpecialCardControl((SpecialCard) c));
+                sc = new SpecialCardControl((SpecialCard) c);
+                setActionOnPlay(sc);
+                my_cardsOnHand.getItems().add(sc);
             }
         }
     }
@@ -344,6 +368,8 @@ public class PlaygroundController implements Initializable {
             }
         });
 
+
+
         my_cardsOnHand.getSelectionModel().selectedItemProperty()
                 .addListener(new ChangeListener<CardControl>() {
 
@@ -354,40 +380,11 @@ public class PlaygroundController implements Initializable {
                         ObservableList<Label> ob = FXCollections.observableArrayList(newv.getgDescription());
                         description.setItems(ob);
                         if (newv.getBg() != null) {
-                            cardPreviewPane.setBackground(newv.getBg());
+                            //System.out.println("Neuer Hintergrund");
+                            //cardPreviewPane.setBackground(new Background(new BackgroundImage(new Image(new ByteArrayInputStream(newv.getBg().get)), BackgroundRepeat.SPACE, BackgroundRepeat.SPACE, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                           //// cardPreviewPane.setBackground(newv.getBg());
                         }
-                        newv.getPlay().setDisable(false);
-                        newv.getPlay().setOnAction(new EventHandler<ActionEvent>() {
-                            @Override
-                            public void handle(ActionEvent e) {
-                                try{
-                                //setPlayersField(newv);
 
-                                    //newv.getPlay().setVisible(false);
-                                if(newv instanceof GamecardControl){
-
-
-                                    g.playCard(myID, ((GamecardControl) newv).getCard());
-
-                                    //((GamecardControl) newv).getFight().setVisible(true);
-
-                                }else{
-
-                                    SpecialCard s =  ((SpecialCardControl) newv).getCard();
-                                    if(s.needGameCard()){
-                                        //buttons
-                                    }else{
-                                        g.playCard(myID, s);
-                                    }
-                                }
-                                }catch(LogicException ex){
-                                    //POPUP Fenster
-                                    Alert a  = new Alert(Alert.AlertType.INFORMATION);
-                                    a.setContentText(ex.getMessage());
-                                    a.show();
-                                }
-                            }
-                        });
 
                     }
                 });
@@ -409,9 +406,12 @@ public class PlaygroundController implements Initializable {
                         GamecardControl c = new GamecardControl(change.getList().get(from));
                         c.getFight().setVisible(true);
                         c.getPlay().setVisible(false);
-                        c.setId("card_css_chosen");
                         setCardOnMyField(c, from);
+                        if(my_card_field[from] != null) my_card_field[from].unbindAll();
                         my_card_field[from] = c;
+                        c.getFight().setVisible(true);
+                        setActionOnFight(c);
+                        c.bindAll();
                     } else {
                         for (int i = change.getFrom(); i < change.getTo(); i++) {
                             GameCard from = change.getList().get(i);
@@ -452,7 +452,9 @@ public class PlaygroundController implements Initializable {
                         int from = change.getFrom();
                         GamecardControl c = new GamecardControl(change.getList().get(from));
                         setCardsOnEnemyField(c, from);
+                        if(enemy_card_field[from] != null) enemy_card_field[from].unbindAll();
                         enemy_card_field[from] = c;
+                        c.bindAll();
                     } else {
                         for (int i = change.getFrom(); i < change.getTo(); i++) {
                             GameCard from = change.getList().get(i);
@@ -485,6 +487,15 @@ public class PlaygroundController implements Initializable {
                 }
             }
         });
+
+        g.getPlayerWonProperity().addListener(new ChangeListener<Number>() {
+                                                  @Override
+                                                  public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                                                      StyleSetting.printWinWindow("Spieler " + newValue + " hat gewonnen!");
+                                                  }
+                                              }
+
+        );
     }
 
 
@@ -500,64 +511,44 @@ public class PlaygroundController implements Initializable {
         BindSetting.bindLabel(countCards2, g.getEnemyField(enemyID).getDeck().getCountCards().asString());
         BindSetting.bindLabel(countCards1,g.getMyField(enemyID).getDeck().getCountCards().asString());
 
-        BindSetting.bindPhases(main1, battle1, end1, g.getMyPhase(enemyID), g.getEnemyPhase(enemyID));
-        BindSetting.bindPhases(main2, battle2, end2, g.getEnemyPhase(enemyID), g.getMyPhase(enemyID));
+        BindSetting.bindPhases(g, enemyID,myID, enemy_main, enemy_battle, enemy_end, g.getMyPhase(enemyID), null);
+        BindSetting.bindPhases(g, myID,enemyID, my_main, my_battle, my_end, g.getEnemyPhase(enemyID),kiPlayer);
 
 
-    }
-
-    /**
-     * Binding eines Buttons.
-     *
-     * @param b  Button
-     * @param ip IntegerProperty
-     * @param v  geaenderte Wert
-     */
-    private void bindButtonPerValue(Button b, IntegerProperty ip, int v) {
-        b.disableProperty().bind(new BooleanBinding() {
-            {
-                bind(ip);
-            }
-
-            @Override
-            protected boolean computeValue() {
-                return ip.getValue() != v;
-            }
-        });
     }
 
     @FXML
-    private void battle1Action(ActionEvent event) {
+    private void enemyBattleAction(ActionEvent event) {
+        task.start();
         //g.setpPlayer1Phase(1);
     }
 
     @FXML
-    private void end1Action(ActionEvent event) {
-        //g.setpPlayer1Phase(2);
-        //g.setpPlayer2Phase(0);
+    private void enemyEndAction(ActionEvent event) {
+        g.changePlayer(myID);
     }
 
     @FXML
-    private void battle2Action(ActionEvent event) {
+    private void myBattleAction(ActionEvent event) {
         //g.setpPlayer2Phase(1);
     }
 
     @FXML
-    private void end2Action(ActionEvent event) {
-        // g.setpPlayer2Phase(2);
-        // g.setpPlayer1Phase(0);
+    private void myEndAction(ActionEvent event) {
+         g.changePlayer(enemyID);
+
     }
 
     /**
      * Sizing an das Parentelement.
      */
     private void stretchElements() {
-        StyleSetting.setPrefSizeMax(main1);
-        StyleSetting.setPrefSizeMax(main2);
-        StyleSetting.setPrefSizeMax(end1);
-        StyleSetting.setPrefSizeMax(end2);
-        StyleSetting.setPrefSizeMax(battle1);
-        StyleSetting.setPrefSizeMax(battle2);
+        StyleSetting.setPrefSizeMax(enemy_main);
+        StyleSetting.setPrefSizeMax(my_main);
+        StyleSetting.setPrefSizeMax(enemy_end);
+        StyleSetting.setPrefSizeMax(my_end);
+        StyleSetting.setPrefSizeMax(enemy_battle);
+        StyleSetting.setPrefSizeMax(my_battle);
 
         StyleSetting.setPrefSizeMax(countCards1);
         StyleSetting.setPrefSizeMax(countCards2);
@@ -598,21 +589,173 @@ public class PlaygroundController implements Initializable {
     }
 
 
-    private void setCardOnMyHand(CardControl gc, int where) {
-        if (gc == null) {
+    private void setCardOnMyHand(CardControl c, int where) {
+        if (c == null) {
             throw new IllegalArgumentException("setPlayersField(GamecardControl gc) ist null");
         }
-        if (gc instanceof GamecardControl) {
+
+        setActionOnPlay(c);
+
+        if (c instanceof GamecardControl) {
             //my_card_field[where] = (GamecardControl) gc;
-            my_cardsOnHand.getItems().add(where, (GamecardControl)gc);
+            my_cardsOnHand.getItems().add(where, (GamecardControl)c);
 
         } else {
             //my_scard_field[i] = (SpecialCardControl) gc;
-            my_cardsOnHand.getItems().add(where, (SpecialCardControl)gc);
+            my_cardsOnHand.getItems().add(where, (SpecialCardControl)c);
         }
     }
 
 
+    private void setActionOnPlay(CardControl c){
+        //Action Event zum Spielen der Karte
+
+        c.getPlay().setVisible(true);
+        if(c instanceof GamecardControl){
+        c.getPlay().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                try{
+                        GamecardControl gc = (GamecardControl) c;
+                        c.getPlay().setVisible(false);
+                        g.playCard(myID, gc.getCard());
+
+
+                }catch(LogicException ex){
+                    //POPUP Fenster
+                    StyleSetting.printAlertWindow(ex);
+                    c.getPlay().setVisible(true);
+                }
+            }
+        });
+        }else{
+            setOnActionOnPlaySpecialCard((SpecialCardControl) c);
+        }
+
+    }
+
+    private void resetHighlightOnEnemyGameCards(){
+
+        for(int i = 0; i < enemy_card_field.length; i++){
+            if(enemy_card_field[i] != null && !(enemy_card_field[i].getgName().textProperty().isEmpty().get())) {
+                StyleSetting.resetCardCss(enemy_card_field[i]);
+                enemy_card_field[i].removeEventHandler(MouseEvent.MOUSE_CLICKED, highlightMouseEvent);
+            }
+        }
+    }
+    private void resetHighlightOnMyEnemyGameCards(){
+
+        for(int i = 0; i < my_card_field.length; i++){
+            if(my_card_field[i] != null && !(my_card_field[i].getgName().textProperty().isEmpty().get())) {
+                StyleSetting.resetCardCss(my_card_field[i]);
+                my_card_field[i].removeEventHandler(MouseEvent.MOUSE_CLICKED, highlightMouseEventSpecialCard);
+            }
+            if(enemy_card_field[i] != null && !(enemy_card_field[i].getgName().textProperty().isEmpty().get())) {
+                StyleSetting.resetCardCss(enemy_card_field[i]);
+                enemy_card_field[i].removeEventHandler(MouseEvent.MOUSE_CLICKED, highlightMouseEventSpecialCard);
+            }
+        }
+    }
+
+    private void setActionOnFight(GamecardControl c){
+
+        //Action Event zum Spielen der Karte
+        c.getFight().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+
+                    myChosenGameCard = c;
+                    if(g.getEnemyField(myID).getCountBattlegroundMonster() == 0){
+                        try {
+                            g.attack(myID, c.getCard(), null);
+                        }catch (LogicException ex){
+                            StyleSetting.printAlertWindow(ex);
+                        }
+                        return;
+                    }
+                    for(int i = 0; i < enemy_card_field.length; i++){
+                        if(enemy_card_field[i] != null && !(enemy_card_field[i].getgName().textProperty().isEmpty().get())){
+                            StyleSetting.highlightCard(enemy_card_field[i]);
+
+                            highlightMouseEvent = new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent e) {
+                                    if (e.getButton() == MouseButton.SECONDARY){
+                                        resetHighlightOnEnemyGameCards();
+                                    }else if(e.getButton() == MouseButton.PRIMARY){
+                                        try {
+                                            g.attack(myID, myChosenGameCard.getCard(), ((GamecardControl)e.getSource()).getCard());
+                                            resetHighlightOnEnemyGameCards();
+                                        } catch (LogicException ex) {
+                                            StyleSetting.printAlertWindow(ex);
+                                        }
+                                    }
+                                }
+                            };
+
+                            enemy_card_field[i].addEventHandler(MouseEvent.MOUSE_CLICKED, highlightMouseEvent);
+
+                        }
+                    }
+                }
+
+        });
+
+    }
+
+    private void setOnActionOnPlaySpecialCard(SpecialCardControl s){
+        SpecialCard sc =  s.getCard();
+        if(sc.needGameCard()){
+            s.getPlay().setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent e) {
+                    myChosenSpecialCard = s;
+
+                    highlightMouseEventSpecialCard = new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent e) {
+                            if (e.getButton() == MouseButton.SECONDARY) {
+                                resetHighlightOnMyEnemyGameCards();
+                            } else if (e.getButton() == MouseButton.PRIMARY) {
+                                //FRAGE dachte wirkt sich auf meine Karten aus
+                                try {
+                                    g.playSpecialCard(myID, myChosenSpecialCard.getCard(), ((GamecardControl) e.getSource()).getCard());
+                                    s.getPlay().setVisible(false);
+                                    resetHighlightOnMyEnemyGameCards();
+                                } catch (LogicException ex) {
+
+                                    StyleSetting.printAlertWindow(ex);
+                                }
+                            }
+                        }
+                    };
+
+                    for (int i = 0; i < my_card_field.length; i++) {
+                        if (my_card_field[i] != null && !(my_card_field[i].getgName().textProperty().isEmpty().get())) {
+                            StyleSetting.highlightCard(my_card_field[i]);
+
+                            my_card_field[i].addEventHandler(MouseEvent.MOUSE_CLICKED, highlightMouseEventSpecialCard);
+
+                        }
+                        if(enemy_card_field[i] != null && !(enemy_card_field[i].getgName().textProperty().isEmpty().get())){
+
+                            StyleSetting.highlightCard(enemy_card_field[i]);
+
+                            enemy_card_field[i].addEventHandler(MouseEvent.MOUSE_CLICKED, highlightMouseEventSpecialCard);
+                        }
+                    }
+
+                }});
+            }else{
+                try {
+                    g.playCard(myID, sc);
+                    s.getPlay().setVisible(false);
+                } catch (LogicException ex) {
+                    s.getPlay().setVisible(true);
+                    StyleSetting.printAlertWindow(ex);
+                }
+            }
+    }
     private void setCardOnMyField(CardControl gc, int where) {
         if (gc == null) {
             throw new IllegalArgumentException("setPlayersField(GamecardControl gc) ist null");
@@ -642,5 +785,7 @@ public class PlaygroundController implements Initializable {
 
 
     }
+
+
 
 }

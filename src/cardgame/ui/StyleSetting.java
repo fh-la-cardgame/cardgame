@@ -1,5 +1,7 @@
 package cardgame.ui;
 
+import cardgame.logic.LogicException;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Control;
 import javafx.scene.control.ListView;
 
@@ -48,4 +50,20 @@ public class StyleSetting {
 
     }
 
+    public static void printAlertWindow(Exception e){
+        Alert a = new Alert(Alert.AlertType.INFORMATION);
+        a.setContentText(e.getMessage());
+        if(e instanceof LogicException){
+        }
+
+        a.show();
+
+    }
+    public static void printWinWindow(String s){
+        Alert a = new Alert(Alert.AlertType.INFORMATION);
+        a.setContentText(s);
+
+        a.show();
+
+    }
 }

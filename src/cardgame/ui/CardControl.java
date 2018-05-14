@@ -54,7 +54,7 @@ public abstract class CardControl extends GridPane {
         this.gName = new Label(name);
         this.imageholder = new StackPane();
         this.play = new Button("Spielen");
-        this.play.setDisable(true);
+        this.play.setVisible(false);
         this.gDescription = new ArrayList<>();
         this.gDescription.add(new Label(description));
 
@@ -69,8 +69,7 @@ public abstract class CardControl extends GridPane {
         posititionElements();
         setSizesAndPosition();
         //ID fuer CSS
-        this.setId("card_css");
-        this.gName.setId("card_name");
+        setCSS();
     
     }
         /**
@@ -83,6 +82,7 @@ public abstract class CardControl extends GridPane {
         this.imageholder = new StackPane();
         this.gDescription = new ArrayList<>();
         this.play = new Button();
+        this.play.setVisible(false);
         //this.isGamecard = false;
     }
 
@@ -92,6 +92,12 @@ public abstract class CardControl extends GridPane {
         this.setMaxHeight(130);
         this.setMaxWidth(120);
         setConstraints();
+    }
+
+    private void setCSS(){
+        this.setId("card_css");
+        this.gName.setId("card_name");
+        this.play.setId("button_css");
     }
 
     /**
