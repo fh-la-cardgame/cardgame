@@ -107,7 +107,7 @@ public class MonteCarloTreeSearch {
     public void expand(Node n) throws LogicException {
         Objects.requireNonNull(n);
         Set<Node> setOfNodes = new HashSet<>();
-        n.getGame().changePlayer(enemyId);
+        //n.getGame().changePlayer(enemyId);
         
         //simulate this transition
         
@@ -117,7 +117,16 @@ public class MonteCarloTreeSearch {
         		new_Node = makeTransition(n);
         		setOfNodes.add(new_Node);
         	}catch(GameEndException ex){
-        		setOfNodes.add(new_Node);
+                n.setTerminal(true);
+                if(n.getGame().getPlayersTurn() == myId){
+                    n.getGame().setPlayerWon(myId);
+                    backPropagation(n,1,1);
+                }else{
+                    n.getGame().setPlayerWon(enemyId);
+                    backPropagation(n,0,1);
+                }
+                return;
+                //setOfNodes.add(new_Node);
         	}
             
         }
@@ -141,7 +150,7 @@ public class MonteCarloTreeSearch {
      */
     private Node spTr(Game g, Node n, List<GameCard> cardsAttack, StringBuilder transition) throws LogicException, GameEndException {
 
-        if (g.getRound() == -1) {
+        if (g.getRound() <= 0) {
             return null;
         }
         int self_id = n.getP1().getId() == n.getGame().getPlayersTurn() ? n.getP1().getId() : n.getP2().getId();
@@ -212,8 +221,8 @@ public class MonteCarloTreeSearch {
                 if (random.nextInt(2) == 0) {    //Zufaellig auswaehlen ob Karte gespielt wird.
                     //--------------
                     temp = random.nextInt(2);    //Zufaellig auswahlen welches Deck die SpecialKarte betrifft.
-                    if (temp == 0 && n.getGame().getMyField(self_id).getCountBattlegroundMonster() > 0) {
-                        int choosen = 0 + random.nextInt(n.getGame().getMyField(self_id).getCountBattlegroundMonster());
+                    if (temp == 0 && g.getMyField(self_id).getCountBattlegroundMonster() > 0) {
+                        int choosen = random.nextInt(g.getMyField(self_id).getCountBattlegroundMonster());
                         //Garantieren das es dazwischen keine null gibt: Keine Gleichverteilung!
                         for (int k = 0; k < choosen + 1; k++) {
                             if (g.getMyField(self_id).getBattlegroundMonster()[k] == null) {
@@ -235,8 +244,8 @@ public class MonteCarloTreeSearch {
                             index++;
                         }
                         //Specialcard wirkt auf Gegnerfeld(temp == 1):
-                    } else if (temp == 1 && n.getGame().getEnemyField(self_id).getCountBattlegroundMonster() > 0) {
-                        int choosen = 4 + random.nextInt(n.getGame().getEnemyField(self_id).getCountBattlegroundMonster());
+                    } else if (temp == 1 && g.getEnemyField(self_id).getCountBattlegroundMonster() > 0) {
+                        int choosen = 4 + random.nextInt(g.getEnemyField(self_id).getCountBattlegroundMonster());
                         //Garantieren das es dazwischen keine null gibt
                         for (int k = 0; k < choosen + 1 - 4; k++) {
                             try {
@@ -293,7 +302,7 @@ public class MonteCarloTreeSearch {
             cardsOnHand.remove(card);
         }
         //Wenn keine Karte gelegt wird: Versuch den Spieler zu toeten, falls moeglich:
-        spTr(g, n, CardsAttacked, transition);
+        if((newNode = spTr(g, n, CardsAttacked, transition)) != null) return newNode;
 
         /**
          * Transition: Mit GameCard angreifen g[0..3][0..3] oder Spieler
@@ -462,6 +471,8 @@ public class MonteCarloTreeSearch {
                 throw new RuntimeException(e);
             }
         }
+
+        ex.shutdownNow();
 
         //TODO BackPropagation
 
