@@ -46,7 +46,7 @@ public class GamecardControl extends CardControl {
 
 
     private GamecardControl(){
-        this("-/-","-/-","","","",Type.human, new byte[1],null,null);
+        this("","","","","",Type.human, new byte[1],null,null);
         
     }
     public GamecardControl(GameCard card){

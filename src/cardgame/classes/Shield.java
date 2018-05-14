@@ -121,9 +121,6 @@ public class Shield {
         Platform.runLater(()-> this.gShield.setValue(toString()));
     }
 
-    public StringProperty gShieldProperty() {
-        return gShield;
-    }
 
     @Override
     public boolean equals(Object o) {

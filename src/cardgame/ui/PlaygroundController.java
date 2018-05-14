@@ -39,6 +39,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 
+import javax.swing.text.Style;
+
 /**
  * FXML Controller class
  *
@@ -206,6 +208,8 @@ public class PlaygroundController implements Initializable {
         setBindings();
         task = new GameThread(g);
         g.changePlayer(myID);
+
+
         //task.start();
 
         //TEST
@@ -396,6 +400,22 @@ public class PlaygroundController implements Initializable {
     }
 
     private void bindPlayground() {
+
+        //Zurücksetzen aller aktiven Kartenwirkungen
+        gridPlayGround.setOnMouseClicked(new EventHandler<MouseEvent>(){
+
+            @Override
+            public void handle(MouseEvent event) {
+                if(event.getButton() == MouseButton.SECONDARY){
+                    resetHighlightOnEnemyGameCards();
+                    resetHighlightOnMyEnemyGameCards();
+                }
+            }
+        });
+
+
+
+
         myField.getObservableBattlegroundMonster().addListener(new ListChangeListener<GameCard>() {
             @Override
             public void onChanged(Change<? extends GameCard> change) {
@@ -496,6 +516,36 @@ public class PlaygroundController implements Initializable {
                                               }
 
         );
+
+        //Event zur Schildänderung des Gegners setzen
+        p1.getShields().getgShield().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                int curShield = p1.getShields().getCurrentShields();
+                while((curShield >= 0) && (curShield < enemy_shields.getItems().size())){
+                    enemy_shields.getItems().remove(0);
+                }
+
+                if(curShield == 0){
+                    StyleSetting.printWinWindow("Sie haben gewonnen");
+                }
+            }
+        });
+
+        //Event zur Schildänderung des Spielers setzen
+        p2.getShields().getgShield().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                int curShield = p2.getShields().getCurrentShields();
+                while((curShield >= 0) && (curShield < my_shields.getItems().size())){
+                    my_shields.getItems().remove(0);
+                }
+
+                if(curShield == 0){
+                    StyleSetting.printWinWindow("Sie haben verloren");
+                }
+            }
+        });
     }
 
 
