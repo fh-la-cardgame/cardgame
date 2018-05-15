@@ -28,7 +28,7 @@ public class MonteCarloTreeSearch {
     /**
      * Anzahl der Iterationen(Child_Nodes) in expand
      **/
-    private static final int ITERATIONS = 20;
+    private static final int ITERATIONS = 40;
 
     private final int myId;
 
@@ -45,14 +45,14 @@ public class MonteCarloTreeSearch {
         while (System.currentTimeMillis() < endtime) {
             selection(root);
         }
-
-        int wins = 0;
+        double best = -1;
         String transition = null;
-        for(Node n:root.getChildren()){
-           if(n.getWins() > wins){
-                wins = n.getWins();
+        for (Node n : root.getChildren()) {
+            double temp = ((double) n.getWins(1)) / n.getSimulations();
+            if (temp > best) {
+                best = temp;
                 transition = n.getTransition();
-           }
+            }
         }
         return transition;
     }
@@ -62,13 +62,13 @@ public class MonteCarloTreeSearch {
      *
      * @param root Root Knoten.
      * @return Knoten mit dem hoechsten UCT Wert.
-     * @throws LogicException 
+     * @throws LogicException
      */
     public void selection(Node root) throws LogicException {
         Objects.requireNonNull(root);
         Node bestNode = root;
         long simulations = root.getSimulations();
-        double bestValue = root.getWins(0) / (double) root.getSimulations() + C * Math.sqrt(Math.log(simulations) / root.getSimulations());
+        double bestValue;
         double tempValue = 0.0;
 
         LinkedList<Node> stack = new LinkedList<>();
@@ -76,25 +76,27 @@ public class MonteCarloTreeSearch {
 
         while (!stack.isEmpty()) {
             Node current = stack.remove();
-            bestValue = 0;
+            bestValue = -1;
             for (Node child : current.getChildren()) {
+                if(child.getWins() == 0 && child.getSimulations() == 0){
+                    bestNode = child;
+                    break;
+                }
                 tempValue = child.getWins(0) / (double) child.getSimulations() + C * Math.sqrt(Math.log(simulations) / child.getSimulations());
                 if (tempValue > bestValue) {
                     bestValue = tempValue;
                     bestNode = child;
                 }
             }
-            if(bestNode.isLeaf()){
-	            break;
+            if (bestNode.isLeaf()) {
+                break;
             }
             stack.add(bestNode);
         }
-        if(bestNode.isTerminal()){
-        	if(bestNode.getGame().getPlayerWon() == bestNode.getGame().getPlayersTurn())
-        		backPropagation(bestNode, 1, 1);
-        	else backPropagation(bestNode, 0, 1);
-        }else{
-        	expand(bestNode);
+        if (bestNode.isTerminal()) {
+            backPropagation(bestNode,1,1);
+        } else {
+            expand(bestNode);
         }
     }
 
@@ -106,32 +108,35 @@ public class MonteCarloTreeSearch {
      */
     public void expand(Node n) throws LogicException {
         Objects.requireNonNull(n);
-        Set<Node> setOfNodes = new HashSet<>();
-        //n.getGame().changePlayer(enemyId);
-        
+        //Set<Node> setOfNodes = new HashSet<>();
+        List<Node> setOfNodes = n.getChildren();
         //simulate this transition
-        
+
         Node new_Node = null;
         for (int i = 0; i < ITERATIONS; i++) {
-        	try{
-        		new_Node = makeTransition(n);
-        		setOfNodes.add(new_Node);
-        	}catch(GameEndException ex){
-                n.setTerminal(true);
-                if(n.getGame().getPlayersTurn() == myId){
-                    n.getGame().setPlayerWon(myId);
-                    backPropagation(n,1,1);
+            try {
+                new_Node = makeTransition(n);
+                if(new_Node.isTerminal()){
+                    setOfNodes.clear();
+                    setOfNodes.add(new_Node);
+                    break;
                 }else{
-                    n.getGame().setPlayerWon(enemyId);
-                    backPropagation(n,0,1);
+                    setOfNodes.add(new_Node);
                 }
+            } catch (GameEndException ex) {
+                Game ne = new Game(n.getGame());
+                ne.setPlayerWon(ne.getPlayersTurn());
+                ne.setGameEnd(true);
+                Node res = new Node(n, true, ne, n.getP1(), n.getP2());
+                res.setTransition("");
+                n.getChildren().add(res);
+                backPropagation(res,1,1);
                 return;
-                //setOfNodes.add(new_Node);
-        	}
-            
+            }
+
         }
-       n.getChildren().addAll(setOfNodes);
-       simulation(n);
+        //n.getChildren().addAll(setOfNodes);
+        simulation(n);
 
     }
 
@@ -192,7 +197,7 @@ public class MonteCarloTreeSearch {
      *
      * @param n Node n(alte Node)
      * @return Node (neue, aus alter resultierende Node)
-     * @throws GameEndException 
+     * @throws GameEndException
      * @throws Exception
      */
     public Node makeTransition(Node n) throws LogicException, GameEndException {
@@ -205,7 +210,7 @@ public class MonteCarloTreeSearch {
         boolean firstRound = g.getRound() == -1 || g.getRound() == 0 ? true : false;
         List<GameCard> CardsAttacked = new ArrayList<>();
         int self_id = n.getP1().getId() == n.getGame().getPlayersTurn() ? n.getP1().getId() : n.getP2().getId();
-        System.out.println("ID: " + self_id);
+        //System.out.println("ID: " + self_id);
         /**
          * Transition: Neue Karte legen(ng) oder Specialcard spielen(ns):
          * Bedingung ng: - Platz auf eigenem Battleground. - Man hat auf der
@@ -302,7 +307,7 @@ public class MonteCarloTreeSearch {
             cardsOnHand.remove(card);
         }
         //Wenn keine Karte gelegt wird: Versuch den Spieler zu toeten, falls moeglich:
-        if((newNode = spTr(g, n, CardsAttacked, transition)) != null) return newNode;
+        if ((newNode = spTr(g, n, CardsAttacked, transition)) != null) return newNode;
 
         /**
          * Transition: Mit GameCard angreifen g[0..3][0..3] oder Spieler
@@ -393,7 +398,7 @@ public class MonteCarloTreeSearch {
                 //cards.remove(current);
             }
         }
-        System.out.println("Transition:" + transition.toString());
+        //System.out.println("Transition:" + transition.toString());
         int enemyId = n.getP1().getId() == g.getPlayersTurn() ? n.getP2().getId() : n.getP1().getId();
         g.changePlayer(enemyId);
         g.getMyField(enemyId).addCard();
@@ -411,27 +416,26 @@ public class MonteCarloTreeSearch {
      * Laeuft den Baum vom letzten erstellten Knoten zurueck und erneuert seine
      * simulation/win - counts
      *
-     * @param startNode Knoten, von dem man startet.
-     * @param wins Anzahl der Gewinne des Spielers.
+     * @param startNode   Knoten, von dem man startet.
+     * @param wins        Anzahl der Gewinne des Spielers.
      * @param simulations Anzahl der Simulationen.
      */
     public void backPropagation(Node startNode, int wins, int simulations) {
-        
+
         int playersTurn;
-        if(startNode.isTerminal()) {
-            playersTurn = startNode.getGame().getPlayersTurn();
+        if (startNode.isTerminal()) {
+            playersTurn = startNode.getGame().getPlayerWon();
+        } else {
+            Node childNode = startNode.getChildren().getFirst();
+            //playersTurn = childNode.getGame().getPlayersTurn();                /*Spieler mit dem man vergleicht*/
+            playersTurn = myId;
         }
-        
-        else {
-        Node childNode = startNode.getChildren().getFirst();                       
-        playersTurn = childNode.getGame().getPlayersTurn();                /*Spieler mit dem man vergleicht*/
-        }
-        
+
         while (startNode != null) {
-            if(playersTurn == startNode.getGame().getPlayersTurn())
-            startNode.addWins(wins);
+            if (playersTurn == startNode.getGame().getPlayersTurn())
+                startNode.addWins(wins);
             else {
-                startNode.addWins(simulations - wins);               
+                startNode.addWins(simulations - wins);
             }
             startNode.addSimulations(simulations);
             startNode = startNode.getParent();
@@ -472,8 +476,6 @@ public class MonteCarloTreeSearch {
             }
         }
 
-        ex.shutdownNow();
-
         //TODO BackPropagation
 
         /*
@@ -485,7 +487,6 @@ public class MonteCarloTreeSearch {
             }
         }
         */
-        
         backPropagation(n, wins, simulations);
 
     }
