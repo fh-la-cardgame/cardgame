@@ -16,11 +16,12 @@ import javafx.scene.layout.StackPane;
 public class PlayerShieldControl extends StackPane{
 
     public PlayerShieldControl() {
-        Image img = new Image("http://i67.tinypic.com/2zog7xe.png");
-        this.setBackground(new Background(new BackgroundImage(img, BackgroundRepeat.SPACE, BackgroundRepeat.SPACE, BackgroundPosition.CENTER, new BackgroundSize(100, 100, true, true, true, true))));
-        this.setMinHeight(25);
-        this.setMinWidth(25);
-        this.setPadding(new Insets(1));
+        //Image img = new Image("http://i63.tinypic.com/2m3hj07.png");
+        //this.setBackground(new Background(new BackgroundImage(img, BackgroundRepeat.SPACE, BackgroundRepeat.SPACE, BackgroundPosition.CENTER, new BackgroundSize(100, 100, true, true, true, true))));
+        this.setMinHeight(20);
+        this.setMinWidth(26);
+        //this.setPadding(new Insets(1));
+        this.setId("playershield_css");
     }
     
     

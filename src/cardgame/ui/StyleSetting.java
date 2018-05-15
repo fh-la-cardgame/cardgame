@@ -2,6 +2,7 @@ package cardgame.ui;
 
 import cardgame.logic.LogicException;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Control;
 import javafx.scene.control.ListView;
 
@@ -65,5 +66,9 @@ public class StyleSetting {
 
         a.show();
 
+    }
+
+    public static void setButtonCss(Button b){
+        b.setId("button_css");
     }
 }

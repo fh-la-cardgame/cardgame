@@ -97,7 +97,7 @@ public abstract class CardControl extends GridPane {
     private void setCSS(){
         this.setId("card_css");
         this.gName.setId("card_name");
-        this.play.setId("button_css");
+        StyleSetting.setButtonCss(this.play);
     }
 
     /**

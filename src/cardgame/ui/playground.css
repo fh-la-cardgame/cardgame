@@ -33,8 +33,9 @@
                      -fx-margin: 4 4 4 4;
                  }
          #card_css_chosen{
-                            -fx-border-width: 2;
-                             -fx-border-color: red;
+                            -fx-border-width: 1;
+                             -fx-border-color: black;
+                             -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.7) , 10,0,0,1 );
                              -fx-font-size: 11px;
                              -fx-background-color: white;
                              -fx-margin: 10 10 10 10;
@@ -70,16 +71,96 @@
             -fx-background-color: white;
         }
         
-        #my_cards_on_hand{
-            -fx-padding: 2;
-                        -fx-border-width: 1;
+        #my_cardsOnHand{
+            -fx-padding: 0;
+            -fx-border-width: 1;
             -fx-border-color: black;
-            -fx-background-color: yellow;
-            -fx-background-image: url("http://i65.tinypic.com/2n1su9d.jpg");
+            -fx-background-color: white;
         }
 
+        #my_cardsOnHand .list-cell:even{
+            -fx-background-color: white;
+            -fx-cell-size: 132px;
+        }
+
+        #my_cardsOnHand .list-cell:odd{
+            -fx-background-color: white;
+            -fx-cell-size: 132px;
+        }
+
+        #my_cardsOnHand .scroll-bar:vertical {
+            -fx-scale-x: 0;
+        }
         #button_css{
-                -fx-padding: 4 4 4 4;
+            -fx-padding: 4 4 4 4;
+            -fx-background-image: url("http://i63.tinypic.com/qyejq0.jpg");
+            -fx-border-width: 0.5;
+            -fx-border-color: black;
+            -fx-background-position: center;
+            -fx-background-repeat: no-repeat;
+            -fx-border-radius: 9;
+             fx-background-radius: 9;
+            -fx-font-size: 11px;
+            -fx-label-font-weight:bold;
+            -fx-font-weight:bold;
+        }
+
+                #button_css:hover{
+                    -fx-padding: 4 4 4 4;
+                    -fx-background-image: url("http://i68.tinypic.com/33blaw2.jpg");
+                    -fx-border-width: 0.5;
+                    -fx-border-color: black;
+                    -fx-background-position: center;
+                    -fx-background-repeat: no-repeat;
+                    -fx-background-size: cover, auto;
+            -fx-border-radius: 9;
+            -fx-background-radius: 9;
+            -fx-font-size: 11px;
+                    -fx-label-font-weight:bold;
+                    -fx-font-weight:bold;
+                }
+
+        #playershield_css{
+
+            -fx-padding: 0 0 0 0;
+            -fx-background-color: white;
+
+                    -fx-border-width: 0;
+                    -fx-border-color: black;
+            -fx-background-image: url("http://i63.tinypic.com/2m3hj07.png");
+            -fx-background-position: center;
+            -fx-background-repeat: no-repeat;
+            -fx-background-size: auto;
+        }
+
+         #playershield_css{
+
+                    -fx-padding: 0 0 0 0;
+                    -fx-background-color: white;
+
+                            -fx-border-width: 0;
+                            -fx-border-color: black;
+                    -fx-background-image: url("http://i63.tinypic.com/2m3hj07.png");
+                    -fx-background-position: center;
+                    -fx-background-repeat: no-repeat;
+                    -fx-background-size: auto;
+                }
+
+
+        #playershield_css .list-cell:even {
+                    -fx-background-color: white;
+        }
+        #playershield_css .list-cell:odd {
+                    -fx-background-color: white;
+        }
+        #playershield_css .list-cell:empty {
+                    -fx-background-color: white;
+            -fx-opacity: 0;
+        }
+
+        #playershield_css .list-cell:filled:selected {
+            -fx-background: white;
+            -fx-table-cell-border-color: derive(-fx-selection-bar-non-focused, 20%);
         }
         
 }

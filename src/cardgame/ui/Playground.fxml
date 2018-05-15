@@ -96,8 +96,8 @@
       </Button>
       <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="12" GridPane.rowIndex="10">
          <children>
-            <Label fx:id="zuege" text="Züge" />
-            <Label fx:id="zuege_anzahl" layoutX="50.0" text="0" />
+            <Label fx:id="zuege" text="" />
+            <Label fx:id="zuege_anzahl" layoutX="50.0" text="" />
          </children>
       </Pane>
       <Label fx:id="player2" text="Player 2" GridPane.halignment="LEFT" GridPane.rowIndex="12">
@@ -238,8 +238,8 @@
          </padding>
       </StackPane>
       <ListView fx:id="my_shields" orientation="HORIZONTAL" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="12" />
-      <ListView fx:id="enemy_shields" orientation="HORIZONTAL" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="12" />
-      <ListView fx:id="enemy_cardsOnHand" orientation="HORIZONTAL" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="11" GridPane.rowIndex="1">
+      <ListView fx:id="enemy_shields" orientation="HORIZONTAL" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="11" GridPane.columnSpan="2"/>
+      <ListView fx:id="enemy_cardsOnHand" orientation="HORIZONTAL" prefHeight="140.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="11" GridPane.rowIndex="1">
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding>
@@ -247,15 +247,15 @@
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </GridPane.margin>
       </ListView>
-      <ListView fx:id="my_cardsOnHand" orientation="HORIZONTAL" prefHeight="120.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="11" GridPane.halignment="CENTER" GridPane.rowIndex="11" GridPane.valignment="CENTER">
+      <ListView fx:id="my_cardsOnHand" orientation="HORIZONTAL" GridPane.columnIndex="2" GridPane.columnSpan="11" GridPane.halignment="CENTER" GridPane.rowIndex="11" GridPane.valignment="CENTER">
          <padding>
-            <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+            <Insets bottom="0.0" left="0.0" right="0.0" top="2.0" />
          </padding>
          <GridPane.margin>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </GridPane.margin>
          <opaqueInsets>
-            <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+            <Insets bottom="0.0" left="0.0" right="0.0" top="0.0" />
          </opaqueInsets>
       </ListView>
      

@@ -182,8 +182,6 @@ public class PlaygroundController implements Initializable {
         myField = g.getMyField(myID);
         enemyField = g.getEnemyField(myID);
         cardPreviewPane = new StackPane();
-        cardPreviewPane.setMinHeight(200);
-        cardPreviewPane.setMinWidth(100);
 
 
 
@@ -220,6 +218,19 @@ public class PlaygroundController implements Initializable {
      */
     private void setStyle() {
         StyleSetting.setDescriptionCss(description);
+        StyleSetting.setButtonCss(enemy_main);
+        StyleSetting.setButtonCss(my_main);
+        StyleSetting.setButtonCss(my_battle);
+        StyleSetting.setButtonCss(enemy_battle);
+        StyleSetting.setButtonCss(my_end);
+        StyleSetting.setButtonCss(enemy_end);
+
+
+        cardPreviewPane.setMinHeight(200);
+        cardPreviewPane.setMinWidth(100);
+
+        my_cardsOnHand.maxHeight(130);
+        my_cardsOnHand.minHeight(130);
     }
 
     /**
@@ -250,7 +261,7 @@ public class PlaygroundController implements Initializable {
 
         enemy_l_shields = new ArrayList<>();
 
-        int size = g.getEnemyField(enemyID).getPlayer().getShields().getCurrentShields();
+        int size = enemyField.getPlayer().getShields().getCurrentShields();
         for (int i = 0; i < size; i++) {
             enemy_l_shields.add(new PlayerShieldControl());
 
@@ -397,6 +408,43 @@ public class PlaygroundController implements Initializable {
     private void setBindings() {
         initBindings();
         bindPlayground();
+        initEvents();
+    }
+
+    private void initEvents() {
+        highlightMouseEvent = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+                if (e.getButton() == MouseButton.SECONDARY){
+                    resetHighlightOnEnemyGameCards();
+                }else if(e.getButton() == MouseButton.PRIMARY){
+                    try {
+                        g.attack(myID, myChosenGameCard.getCard(), ((GamecardControl)e.getSource()).getCard());
+                        resetHighlightOnEnemyGameCards();
+                    } catch (LogicException ex) {
+                        StyleSetting.printAlertWindow(ex);
+                    }
+                }
+            }
+        };
+
+        highlightMouseEventSpecialCard = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+                if (e.getButton() == MouseButton.SECONDARY) {
+                    resetHighlightOnMyEnemyGameCards();
+                } else if (e.getButton() == MouseButton.PRIMARY) {
+                    //FRAGE dachte wirkt sich auf meine Karten aus
+                    try {
+                        g.playSpecialCard(myID, myChosenSpecialCard.getCard(), ((GamecardControl) e.getSource()).getCard());
+                        resetHighlightOnMyEnemyGameCards();
+                    } catch (LogicException ex) {
+
+                        StyleSetting.printAlertWindow(ex);
+                    }
+                }
+            }
+        };
     }
 
     private void bindPlayground() {
@@ -453,6 +501,7 @@ public class PlaygroundController implements Initializable {
                         SpecialCardControl c = new SpecialCardControl(change.getList().get(from));
                         setCardOnMyField(c, from);
                         my_scard_field[from] = c;
+                        c.getPlay().setVisible(false);
                     } else {
                         for (int i = change.getFrom(); i < change.getTo(); i++) {
                             SpecialCard from = change.getList().get(i);
@@ -569,7 +618,6 @@ public class PlaygroundController implements Initializable {
 
     @FXML
     private void enemyBattleAction(ActionEvent event) {
-        task.start();
         //g.setpPlayer1Phase(1);
     }
 
@@ -586,6 +634,8 @@ public class PlaygroundController implements Initializable {
     @FXML
     private void myEndAction(ActionEvent event) {
          g.changePlayer(enemyID);
+         resetHighlightOnEnemyGameCards();
+         resetHighlightOnMyEnemyGameCards();
 
     }
 
@@ -675,6 +725,10 @@ public class PlaygroundController implements Initializable {
                     //POPUP Fenster
                     StyleSetting.printAlertWindow(ex);
                     c.getPlay().setVisible(true);
+                }catch(RuntimeException ex){
+
+                    StyleSetting.printAlertWindow(ex);
+                    c.getPlay().setVisible(true);
                 }
             }
         });
@@ -727,21 +781,7 @@ public class PlaygroundController implements Initializable {
                         if(enemy_card_field[i] != null && !(enemy_card_field[i].getgName().textProperty().isEmpty().get())){
                             StyleSetting.highlightCard(enemy_card_field[i]);
 
-                            highlightMouseEvent = new EventHandler<MouseEvent>() {
-                                @Override
-                                public void handle(MouseEvent e) {
-                                    if (e.getButton() == MouseButton.SECONDARY){
-                                        resetHighlightOnEnemyGameCards();
-                                    }else if(e.getButton() == MouseButton.PRIMARY){
-                                        try {
-                                            g.attack(myID, myChosenGameCard.getCard(), ((GamecardControl)e.getSource()).getCard());
-                                            resetHighlightOnEnemyGameCards();
-                                        } catch (LogicException ex) {
-                                            StyleSetting.printAlertWindow(ex);
-                                        }
-                                    }
-                                }
-                            };
+
 
                             enemy_card_field[i].addEventHandler(MouseEvent.MOUSE_CLICKED, highlightMouseEvent);
 
@@ -761,24 +801,7 @@ public class PlaygroundController implements Initializable {
                 public void handle(ActionEvent e) {
                     myChosenSpecialCard = s;
 
-                    highlightMouseEventSpecialCard = new EventHandler<MouseEvent>() {
-                        @Override
-                        public void handle(MouseEvent e) {
-                            if (e.getButton() == MouseButton.SECONDARY) {
-                                resetHighlightOnMyEnemyGameCards();
-                            } else if (e.getButton() == MouseButton.PRIMARY) {
-                                //FRAGE dachte wirkt sich auf meine Karten aus
-                                try {
-                                    g.playSpecialCard(myID, myChosenSpecialCard.getCard(), ((GamecardControl) e.getSource()).getCard());
-                                    s.getPlay().setVisible(false);
-                                    resetHighlightOnMyEnemyGameCards();
-                                } catch (LogicException ex) {
 
-                                    StyleSetting.printAlertWindow(ex);
-                                }
-                            }
-                        }
-                    };
 
                     for (int i = 0; i < my_card_field.length; i++) {
                         if (my_card_field[i] != null && !(my_card_field[i].getgName().textProperty().isEmpty().get())) {

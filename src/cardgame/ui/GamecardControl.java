@@ -145,8 +145,7 @@ public class GamecardControl extends CardControl {
     }
 
     private void setAdditioanalCSS(){
-
-        this.fight.setId("button");
+        StyleSetting.setButtonCss(this.fight);
     }
 
     /**
