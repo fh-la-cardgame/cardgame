@@ -1,6 +1,7 @@
 package cardgame.classes;
 
 import cardgame.logic.Game;
+import cardgame.logic.LogicException;
 import cardgame.ui.SpecialCardControl;
 
 import java.util.*;
@@ -132,7 +133,7 @@ public class Playground {
         cardsOnHand.remove(c);
     }
 
-    public Card removeCardFromHand(int index) {
+    private Card removeCardFromHand(int index) {
         removeObservableCardsOnHand(index);
         return cardsOnHand.remove(index);
     }
@@ -154,7 +155,8 @@ public class Playground {
      *
      * @param indexCard Index der Monsterkarte von der Hand die eingefuegt werden soll.
      */
-    public void addMonsterCard(int indexCard){
+    public void addMonsterCard(int indexCard) throws LogicException{
+        if(countBattlegroundMonster >= Playground.ROW) throw new LogicException("Monsterkartenfeld ist voll !");
         GameCard card = (GameCard)removeCardFromHand(indexCard);
         //Karten werden von links nach rechts gelegt Eventuell von mitte aus starten !
         for (int i = 0; i < battlegroundMonster.length; i++) {
@@ -165,10 +167,10 @@ public class Playground {
                 return;
             }
         }
-        throw new RuntimeException("Feld ist voll !");
     }
 
-    public int addSpecialCardToField(int index) {
+    public int addSpecialCardToField(int index) throws LogicException{
+        if(countBattlegroundSpecials >= Playground.ROW) throw new LogicException("SpecialCard Feld ist voll !");
         Card card = removeCardFromHand(index);
         if (!(card instanceof SpecialCard)) throw new IllegalArgumentException("Special Karte nicht in der Hand");
         SpecialCard c = (SpecialCard) card;
@@ -180,7 +182,7 @@ public class Playground {
                 return i;
             }
         }
-        throw new RuntimeException("Special Card Feld ist voll !");
+        return -1;
     }
 
     /**
