@@ -153,16 +153,25 @@ public class MonteCarloTreeSearch {
      * @param playedCardIndixes
      * @throws LogicException
      */
-    private Node spTr(Game g, Node n, List<GameCard> cardsAttack, StringBuilder transition) throws LogicException, GameEndException {
+    private Node spTr(Game g, Node n, StringBuilder transition) throws LogicException, GameEndException {
 
         if (g.getRound() <= 0) {
             return null;
         }
         int self_id = n.getP1().getId() == n.getGame().getPlayersTurn() ? n.getP1().getId() : n.getP2().getId();
-
+        long cardsPlayable = Stream.of(g.getMyField(self_id).getBattlegroundMonster())
+				.filter(c -> {
+					try {
+						return c != null && !g.hasAttacked(self_id, c);
+					} catch (LogicException e) {
+						e.printStackTrace();
+					}
+					return false;
+				}).count();
+        
         if (g.getEnemyField(self_id).getCountBattlegroundMonster() == 0
-                && g.getMyField(self_id).getCountBattlegroundMonster() - cardsAttack.size() >= g.getEnemyField(self_id).getPlayer().getShields().getCurrentShields()) {
-            int i = 0;
+        		&& cardsPlayable >= g.getEnemyField(self_id).getPlayer().getShields().getCurrentShields()){
+           int i = 0;
             GameCard card = null;
             while (g.getMyField(n.getP1().getId()).getPlayer().getShields().getCurrentShields() > 0
                     && g.getMyField(n.getP2().getId()).getPlayer().getShields().getCurrentShields() > 0) {
@@ -172,13 +181,9 @@ public class MonteCarloTreeSearch {
                 if (card != null && !g.hasAttacked(self_id, card)) {
                     transition.append("g" + i + "-1");
                     g.attack(self_id, card, null);
-
-                    cardsAttack.add(card);
                 }
                 i++;
             }
-            //TODO:
-            //haengt die Postion von p1 und p2 von der Node im Baum ab??
             int enemyId = n.getP1().getId() == g.getPlayersTurn() ? n.getP2().getId() : n.getP1().getId();
             g.changePlayer(enemyId);
             g.getMyField(enemyId).addCard();
@@ -208,7 +213,7 @@ public class MonteCarloTreeSearch {
         int temp = 0;
         boolean playedGameCard = false;
         boolean firstRound = g.getRound() == -1 || g.getRound() == 0 ? true : false;
-        List<GameCard> CardsAttacked = new ArrayList<>();
+        
         int self_id = n.getP1().getId() == n.getGame().getPlayersTurn() ? n.getP1().getId() : n.getP2().getId();
         //System.out.println("ID: " + self_id);
         /**
@@ -241,7 +246,7 @@ public class MonteCarloTreeSearch {
                                 transition.append("ns" + index + "|" + choosen);
                                 g.playSpecialCard(self_id, index, choosen);
                                 //Spezielle Transition: Spieler toeten:
-                                if ((newNode = spTr(g, n, CardsAttacked, transition)) != null) {
+                                if ((newNode = spTr(g, n, transition)) != null) {
                                     return newNode;
                                 }
                                 break;
@@ -270,7 +275,7 @@ public class MonteCarloTreeSearch {
                                 transition.append("ns" + index + "|" + choosen);
                                 g.playSpecialCard(self_id, index, choosen);
                                 //Spezielle Transition: Spieler toeten:
-                                if ((newNode = spTr(g, n, CardsAttacked, transition)) != null) {
+                                if ((newNode = spTr(g, n, transition)) != null) {
                                     return newNode;
                                 }
                                 break;
@@ -293,7 +298,7 @@ public class MonteCarloTreeSearch {
 
                             playedGameCard = true;
                             //Spezielle Transition: Spieler toeten:
-                            if ((newNode = spTr(g, n, CardsAttacked, transition)) != null) {
+                            if ((newNode = spTr(g, n, transition)) != null) {
                                 return newNode;
                             }
                             g.playCard(self_id, card);    //Referenzen?
@@ -307,7 +312,7 @@ public class MonteCarloTreeSearch {
             cardsOnHand.remove(card);
         }
         //Wenn keine Karte gelegt wird: Versuch den Spieler zu toeten, falls moeglich:
-        if ((newNode = spTr(g, n, CardsAttacked, transition)) != null) return newNode;
+        if ((newNode = spTr(g, n, transition)) != null) return newNode;
 
         /**
          * Transition: Mit GameCard angreifen g[0..3][0..3] oder Spieler
@@ -348,9 +353,8 @@ public class MonteCarloTreeSearch {
                                         && g.getEnemyField(self_id).getBattlegroundMonster()[currentIndexEnemy] == currentEnemy) {
                                     transition.append("g" + currentIndex + currentIndexEnemy);
                                     g.attack(self_id, currentIndex, currentIndexEnemy);
-                                    CardsAttacked.add(current); //unnoetig?
                                     done = true;
-                                    if ((newNode = spTr(g, n, CardsAttacked, transition)) != null) {
+                                    if ((newNode = spTr(g, n, transition)) != null) {
                                         return newNode;
                                     }
                                     break;
@@ -372,8 +376,7 @@ public class MonteCarloTreeSearch {
                                 && g.getMyField(self_id).getBattlegroundMonster()[currentIndex] == current) {
                             transition.append("g" + currentIndex + "-1");
                             g.attack(self_id, current, null);
-                            CardsAttacked.add(current);
-                            if ((newNode = spTr(g, n, CardsAttacked, transition)) != null) {
+                            if ((newNode = spTr(g, n, transition)) != null) {
                                 return newNode;
                             }
                             break;
