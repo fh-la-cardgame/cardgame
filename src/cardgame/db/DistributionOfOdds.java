@@ -62,12 +62,7 @@ public class DistributionOfOdds {
 			
 
 			while (g.isGameRunning()) {
-				g.changePlayer(p1.getId());
-				try {
-					g.getMyField(p1.getId()).addCard();
-				} catch (GameEndException e) {
-					g.setPlayerWon(p2.getId());
-					g.setGameEnd(true);
+				if (g.changePlayer(p1.getId())) {
 					break;
 				}
 				try {
@@ -75,17 +70,15 @@ public class DistributionOfOdds {
 				} catch (LogicException e) {
 					System.out.println(e);
 				}
+
 				if (!g.isGameRunning()) {
 					break;
 				}
-				g.changePlayer(p2.getId());
-				try {
-					g.getMyField(p2.getId()).addCard();
-				} catch (GameEndException e) {
-					g.setPlayerWon(p1.getId());
-					g.setGameEnd(true);
+
+				if(g.changePlayer(p2.getId())) {
 					break;
 				}
+
 				try {
 					p2.yourTurn();
 				} catch (LogicException e) {

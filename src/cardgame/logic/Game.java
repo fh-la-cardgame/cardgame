@@ -188,7 +188,6 @@ public class Game {
             //Ueberpruefen ob gewonnen ???
             if (shield.getCurrentShields() == 0) {
 //                System.out.println("Spieler hat gewonnen");
-                //TODO
                 gameEnd = true;
                 if (id == side1PlayerId) {
                     playerWon = side1PlayerId;
@@ -784,13 +783,36 @@ public class Game {
         return cardsHaveAttack[index];
     }
 
-    public void changePlayer(int id) {
+    /** Aendert den Spieler der spielt auf den mit der id
+     *
+     * @param id Spieler auf den gewechstelt wird
+     * @return true falls Spiel zu Ende
+     */
+    public boolean changePlayer(int id) {
+        if(gameEnd) {
+            return true;
+        }
         round++;
         phase = 0;
         playersTurn = id;
         playedMonstercard = false;
         for (int i = 0; i < cardsHaveAttack.length; i++)
             cardsHaveAttack[i] = false;
+        if(id == side1PlayerId) {
+            if(side1.addCard()){
+                playerWon = getEnemyId(id);
+                gameEnd = true;
+                return true;
+            }
+        } else if (id == side2PlayerId) {
+            if(side2.addCard()){
+                playerWon = getEnemyId(id);
+                gameEnd = true;
+                return true;
+            }
+        } else {
+            throw new RuntimeException("Id don't exists");
+        }
         if(player1Phase != null){
             if(id == side1PlayerId){
                 player1Phase.set(0);
@@ -800,6 +822,7 @@ public class Game {
                 player2Phase.set(0);
             }
         }
+        return false;
     }
 
     @Override

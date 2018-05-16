@@ -30,6 +30,11 @@ public class MonteCarloTreeSearch {
      **/
     private static final int ITERATIONS = 40;
 
+    /**
+     * Fuer Parallelesierung der Simulationen in simulation.
+     */
+    private static ExecutorService executorService = Executors.newFixedThreadPool(4);
+
     private final int myId;
 
     private final int enemyId;
@@ -185,8 +190,11 @@ public class MonteCarloTreeSearch {
                 i++;
             }
             int enemyId = n.getP1().getId() == g.getPlayersTurn() ? n.getP2().getId() : n.getP1().getId();
-            g.changePlayer(enemyId);
-            g.getMyField(enemyId).addCard();
+            if(g.changePlayer(enemyId)) {
+                //TODO: Spiel ist hier zu Ende. Keine Karten mehr auf dem Deck.
+                throw new GameEndException(); // Provisorium
+            }
+            //g.getMyField(enemyId).addCard();
             Node finish = new Node(n, true, g, n.getP1(), n.getP2());
             finish.setTransition(transition.toString());
             return finish;
@@ -403,8 +411,11 @@ public class MonteCarloTreeSearch {
         }
         //System.out.println("Transition:" + transition.toString());
         int enemyId = n.getP1().getId() == g.getPlayersTurn() ? n.getP2().getId() : n.getP1().getId();
-        g.changePlayer(enemyId);
-        g.getMyField(enemyId).addCard();
+        if(g.changePlayer(enemyId)){
+            //TODO: Spiel ist hier zu Ende. Keine Karten mehr auf dem Deck.
+            throw new GameEndException(); // Provisorium
+        }
+        //g.getMyField(enemyId).addCard();
         newNode = new Node(n, false, g, n.getP1(), n.getP2());
         newNode.setTransition(transition.toString());
         return newNode;
@@ -447,24 +458,11 @@ public class MonteCarloTreeSearch {
 
     public void simulation(Node n) {
 
-        //Map<Node, Future<Boolean>> map = new HashMap<>();
         List<Future<Boolean>> list = new LinkedList<>();
 
-        ExecutorService ex = Executors.newCachedThreadPool();
-
         for (Node node : n.getChildren()) {
-            list.add(ex.submit(new SimulationCallable(node, myId, enemyId)));
-            //map.put(node, ex.submit(new SimulationCallable(node, node.getGame().getPlayersTurn())));
+            list.add(executorService.submit(new SimulationCallable(node, myId, enemyId)));
         }
-
-        /*
-        try {
-            if(!ex.awaitTermination(2, TimeUnit.SECONDS)) {
-                throw new RuntimeException("Takes to long to execute");
-            }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } */
 
         int wins = 0;
         int simulations = list.size();
@@ -479,17 +477,6 @@ public class MonteCarloTreeSearch {
             }
         }
 
-        //TODO BackPropagation
-
-        /*
-        for(Map.Entry<Node, Future<Boolean>> entry: map.entrySet()) {
-            try {
-                entry.getKey().result(entry.getValue().get());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-        */
         backPropagation(n, wins, simulations);
 
     }

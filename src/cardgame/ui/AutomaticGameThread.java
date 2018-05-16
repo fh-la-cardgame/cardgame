@@ -21,14 +21,16 @@ public class AutomaticGameThread extends Thread{
                        //KiPlayer p2 = new TestPlayer(game, 2);
             int k = 0;
                       while (game.isGameRunning()) {
-                game.changePlayer(p1.getId());
-                try {
+                if(game.changePlayer(p1.getId())) {
+                    return; //TODO Spiel ist hier zuende, da keine Karten mehr uf dem Deck
+                }
+                /*try {
                     game.getMyField(p1.getId()).addCard();
                 } catch (GameEndException e) {
                     game.setPlayerWon(p2.getId());
                     game.setGameEnd(true);
                                         return;
-                }
+                } */
                 try {
                     p1.yourTurn();
                                       if (k == 0)
@@ -39,14 +41,16 @@ public class AutomaticGameThread extends Thread{
                              if (!game.isGameRunning()) {
                                        break;
                                  }
-                              game.changePlayer(p2.getId());
-                              try {
+                              if(game.changePlayer(p2.getId())) {
+                                    break; //TODO Spiel ist hier zuende, da keine Karten mehr uf dem Deck
+                              }
+                              /*try {
                                       game.getMyField(p2.getId()).addCard();
                                 } catch (GameEndException e) {
                                       game.setPlayerWon(p1.getId());
                                      game.setGameEnd(true);
                                        break;
-                                    }
+                                    } */
                             try {
                                      p2.yourTurn();
                 } catch (LogicException e) {

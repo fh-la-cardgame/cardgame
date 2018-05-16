@@ -64,8 +64,8 @@ public class BindSetting {
                 if(endBool){
                     System.out.println(game.getPlayersTurn() + "-" + id);
                     if(game.getPlayersTurn() != id){
-                        try {
-                            game.getMyField(id).addCard();
+                        //try {
+                            //game.getMyField(id).addCard(); addCard wird in change jetzt in change Player durchgefuehrt
                             //System.out.println(">"+(kiPlayer != null) + ":"+ kiPlayer.getId());
                             if(kiPlayer != null){
                                 executorService.execute(()->{
@@ -74,14 +74,14 @@ public class BindSetting {
                                     }catch (LogicException ex){
                                         System.out.println(ex);
                                     }
-                                    game.changePlayer(id);
+                                    game.changePlayer(id); //TODO Spiel kann an dieser Stelle zu Ende sein
 
                                 });
                             }
-                        }catch(GameEndException ex){
+                       /* }catch(GameEndException ex){
                             game.setPlayerWon(enemyId);
                             //StyleSetting.printAlertWindow(ex);
-                        }
+                        } */
                     }
                 }
                 return endBool;

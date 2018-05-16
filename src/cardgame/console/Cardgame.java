@@ -76,8 +76,8 @@ public class Cardgame {
 				System.out.println("CardsOnDeck:"+g.getEnemyField(newNode.getP1().getId()).getDeck().getCards().size());
 				Thread.sleep(100);
 				
-				g.changePlayer(p2.getId());
-				g.getMyField(p2.getId()).addCard();
+				g.changePlayer(p2.getId()); //TODO Spiel kann zu Ende sein
+				//g.getMyField(p2.getId()).addCard();
 				newNode.setGame(g);
 				newNode = mcts.makeTransition(newNode);
 				log(g, newNode);
@@ -96,8 +96,8 @@ public class Cardgame {
 //					throw new Exception();
 //				}
 				
-				g.changePlayer(p1.getId());
-				g.getMyField(p1.getId()).addCard();
+				g.changePlayer(p1.getId()); //TODO Spiel kann zu Ende sein
+				//g.getMyField(p1.getId()).addCard();
 				newNode.setGame(g);
 				newNode = mcts.makeTransition(newNode);
 				log(g, newNode);

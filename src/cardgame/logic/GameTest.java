@@ -126,7 +126,7 @@ public class GameTest {
 	public void testPlayCardStandard() throws LogicException, GameEndException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		GameCard card = null;
 		try {
 			card = (GameCard)game.getCardsOnHand(1).get(2);
@@ -150,7 +150,7 @@ public class GameTest {
 	public void testPlayCard_GameCardNotInDeck() throws GameEndException, LogicException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		GameCard card = (GameCard)c2.get(0);
 		try {
 			game.playCard(p1.getId(), card);
@@ -168,7 +168,7 @@ public class GameTest {
 	public void testPlayCard_isNull() throws GameEndException, LogicException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		GameCard card = null;
 		try {
 			game.playCard(1, card);
@@ -185,7 +185,7 @@ public class GameTest {
 	public void testPlayCard_SpecialCardInsteadOfGameCard() throws LogicException, GameEndException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		SpecialCard specialcard = null;
 		for(Card card : c1){
 			if(card instanceof SpecialCard){
@@ -205,7 +205,7 @@ public class GameTest {
 	public void testPlayCard_PlayingSeveralGameCards() throws LogicException, GameEndException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		GameCard cardFirst = null;
 		GameCard cardSecond = null;
 		try {
@@ -227,7 +227,7 @@ public class GameTest {
 	public void testPlayCard_WrongPlayer() throws LogicException, GameEndException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		GameCard card = null;
 		card = (GameCard)game.getCardsOnHand(p1.getId()).get(2);
 		game.playCard(p2.getId(), card);
@@ -242,7 +242,7 @@ public class GameTest {
 	public void testPlayCard_FirstAttackThanPlayCard() throws LogicException, GameEndException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		GameCard card = null;
 		try {
 			card = (GameCard)game.getCardsOnHand(p1.getId()).get(2);
@@ -252,7 +252,7 @@ public class GameTest {
 		game.playCard(p1.getId(), card);
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		try {
 			card = (GameCard)game.getCardsOnHand(p2.getId()).get(2);
 		} catch (IllegalArgumentException e) {
@@ -261,7 +261,7 @@ public class GameTest {
 		game.playCard(p2.getId(), card);
 		
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.attack(p1.getId(), game.getMyField(p1.getId()).getBattlegroundMonster()[0], game.getEnemyField(p1.getId()).getBattlegroundMonster()[0]);
 		try {
 			card = (GameCard)game.getCardsOnHand(p1.getId()).get(2);
@@ -283,7 +283,7 @@ public class GameTest {
 		for(int i = 0; i < 5; i++){
 			
 			game.changePlayer(p1.getId());
-			game.getMyField(p1.getId()).addCard();
+			//game.getMyField(p1.getId()).addCard();
 			try {
 				card = (GameCard)game.getCardsOnHand(p1.getId()).get(2);
 			} catch (IllegalArgumentException e) {
@@ -292,7 +292,7 @@ public class GameTest {
 			game.playCard(p1.getId(), card);
 			
 			game.changePlayer(p2.getId());
-			game.getMyField(p2.getId()).addCard();
+			//game.getMyField(p2.getId()).addCard();
 			try {
 				card = (GameCard)game.getCardsOnHand(p2.getId()).get(2);
 			} catch (IllegalArgumentException e) {
@@ -314,10 +314,10 @@ public class GameTest {
 	public void testPlaySpecialCard_CardNotInHand() throws GameEndException, LogicException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playSpecialCard(p2.getId(), (SpecialCard)c2.get(c2.size()-1), game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 	}
 	
@@ -336,10 +336,10 @@ public class GameTest {
 		Deck d3 = new Deck(2, "TestDeck3", c2);
 		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), d3, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playSpecialCard(p2.getId(), (SpecialCard)game.getCardsOnHand(p2.getId()).get(0), null);
 		assertEquals(1, game.getMyField(p2.getId()).getCountBattlegroundSpecials());
 	}
@@ -359,10 +359,10 @@ public class GameTest {
 		Deck d3 = new Deck(2, "TestDeck3", c2);
 		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), d3, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		// statt null alternativ auch: game.getEnemyField(p2.getId()).getBattlegroundMonster()[1]
 		game.playSpecialCard(p2.getId(), (SpecialCard)game.getCardsOnHand(p2.getId()).get(1), null);
 	}
@@ -376,7 +376,7 @@ public class GameTest {
 	public void testPlaySpecialCard_SpecialCardNotInDeck() throws LogicException, GameEndException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(1);
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		int i = 0;
 		SpecialCard card = null;
 		while(i < c2.size()){
@@ -386,7 +386,7 @@ public class GameTest {
 			i++;
 		}
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		i = 0;
 		GameCard enemyCard = null;
 		while(i < game.getCardsOnHand(p2.getId()).size()){
@@ -398,7 +398,7 @@ public class GameTest {
 		}
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		try {
 			game.playSpecialCard(p1.getId(), card, enemyCard);
 		} catch (LogicException e) {
@@ -415,10 +415,10 @@ public class GameTest {
 	public void testPlaySpecialCard_SpecialCardIsNull() throws LogicException, GameEndException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		game.changePlayer(2);
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		game.playSpecialCard(p2.getId(), null, game.getEnemyField(p1.getId()).getBattlegroundMonster()[0]);
 	}
@@ -438,10 +438,10 @@ public class GameTest {
 		Deck d3 = new Deck(2, "TestDeck3", c2);
 		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), d3, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(3));
 		game.attack(p2.getId(), game.getMyField(p2.getId()).getBattlegroundMonster()[0], game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 		game.playSpecialCard(p2.getId(), (SpecialCard)game.getCardsOnHand(p2.getId()).get(0), game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
@@ -458,7 +458,7 @@ public class GameTest {
 		Deck d3 = new Deck(2, "TestDeck3", c2);
 		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), d3, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(4));
 		System.out.println(game.getMyField(p1.getId()).getBattlegroundMonster()[0]);
@@ -479,10 +479,10 @@ public class GameTest {
 		Deck d3 = new Deck(2, "TestDeck3", c2);
 		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), d3, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(3));
 		game.playSpecialCard(p2.getId(), (SpecialCard)game.getCardsOnHand(p2.getId()).get(0), game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 		game.playSpecialCard(p2.getId(), (SpecialCard)game.getCardsOnHand(p2.getId()).get(0), game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
@@ -512,10 +512,10 @@ public class GameTest {
 	public void testPlaySpecialCard_GameCardInsteadOfSpecialCard() throws LogicException, GameEndException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playSpecialCard(p1.getId(), (SpecialCard)game.getCardsOnHand(p1.getId()).get(0), game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 	}
 	
@@ -534,21 +534,21 @@ public class GameTest {
 		
 		Game game = new Game(p1, p2, d2, new Deck(1, "TestDeck1", c1), true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		for(int i = 0; i < 4; i++){
 			game.playSpecialCard(p2.getId(), (SpecialCard)game.getCardsOnHand(p2.getId()).get(0), game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 			}
 		
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playSpecialCard(p2.getId(), (SpecialCard)game.getCardsOnHand(p2.getId()).get(0), game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 	}
 	
@@ -569,7 +569,7 @@ public class GameTest {
 		Deck d2 = new Deck(1, "TestDeck1", c2);
 		Game game = new Game(p1, p2, d2, new Deck(1, "TestDeck2", c1), true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playSpecialCard(p1.getId(), (SpecialCard)game.getCardsOnHand(p1.getId()).get(0), null);
 		assertEquals(3, game.getEnemyField(p1.getId()).getPlayer().getShields().getCurrentShields());
 		assertEquals(0, game.getMyField(p1.getId()).getCountBattlegroundSpecials());
@@ -589,10 +589,10 @@ public class GameTest {
 		Deck d2 = new Deck(2, "TestDeck2", c2);
 		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(3));
 		game.playSpecialCard(p2.getId(), (SpecialCard)game.getCardsOnHand(p2.getId()).get(2), game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 		assertEquals(1100, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
@@ -614,12 +614,12 @@ public class GameTest {
 		Deck d2 = new Deck(2, "TestDeck2", c2);
 		Game game = new Game(p1, p2, d2, new Deck(1, "TestDeck1", c1), true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		GameCard card = null;
 		card = (GameCard)game.getCardsOnHand(p1.getId()).get(4);
 		game.playCard(p1.getId(), card);
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playSpecialCard(p2.getId(), (SpecialCard)game.getCardsOnHand(p1.getId()).get(0), game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 		
 	}
@@ -638,11 +638,11 @@ public class GameTest {
 		Deck d2 = new Deck(2, "TestDeck2", c2);
 		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(3));
 		
 		game.attack(p2.getId(), game.getMyField(p2.getId()).getBattlegroundMonster()[0], game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
@@ -652,17 +652,17 @@ public class GameTest {
 		assertEquals(0, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0].getEvolutionShields().getCurrentShields());
 		
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.attack(p2.getId(), game.getMyField(p2.getId()).getBattlegroundMonster()[0], game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 		
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playSpecialCard(p2.getId(), (SpecialCard)game.getCardsOnHand(p2.getId()).get(1), game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 		
 		assertEquals(0, Stream.of(game.getEnemyField(p2.getId()).getBattlegroundMonster()).filter(a -> a != null).count());
@@ -686,11 +686,11 @@ public class GameTest {
 		Deck d2 = new Deck(2, "TestDeck2", c2);
 		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(3));
 		game.playSpecialCard(p2.getId(), (SpecialCard)game.getCardsOnHand(p2.getId()).get(1), game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 	
@@ -718,11 +718,11 @@ public class GameTest {
 		Deck d2 = new Deck(2, "TestDeck2", c2);
 		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(3));
 		game.playSpecialCard(p2.getId(), (SpecialCard)game.getCardsOnHand(p2.getId()).get(1), game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 		
@@ -777,15 +777,15 @@ public class GameTest {
 		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), d2, true);
 		for(int i = 0; i < 2; i++){
 			game.changePlayer(p1.getId());
-			game.getMyField(p1.getId()).addCard();
+			//game.getMyField(p1.getId()).addCard();
 			game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(3));
 			
 			game.changePlayer(p2.getId());
-			game.getMyField(p2.getId()).addCard();
+			//game.getMyField(p2.getId()).addCard();
 			game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		}
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		for(int i = 0; i < 2; i++){
 			game.playSpecialCard(p1.getId(), (SpecialCard)game.getCardsOnHand(p1.getId()).get(i), game.getEnemyField(p1.getId()).getBattlegroundMonster()[0]);
 		}
@@ -805,11 +805,11 @@ public class GameTest {
 	public void testAttack1_wrongRows() throws GameEndException, LogicException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		game.attack(p2.getId(), 0, 1);
 	}
@@ -823,11 +823,11 @@ public class GameTest {
 	public void testAttack1_wrongRows3() throws GameEndException, LogicException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		game.attack(p2.getId(), 0, -2);
 	}
@@ -841,11 +841,11 @@ public class GameTest {
 	public void testAttack1_attackingPlayer_Illegal() throws GameEndException, LogicException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		game.attack(p2.getId(), 0, -1);
 	}
@@ -859,11 +859,11 @@ public class GameTest {
 	public void testAttack1_wrongRows2() throws GameEndException, LogicException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		game.attack(p2.getId(), 1, 0);
 	}
@@ -877,10 +877,10 @@ public class GameTest {
 	public void testAttack1_attackPlayer() throws LogicException, GameEndException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		game.attack(p2.getId(), 0, -1);
 		assertEquals(2, p1.getShields().getCurrentShields());
@@ -895,11 +895,11 @@ public class GameTest {
 	public void testAttack1_wrongId() throws GameEndException, LogicException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		game.attack(p1.getId(), 0, 0);
 	}
@@ -913,11 +913,11 @@ public class GameTest {
 	public void testAttack1_standard() throws LogicException, GameEndException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(1));
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(4));
 		game.attack(p2.getId(), 0, 0);
 		
@@ -937,7 +937,7 @@ public class GameTest {
 	public void testAttack2_firstTurn() throws GameEndException, LogicException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		game.attack(p1.getId(), game.getMyField(p1.getId()).getBattlegroundMonster()[0], null);
 	}
@@ -952,11 +952,11 @@ public class GameTest {
 	public void testAttack2_standard() throws GameEndException, LogicException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(3));
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(2));
 		game.attack(p2.getId(), game.getMyField(p2.getId()).getBattlegroundMonster()[0], game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 	
@@ -979,11 +979,11 @@ public class GameTest {
 	public void testAttack2_equalsATK() throws GameEndException, LogicException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(4));
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(4));
 		game.attack(p2.getId(), game.getMyField(p2.getId()).getBattlegroundMonster()[0], game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 		assertEquals(null, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
@@ -1001,11 +1001,11 @@ public class GameTest {
 	public void testAttack2_lowerATK() throws GameEndException, LogicException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		game.attack(p2.getId(), 0, 0);
 		
@@ -1024,11 +1024,11 @@ public class GameTest {
 	public void testAttack2_OwnCardNull() throws LogicException, GameEndException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		game.attack(p2.getId(), null, game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 	}
@@ -1042,10 +1042,10 @@ public class GameTest {
 	public void testAttack2_AttackPlayer() throws GameEndException, LogicException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		game.attack(p2.getId(), game.getMyField(p2.getId()).getBattlegroundMonster()[0], null);
 	}
@@ -1064,18 +1064,18 @@ public class GameTest {
 		
 		Game game = new Game(p1, p2, new Deck(1, "Deck1", c1), d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playSpecialCard(p1.getId(), (SpecialCard)game.getCardsOnHand(p1.getId()).get(0), game.getEnemyField(p1.getId()).getBattlegroundMonster()[0]);
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		assertEquals(1, game.getEnemyField(p2.getId()).getCountBattlegroundSpecials());
 		game.attack(p2.getId(), game.getMyField(p2.getId()).getBattlegroundMonster()[0], null);
 		assertEquals(2, game.getEnemyField(p2.getId()).getPlayer().getShields().getCurrentShields());
@@ -1089,11 +1089,11 @@ public class GameTest {
 	public void testAttack2_EnemyNull() throws GameEndException, LogicException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		game.attack(p2.getId(), game.getMyField(p2.getId()).getBattlegroundMonster()[0], null);
 	}
@@ -1107,11 +1107,11 @@ public class GameTest {
 	public void testAttack2_CardNotOnField() throws GameEndException, LogicException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		game.attack(p2.getId(), (GameCard)game.getCardsOnHand(p2.getId()).get(0), game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 	}
@@ -1124,11 +1124,11 @@ public class GameTest {
 	public void testAttack2_Inverse() throws GameEndException, LogicException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		game.attack(p2.getId(), game.getEnemyField(p2.getId()).getBattlegroundMonster()[0], game.getMyField(p2.getId()).getBattlegroundMonster()[0]);
 
@@ -1144,10 +1144,10 @@ public class GameTest {
 		Game game = new Game(p1, p2, d1, d2, true);
 		for(int i = 0; i < 2; i++){
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		for(int k = 0; k < Stream.of(game.getMyField(p2.getId()).getBattlegroundMonster()).filter(a -> a != null).count(); k++)
 		game.attack(p2.getId(), k, -1);
@@ -1164,10 +1164,10 @@ public class GameTest {
 		Game game = new Game(p1, p2, d1, d2, true);
 		for(int i = 0; i < 3; i++){
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		for(int k = 0; k < Stream.of(game.getMyField(p2.getId()).getBattlegroundMonster()).filter(a -> a != null).count(); k++)
 		game.attack(p2.getId(), k, -1);
@@ -1185,19 +1185,19 @@ public class GameTest {
 		c1.set(0, swap);
 		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		
 		for(int i = 0; i < 2; i++){
 			game.changePlayer(p1.getId());
-			game.getMyField(p1.getId()).addCard();
+			//game.getMyField(p1.getId()).addCard();
 			game.attack(p1.getId(), game.getMyField(p1.getId()).getBattlegroundMonster()[0], game.getEnemyField(p1.getId()).getBattlegroundMonster()[0]);
 			game.changePlayer(p2.getId());
-			game.getMyField(p2.getId()).addCard();
+			//game.getMyField(p2.getId()).addCard();
 		}
 		
 		assertEquals(500, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
@@ -1215,11 +1215,11 @@ public class GameTest {
 	public void testAttack2_attackingSeveralCards() throws GameEndException, LogicException{
 		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		game.attack(p2.getId(), 0, 0);
 		
@@ -1229,7 +1229,7 @@ public class GameTest {
 		assertEquals(700, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
 		
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(4));
 		game.attack(p1.getId(), 0, 0);
 		game.attack(p1.getId(), 1, 0);
@@ -1242,7 +1242,7 @@ public class GameTest {
 		assertEquals(1, game.getMyField(p1.getId()).getBattlegroundMonster()[1].getEvolutionShields().getCurrentShields());
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(4));
 		game.attack(p2.getId(), 0, 1);
 		game.attack(p2.getId(), 1, 1);
@@ -1277,18 +1277,18 @@ public class GameTest {
 		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), d2, true);
 		for(int i = 0; i < 4; i++){
 			game.changePlayer(p1.getId());
-			game.getMyField(p1.getId()).addCard();
+			//game.getMyField(p1.getId()).addCard();
 			game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 			
 			game.changePlayer(p2.getId());
-			game.getMyField(p2.getId()).addCard();
+			//game.getMyField(p2.getId()).addCard();
 			game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(3));
 		}
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playSpecialCard(p2.getId(), (SpecialCard)game.getCardsOnHand(p2.getId()).get(0), game.getEnemyField(p2.getId()).getBattlegroundMonster()[3]);
 		game.playSpecialCard(p2.getId(), (SpecialCard)game.getCardsOnHand(p2.getId()).get(0), game.getEnemyField(p2.getId()).getBattlegroundMonster()[3]);
 		game.playSpecialCard(p2.getId(), (SpecialCard)game.getCardsOnHand(p2.getId()).get(0), game.getEnemyField(p2.getId()).getBattlegroundMonster()[2]);
@@ -1316,11 +1316,11 @@ public class GameTest {
 	public void testAttack1_attackingSeveralTimesWithSameCard() throws GameEndException, LogicException{
 		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		game.attack(p2.getId(), 0, 0);
 		game.attack(p2.getId(), 0, 0);
@@ -1336,28 +1336,28 @@ public class GameTest {
 	public void testAttack2_suicidal() throws GameEndException, LogicException{
 		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		
 		game.attack(p2.getId(), 0, 0);
 		
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.attack(p1.getId(), 0, 0);
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.attack(p2.getId(), 0, 0);
 		
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		assertEquals(300, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
 		game.attack(p2.getId(), 0, 0);
 		
@@ -1376,11 +1376,11 @@ public class GameTest {
 	public void testAttack2_triggeringDestroyEffect() throws GameEndException, LogicException{
 		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(4));
 		game.attack(p2.getId(), 0, 0);
 		
@@ -1403,11 +1403,11 @@ public class GameTest {
 	public void testAttack2_triggeringSingleEffect() throws GameEndException, LogicException{
 		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), d2, true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(4));
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(4));
 		game.attack(p2.getId(), 0, 0);
 		
@@ -1432,17 +1432,17 @@ public class GameTest {
 		
 		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), new Deck(2, "TestDeck2,", c2), true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		
 		for(int i = 0; i < 2; i++){
 			game.changePlayer(p2.getId());
-			game.getMyField(p2.getId()).addCard();
+			//game.getMyField(p2.getId()).addCard();
 			if(i == 0)
 				game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 			
 			game.changePlayer(p1.getId());
-			game.getMyField(p1.getId()).addCard();		
+			//game.getMyField(p1.getId()).addCard();
 			game.attack(p1.getId(), 0, 0);
 			if(i == 0){
 				assertEquals(1000, game.getMyField(p2.getId()).getBattlegroundMonster()[0].getAtk());
@@ -1471,15 +1471,15 @@ public class GameTest {
 		
 		Game game = new Game(p1, p2, new Deck(1, "TestDeck1", c1), new Deck(2, "TestDeck2,", c2), true);
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();
+		//game.getMyField(p1.getId()).addCard();
 		game.playCard(p1.getId(), game.getCardsOnHand(p1.getId()).get(0));
 		
 		game.changePlayer(p2.getId());
-		game.getMyField(p2.getId()).addCard();
+		//game.getMyField(p2.getId()).addCard();
 		game.playCard(p2.getId(), game.getCardsOnHand(p2.getId()).get(0));
 		
 		game.changePlayer(p1.getId());
-		game.getMyField(p1.getId()).addCard();		
+		//game.getMyField(p1.getId()).addCard();
 		System.out.println(game.getMyField(p2.getId()).getBattlegroundMonster()[0]);
 		System.out.println(game.getEnemyField(p2.getId()).getBattlegroundMonster()[0]);
 		game.attack(p1.getId(), 0, 0);

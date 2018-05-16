@@ -80,11 +80,13 @@ public class Playground {
         }
         if (deck.getCards().size() > 0) {
             for (int i = 0; i < CARDSONHANDSTART; i++) {
-                try {
-                    cardsOnHand.add(deck.popCard());
-                } catch (GameEndException e) {
+                //try {
+                if(cardsOnHand.add(deck.popCard())) {
                     throw new RuntimeException("Deck hat nicht genug Karten");
                 }
+                /*} catch (GameEndException e) {
+                    throw new RuntimeException("Deck hat nicht genug Karten");
+                }*/
 
             }
         }
@@ -141,13 +143,16 @@ public class Playground {
 
     /**
      * Fuegt der Hand eine Karte vom Deck und entfernt diese aus dem Maindeck.
+     * @return true falls Spiel zu Ende
      */
-    public void addCard() throws GameEndException {
+    public boolean addCard() {
         if (cardsOnHand.size() < MAXCARDSONHAND) {
             Card card = deck.popCard();
+            if(card == null) return true;
             cardsOnHand.add(card);
             addObservableCardsOnHand(card);
         }
+        return false;
     }
 
     /**

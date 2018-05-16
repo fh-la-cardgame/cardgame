@@ -1,6 +1,5 @@
 package cardgame.ai;
 
-import cardgame.classes.GameEndException;
 import cardgame.logic.Game;
 import cardgame.logic.LogicException;
 import java.util.concurrent.Callable;
@@ -34,7 +33,7 @@ public class SimulationCallable implements Callable<java.lang.Boolean> {
             isPlaying = enemyPlayer;
         }
 
-        while(true) {
+        while(game.isGameRunning()) {
 
             try {
                 isPlaying.yourTurn();
@@ -43,24 +42,13 @@ public class SimulationCallable implements Callable<java.lang.Boolean> {
                 throw new RuntimeException(e);
             }
 
-            if(!game.isGameRunning()) {
-                break;
-            }
-
             if(isPlaying == myPlayer) {
                 isPlaying = enemyPlayer;
             } else {
                 isPlaying = myPlayer;
             }
 
-            game.changePlayer(isPlaying.getId());
-            try {
-                game.getMyField(isPlaying.getId()).addCard();
-            } catch (GameEndException e) {
-                game.setPlayerWon(isPlaying.getId());
-                game.setGameEnd(true);
-                break;
-            }
+            if(game.changePlayer(isPlaying.getId())) break;
 
         }
 

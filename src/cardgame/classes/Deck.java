@@ -38,8 +38,9 @@ public class Deck {
         }
     }
 
-    public Card popCard() throws GameEndException {
-        if(cards.isEmpty()) throw new GameEndException();
+    public Card popCard() {
+        //if(cards.isEmpty()) throw new GameEndException();
+        if(cards.isEmpty()) return null;
         if(countCards != null) reduceCountCards();
         return cards.remove(0);
     }
