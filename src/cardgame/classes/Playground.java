@@ -81,9 +81,7 @@ public class Playground {
         if (deck.getCards().size() > 0) {
             for (int i = 0; i < CARDSONHANDSTART; i++) {
                 //try {
-                if(cardsOnHand.add(deck.popCard())) {
-                    throw new RuntimeException("Deck hat nicht genug Karten");
-                }
+               cardsOnHand.add(deck.popCard());
                 /*} catch (GameEndException e) {
                     throw new RuntimeException("Deck hat nicht genug Karten");
                 }*/
