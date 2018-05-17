@@ -38,6 +38,16 @@ public class Deck {
         }
     }
 
+
+    /**
+     * Copy-Konstruktor
+     * @param d Deck
+     */
+    public Deck(final Deck d) {
+        this(d.getId(), d.getName(), new LinkedList<>(d.getCards()));
+        shuffle();
+    }
+
     public Card popCard() {
         //if(cards.isEmpty()) throw new GameEndException();
         if(cards.isEmpty()) return null;
@@ -51,14 +61,6 @@ public class Deck {
 
     public void shuffle(){
         Collections.shuffle(cards);
-    }
-        
-    /**
-     * Copy-Konstruktor
-     * @param d Deck
-     */
-    public Deck(final Deck d) {
-        this(d.getId(), d.getName(), new LinkedList<>(d.getCards()));
     }
 
     public int getId() {

@@ -5,16 +5,11 @@
  */
 package cardgame.ai;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import cardgame.classes.Card;
 import cardgame.classes.GameCard;
 import cardgame.logic.Game;
-import java.util.LinkedList;
 
 public class Node {
 
@@ -22,7 +17,7 @@ public class Node {
 //    private KiPlayer p1;
 //    private KiPlayer p2;
     private String transition;
-    private LinkedList<Node> children;
+    private Set<Node> children;
     private int wins = 0;
     private int simulations = 0;
     private Node parent;
@@ -32,7 +27,7 @@ public class Node {
         this.parent = parent;
         this.terminal = terminal;
         this.game = game;
-        this.children = new LinkedList<>();
+        this.children = new HashSet<>();
     }
 
 
@@ -109,7 +104,7 @@ public class Node {
      *
      * @return
      */
-    public LinkedList<Node> getChildren() {
+    public Set<Node> getChildren() {
         return children;
     }
 

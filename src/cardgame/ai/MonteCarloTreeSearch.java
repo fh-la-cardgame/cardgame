@@ -19,11 +19,15 @@ public class MonteCarloTreeSearch {
      * Zeit nach dem die Suche abgebrochen wird in ms.
      */
     private static int TIME_LIMIT = 1000;
-    
-     /**Wurzel aus 2**/
+
+    /**
+     * Wurzel aus 2
+     **/
     private static final double C = Math.sqrt(2);
-    
-    /**Anzahl der Iterationen(Child_Nodes) in expand**/
+
+    /**
+     * Anzahl der Iterationen(Child_Nodes) in expand
+     **/
     private static final int ITERATIONS = 40;
 
     /**
@@ -72,14 +76,14 @@ public class MonteCarloTreeSearch {
         double bestValue;
         double tempValue = 0.0;
 
-        
-    	LinkedList<Node> stack = new LinkedList<>();
+
+        LinkedList<Node> stack = new LinkedList<>();
         stack.add(root);
         while (!stack.isEmpty()) {
             Node current = stack.remove();
             bestValue = -1;
             for (Node child : current.getChildren()) {
-                if(child.getWins() == 0 && child.getSimulations() == 0){
+                if (child.getWins() == 0 && child.getSimulations() == 0) {
                     bestNode = child;
                     break;
                 }
@@ -94,9 +98,9 @@ public class MonteCarloTreeSearch {
             }
             stack.add(bestNode);
         }
-        
+
         if (bestNode.isTerminal()) {
-            backPropagation(bestNode,1,1);
+            backPropagation(bestNode, 1, 1);
         } else {
             expand(bestNode);
         }
@@ -110,34 +114,22 @@ public class MonteCarloTreeSearch {
      */
     public void expand(Node n) throws LogicException {
         Objects.requireNonNull(n);
-        Set<Node> setOfNodes = new HashSet<>();
-       
+        Set<Node> setOfNodes = n.getChildren();
+
         //simulate this transition
 
         Node new_Node = null;
         for (int i = 0; i < ITERATIONS; i++) {
-            try {
-                new_Node = makeTransition(n);
-                if(new_Node.isTerminal()){
-                    setOfNodes.clear();
-                    setOfNodes.add(new_Node);
-                    break;
-                }else{
-                    setOfNodes.add(new_Node);
-                }
-            } catch (GameEndException ex) {
-                Game ne = new Game(n.getGame());
-                ne.setPlayerWon(ne.getPlayersTurn());
-                ne.setGameEnd(true);
-                Node res = new Node(n, true, ne);
-                res.setTransition("");
-                n.getChildren().add(res);
-                backPropagation(res,1,1);
+            new_Node = makeTransition(n);
+            if (new_Node.isTerminal()) {
+                setOfNodes.clear();
+                setOfNodes.add(new_Node);
+                backPropagation(new_Node, 1, 1);
                 return;
+            } else {
+                setOfNodes.add(new_Node);
             }
-
         }
-        n.getChildren().addAll(setOfNodes);
         simulation(n);
 
     }
@@ -155,25 +147,25 @@ public class MonteCarloTreeSearch {
      * @param playedCardIndixes
      * @throws LogicException
      */
-    private Node spTr(Game g, Node n, StringBuilder transition) throws LogicException, GameEndException {
+    private Node spTr(Game g, Node n, StringBuilder transition) throws LogicException {
 
         if (g.getRound() <= 0) {
             return null;
         }
         int self_id = g.getPlayersTurn();
         long cardsPlayable = Stream.of(g.getMyField(self_id).getBattlegroundMonster())
-				.filter(c -> {
-					try {
-						return c != null && !g.hasAttacked(self_id, c);
-					} catch (LogicException e) {
-						e.printStackTrace();
-					}
-					return false;
-				}).count();
-        
+                .filter(c -> {
+                    try {
+                        return c != null && !g.hasAttacked(self_id, c);
+                    } catch (LogicException e) {
+                        e.printStackTrace();
+                    }
+                    return false;
+                }).count();
+
         if (g.getEnemyField(self_id).getCountBattlegroundMonster() == 0
-        		&& cardsPlayable >= g.getEnemyField(self_id).getPlayer().getShields().getCurrentShields()){
-           int i = 0;
+                && cardsPlayable >= g.getEnemyField(self_id).getPlayer().getShields().getCurrentShields()) {
+            int i = 0;
             GameCard card = null;
             while (g.getMyField(myId).getPlayer().getShields().getCurrentShields() > 0
                     && g.getMyField(enemyId).getPlayer().getShields().getCurrentShields() > 0) {
@@ -186,12 +178,7 @@ public class MonteCarloTreeSearch {
                 }
                 i++;
             }
-            
-            if(g.changePlayer(enemyId)) {
-                //TODO: Spiel ist hier zu Ende. Keine Karten mehr auf dem Deck.
-                throw new GameEndException(); // Provisorium
-            }
-            //g.getMyField(enemyId).addCard();
+
             Node finish = new Node(n, true, g);
             finish.setTransition(transition.toString());
             return finish;
@@ -210,7 +197,7 @@ public class MonteCarloTreeSearch {
      * @throws GameEndException
      * @throws Exception
      */
-    public Node makeTransition(Node n) throws LogicException, GameEndException {
+    public Node makeTransition(Node n) throws LogicException {
         Node newNode = null;
         Game g = new Game(n.getGame());
         Random random = new Random();
@@ -218,8 +205,8 @@ public class MonteCarloTreeSearch {
         int temp = 0;
         boolean playedGameCard = false;
         boolean firstRound = g.getRound() == -1 || g.getRound() == 0 ? true : false;
-        
-        int self_id = myId;
+
+        int self_id = g.getPlayersTurn();
 //        int self_id = n.getP1().getId() == n.getGame().getPlayersTurn() ? n.getP1().getId() : n.getP2().getId();
         //System.out.println("ID: " + self_id);
         /**
@@ -264,9 +251,9 @@ public class MonteCarloTreeSearch {
                         int choosen = 4 + random.nextInt(g.getEnemyField(self_id).getCountBattlegroundMonster());
                         //Garantieren das es dazwischen keine null gibt
                         for (int k = 0; k < choosen + 1 - 4; k++) {
-                                if (g.getEnemyField(self_id).getBattlegroundMonster()[k] == null) {            //Korrektur von Myfield zu EnemyField
-                                    choosen++;
-                                }
+                            if (g.getEnemyField(self_id).getBattlegroundMonster()[k] == null) {            //Korrektur von Myfield zu EnemyField
+                                choosen++;
+                            }
                         }
                         //richtigen Index zuweisen: Wichtig immer aktuellen Index verwenden!
                         int index = 0;
@@ -402,12 +389,11 @@ public class MonteCarloTreeSearch {
             }
         }
         //System.out.println("Transition:" + transition.toString());
-        if(g.changePlayer(enemyId)){
-            //TODO: Spiel ist hier zu Ende. Keine Karten mehr auf dem Deck.
-            throw new GameEndException(); // Provisorium
+        if (g.changePlayer(enemyId)) {
+            newNode = new Node(n, true, g);
+        } else {
+            newNode = new Node(n, false, g);
         }
-        //g.getMyField(enemyId).addCard();
-        newNode = new Node(n, false, g);
         newNode.setTransition(transition.toString());
         return newNode;
     }
@@ -431,8 +417,7 @@ public class MonteCarloTreeSearch {
         if (startNode.isTerminal()) {
             playersTurn = startNode.getGame().getPlayerWon();
         } else {
-            Node childNode = startNode.getChildren().getFirst();
-            //playersTurn = childNode.getGame().getPlayersTurn();                /*Spieler mit dem man vergleicht*/
+            /*Spieler mit dem man vergleicht*/
             playersTurn = myId;
         }
 
