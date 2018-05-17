@@ -6,8 +6,8 @@ import cardgame.logic.LogicException;
 
 //noch nicht entgueltig
 public interface KiPlayer {
-	public static boolean DELAY = false;
-	public static int TIME_DELAY = 0;
+	public static final boolean DELAY = false;
+	public static final int TIME_DELAY = 0;
 
 	void initialize();
 	
@@ -21,6 +21,7 @@ public interface KiPlayer {
 		if(TIME_DELAY == 0){
 			Scanner scanner = new Scanner(System.in);
 			scanner.nextLine();
+			scanner.close();
 		}else{
 			try {
 				Thread.sleep(TIME_DELAY);

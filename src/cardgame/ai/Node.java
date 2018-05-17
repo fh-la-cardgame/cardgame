@@ -19,8 +19,8 @@ import java.util.LinkedList;
 public class Node {
 
     private Game game;
-    private KiPlayer p1;
-    private KiPlayer p2;
+//    private KiPlayer p1;
+//    private KiPlayer p2;
     private String transition;
     private LinkedList<Node> children;
     private int wins = 0;
@@ -32,33 +32,9 @@ public class Node {
         this.parent = parent;
         this.terminal = terminal;
         this.game = game;
+        this.children = new LinkedList<>();
     }
 
-    public Node(Node parent, boolean terminal, Game game, KiPlayer p1, KiPlayer p2) {
-        this.parent = parent;
-        this.terminal = terminal;
-        children = new LinkedList<>();
-        this.game = game;
-        this.p1 = p1;
-        this.p2 = p2;
-    }
-
-
-    public KiPlayer getP1() {
-        return p1;
-    }
-
-    public void setP1(KiPlayer p1) {
-        this.p1 = p1;
-    }
-
-    public KiPlayer getP2() {
-        return p2;
-    }
-
-    public void setP2(KiPlayer p2) {
-        this.p2 = p2;
-    }
 
     public void setTransition(String transition) {
         this.transition = transition;

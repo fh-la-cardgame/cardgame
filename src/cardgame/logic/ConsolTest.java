@@ -1,6 +1,7 @@
 package cardgame.logic;
 
 import cardgame.ai.KiPlayer;
+import cardgame.ai.MCTSPlayer;
 import cardgame.ai.RandomPlayer;
 import cardgame.ai.TestPlayer;
 import cardgame.ai.TestPlayerProtokoll;
@@ -27,15 +28,16 @@ public class ConsolTest {
 		for (int i = 0; i < 1 ; i++) {
 			Game g = new Game(new Player(1, "Spieler1"), new Player(2, "Spieler2"), new Deck(d1), new Deck(d2), true);
 			KiPlayer p1 = new TestPlayerProtokoll(g, 1);
-			KiPlayer p2 = new TestPlayerProtokoll(g, 2);
-			if(p1.TIME_DELAY == 0 && p1.DELAY)
+			KiPlayer p2 = new MCTSPlayer(2,1,g);
+			
+			if(KiPlayer.TIME_DELAY == 0 && KiPlayer.DELAY)
 				System.out.println("Spiel muss durch Eingaben fortgesetzt werden(delays)");
-			else if(p1.DELAY)
+			else if(KiPlayer.DELAY)
 				System.out.println("Spiel enthaelt an jeweiligen Stellen eine Verzoegerung um: "+ p1.TIME_DELAY);
 			
-			if(p2.TIME_DELAY == 0 && p2.DELAY)
+			if(KiPlayer.TIME_DELAY == 0 && KiPlayer.DELAY)
 				System.out.println("Spiel muss durch Eingaben fortgesetzt werden(delays)");
-			else if(p2.DELAY)
+			else if(KiPlayer.DELAY)
 				System.out.println("Spiel enthaelt an jeweiligen Stellen eine Verzoegerung um: "+ p2.TIME_DELAY);
 			
 			
