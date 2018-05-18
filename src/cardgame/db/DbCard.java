@@ -114,7 +114,7 @@ public class DbCard {
                 Effect[] evoEffects = new Effect[EVO_OBERGRENZE];
                 
            effects = getEffects(lifeShieldMax, resStmt2);
-           evoEffects = getEvoEffects(resStmt3);
+           evoEffects = getEvoEffects(evoShieldMax, resStmt3);
                                            
                
                 cardList.add(new GameCard(gameCardID, gameCardName, gameCardDescription, monsterType, imageGamecard, attack,
@@ -260,7 +260,7 @@ public class DbCard {
               Effect[] evoEffects = new Effect[EVO_OBERGRENZE];
               
          effects = getEffects(lifeShieldMax, resStmt2);
-         evoEffects = getEvoEffects(resStmt3);
+         evoEffects = getEvoEffects(evoShieldMax,resStmt3);
              
               result = new GameCard(gameCardID, gameCardName, gameCardDescription, monsterType, imageGamecard, attack, 
             		  	new Shield(lifeShieldCurrent, lifeShieldMax), new Shield(evoShieldCurrent, evoShieldMax), evo,
@@ -345,11 +345,11 @@ public class DbCard {
      * der Evo_Effekte.
      * @return ein Array aus Effekten.
      */
-    private Effect[] getEvoEffects(ResultSet resultEvoEffect) {
+    private Effect[] getEvoEffects(int shield_max, ResultSet resultEvoEffect) {
         EffectType effect = null;
         Effect[] effects = null;
         try {					//shield_max -1
-            effects = new Effect[EVO_OBERGRENZE];
+            effects = new Effect[shield_max];
             while (resultEvoEffect.next()) {			//effectType  e.description, e.effect_type, e.effect_number, c_e.evo_shield
                 int eId = resultEvoEffect.getInt(1);
                 String eDescription = resultEvoEffect.getString(2);
@@ -363,7 +363,7 @@ public class DbCard {
                     effects[eEvo_Shield - 1] = new Effect(eId, eDescription, effect, eEffect_number);
                 } else {
                     int i = 0;
-                    while (i < EVO_OBERGRENZE) {
+                    while (i < shield_max) {
                         effects[i] = new Effect(eId, eDescription, effect, eEffect_number);
                         i++;
                     }
@@ -435,7 +435,7 @@ public class DbCard {
             resultEvoEffect = selectCard_EvoEffect.executeQuery();
 
             effects = getEffects(gShield_max, resultEffect);
-            evoEffects = getEvoEffects(resultEvoEffect);
+            evoEffects = getEvoEffects(gEvo_Shield_max, resultEvoEffect);
 
             result = new GameCard(gId, gName, gDescription, type, imageGamecard, gAtk,
                     new Shield(gEvo_Shield_curr, gEvo_Shield_max), new Shield(gShield_curr, gShield_max),
@@ -511,7 +511,7 @@ public class DbCard {
                 resultEvoEffect = selectCard_EvoEffect.executeQuery();
 
                 effects = getEffects(gShield_max, resultEffect);
-                evoEffects = getEvoEffects(resultEvoEffect);
+                evoEffects = getEvoEffects(gEvo_shield_max, resultEvoEffect);
 
                 GameCard evo = null;
                 if (gEvo != 0) {
@@ -632,7 +632,7 @@ public class DbCard {
                 resultEvoEffect = selectCard_EvoEffect.executeQuery();
 
                 effects = getEffects(gShield_max, resultEffect);
-                evoEffects = getEvoEffects(resultEvoEffect);
+                evoEffects = getEvoEffects(gEvo_shield_max, resultEvoEffect);
 
                 GameCard evo = null;
                 if (gEvo != 0) {
