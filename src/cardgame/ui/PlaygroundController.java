@@ -422,11 +422,11 @@ public class PlaygroundController implements Initializable {
                 }else if(e.getButton() == MouseButton.PRIMARY){
                     try {
                         g.attack(myID, myChosenGameCard.getCard(), ((GamecardControl)e.getSource()).getCard());
-                        myChosenGameCard.setDisable(true);
+                        disableFightButton(myChosenGameCard);
                         resetHighlightOnEnemyGameCards();
                         setDisabledCardsOnHand();
                     } catch (LogicException ex) {
-                        myChosenGameCard.setDisable(false);
+                        enableFightButton(myChosenGameCard);
                         resetDisabledCardsOnHand();
                         StyleSetting.printAlertWindow(ex);
                     }
@@ -478,14 +478,30 @@ public class PlaygroundController implements Initializable {
                         int from = change.getFrom();
 
                         GamecardControl c = new GamecardControl(change.getList().get(from));
-                        c.getFight().setVisible(true);
-                        c.getPlay().setVisible(false);
+
                         setCardOnMyField(c, from);
                         if(my_card_field[from] != null) my_card_field[from].unbindAll();
                         my_card_field[from] = c;
+
+                        c.getPlay().setVisible(false);
                         c.getFight().setVisible(true);
-                        //Karten auf der Hand ausblenden, weil nur eine Monsterkarte pro Zug gespielt werden darf
-                        setDisabledCardsOnHand();
+
+                        //Fehlerfahl/Ausnahmefall, wenn unsere Karte zerstört wird, wird diese derzeit
+                        //durch eine leere Karte mit 0/0 0/0 ersetzt, in diesem Fall sollte kein Reset
+                        //der Karten auf der Hand ausgeführt werden, auch kein Button zum Kampf bereit gestellt werden
+                        if(!(c.getgName().getText().isEmpty())){//Leere Karte auf dem Feld
+                            if(g.getRound() == 0){
+                                //Ausnahmefall, wenn der Erste Zug, dann soll das Spielen mit der Karte nicht möglich sein
+                                disableFightButton(c);
+                            }else{
+                                enableFightButton(c);
+                            }
+                            //Karten auf der Hand ausblenden, weil nur eine Monsterkarte pro Zug gespielt werden darf
+                            setDisabledCardsOnHand();
+                        }else{
+                            disableFightButton(c);
+                        }
+
                         setActionOnFight(c);
                         c.bindAll();
                     } else {
@@ -784,10 +800,10 @@ public class PlaygroundController implements Initializable {
                         try {
                             g.attack(myID, c.getCard(), null);
                             setDisabledCardsOnHand();
-                            c.setDisable(true);
+                            disableFightButton(c);
                         }catch (LogicException ex){
                             resetDisabledCardsOnHand();
-                            c.setDisable(false);
+                            enableFightButton(c);
                             StyleSetting.printAlertWindow(ex);
                         }
                         return;
@@ -878,7 +894,7 @@ public class PlaygroundController implements Initializable {
     private void resetDisabledGameCards(){
         for(int i = 0 ; i < my_card_field.length; i++){
             if(my_card_field[i] != null){
-                my_card_field[i].setDisable(false);
+                enableFightButton(my_card_field[i]);
             }
         }
     }
@@ -901,4 +917,17 @@ public class PlaygroundController implements Initializable {
     }
 
 
+    private void disableFightButton(GamecardControl c){
+        c.getFight().setDisable(true);
+    }
+    private void enableFightButton(GamecardControl c){
+        c.getFight().setDisable(false);
+    }
+
+    private void disablePlayButton(CardControl c){
+        c.getPlay().setDisable(true);
+    }
+    private void enablePlayButton(CardControl c){
+        c.getPlay().setDisable(false);
+    }
 }
