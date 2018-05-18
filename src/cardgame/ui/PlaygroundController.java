@@ -391,14 +391,16 @@ public class PlaygroundController implements Initializable {
                     @Override
                     public void changed(ObservableValue<? extends CardControl> ov, CardControl oldv, CardControl newv) {
 
-
-                        ObservableList<Label> ob = FXCollections.observableArrayList(newv.getgDescription());
-                        description.setItems(ob);
-                        if (newv.getBg() != null) {
-                            //System.out.println("Neuer Hintergrund");
-                            //cardPreviewPane.setBackground(new Background(new BackgroundImage(new Image(new ByteArrayInputStream(newv.getBg().get)), BackgroundRepeat.SPACE, BackgroundRepeat.SPACE, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-                           //// cardPreviewPane.setBackground(newv.getBg());
+                        if(newv != null){
+                            ObservableList<Label> ob = FXCollections.observableArrayList(newv.getgDescription());
+                            description.setItems(ob);
+                            if (newv.getBg() != null) {
+                                //System.out.println("Neuer Hintergrund");
+                                //cardPreviewPane.setBackground(new Background(new BackgroundImage(new Image(new ByteArrayInputStream(newv.getBg().get)), BackgroundRepeat.SPACE, BackgroundRepeat.SPACE, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                                //// cardPreviewPane.setBackground(newv.getBg());
+                            }
                         }
+
 
 
                     }
