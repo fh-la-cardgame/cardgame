@@ -420,8 +420,12 @@ public class PlaygroundController implements Initializable {
                 }else if(e.getButton() == MouseButton.PRIMARY){
                     try {
                         g.attack(myID, myChosenGameCard.getCard(), ((GamecardControl)e.getSource()).getCard());
+                        myChosenGameCard.setDisable(true);
                         resetHighlightOnEnemyGameCards();
+                        setDisabledCardsOnHand();
                     } catch (LogicException ex) {
+                        myChosenGameCard.setDisable(false);
+                        resetDisabledCardsOnHand();
                         StyleSetting.printAlertWindow(ex);
                     }
                 }
@@ -478,6 +482,8 @@ public class PlaygroundController implements Initializable {
                         if(my_card_field[from] != null) my_card_field[from].unbindAll();
                         my_card_field[from] = c;
                         c.getFight().setVisible(true);
+                        //Karten auf der Hand ausblenden, weil nur eine Monsterkarte pro Zug gespielt werden darf
+                        setDisabledCardsOnHand();
                         setActionOnFight(c);
                         c.bindAll();
                     } else {
@@ -636,6 +642,8 @@ public class PlaygroundController implements Initializable {
          g.changePlayer(enemyID);
          resetHighlightOnEnemyGameCards();
          resetHighlightOnMyEnemyGameCards();
+        resetDisabledGameCards();
+        resetDisabledCardsOnHand();
 
     }
 
@@ -703,6 +711,7 @@ public class PlaygroundController implements Initializable {
         } else {
             //my_scard_field[i] = (SpecialCardControl) gc;
             my_cardsOnHand.getItems().add(where, (SpecialCardControl)c);
+
         }
     }
 
@@ -772,7 +781,11 @@ public class PlaygroundController implements Initializable {
                     if(g.getEnemyField(myID).getCountBattlegroundMonster() == 0){
                         try {
                             g.attack(myID, c.getCard(), null);
+                            setDisabledCardsOnHand();
+                            c.setDisable(true);
                         }catch (LogicException ex){
+                            resetDisabledCardsOnHand();
+                            c.setDisable(false);
                             StyleSetting.printAlertWindow(ex);
                         }
                         return;
@@ -859,6 +872,31 @@ public class PlaygroundController implements Initializable {
 
     }
 
+
+    private void resetDisabledGameCards(){
+        for(int i = 0 ; i < my_card_field.length; i++){
+            if(my_card_field[i] != null){
+                my_card_field[i].setDisable(false);
+            }
+        }
+    }
+
+    private void resetDisabledCardsOnHand(){
+        for(CardControl c : my_cardsOnHand.getItems()){
+            if(c != null){
+                c.setDisable(false);
+            }
+        }
+    }
+
+
+    private void setDisabledCardsOnHand(){
+        for(CardControl c : my_cardsOnHand.getItems()){
+            if(c != null && (c instanceof GamecardControl)){
+                c.setDisable(true);
+            }
+        }
+    }
 
 
 }
