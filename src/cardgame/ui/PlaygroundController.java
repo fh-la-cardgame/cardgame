@@ -497,7 +497,7 @@ public class PlaygroundController implements Initializable {
                                 enableFightButton(c);
                             }
                             //Karten auf der Hand ausblenden, weil nur eine Monsterkarte pro Zug gespielt werden darf
-                            setDisabledCardsOnHand();
+                            setDisabledGamecardsOnHand();
                         }else{
                             disableFightButton(c);
                         }
@@ -908,9 +908,18 @@ public class PlaygroundController implements Initializable {
     }
 
 
-    private void setDisabledCardsOnHand(){
+    private void setDisabledGamecardsOnHand(){
         for(CardControl c : my_cardsOnHand.getItems()){
             if(c != null && (c instanceof GamecardControl)){
+                c.setDisable(true);
+            }
+        }
+    }
+
+
+    private void setDisabledCardsOnHand(){
+        for(CardControl c : my_cardsOnHand.getItems()){
+            if(c != null){
                 c.setDisable(true);
             }
         }
