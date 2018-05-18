@@ -478,14 +478,19 @@ public class PlaygroundController implements Initializable {
                         int from = change.getFrom();
 
                         GamecardControl c = new GamecardControl(change.getList().get(from));
-                        c.getFight().setVisible(true);
-                        c.getPlay().setVisible(false);
                         setCardOnMyField(c, from);
                         if(my_card_field[from] != null) my_card_field[from].unbindAll();
                         my_card_field[from] = c;
-                        c.getFight().setVisible(true);
-                        //Karten auf der Hand ausblenden, weil nur eine Monsterkarte pro Zug gespielt werden darf
-                        setDisabledCardsOnHand();
+                        //Fehlerfahl/Ausnahmefall, wenn unsere Karte zerstört wird, wird diese derzeit
+                        //durch eine leere Karte mit 0/0 0/0 ersetzt, in diesem Fall sollte kein Reset
+                        //der Karten auf der Hand ausgeführt werden, auch kein Button zum Kampf bereit gestellt werden
+                        if(!(c.getgName().getText().isEmpty())){//Leere Karte auf dem Feld
+                            c.getFight().setVisible(true);
+                            c.getPlay().setVisible(false);
+                            //Karten auf der Hand ausblenden, weil nur eine Monsterkarte pro Zug gespielt werden darf
+                            setDisabledCardsOnHand();
+                        }
+
                         setActionOnFight(c);
                         c.bindAll();
                     } else {
