@@ -36,6 +36,7 @@ public class PlaygroundWindow extends Application {
         primaryStage.setTitle("Cardgame");
         
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
         primaryStage.show();
         
         
