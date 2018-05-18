@@ -499,7 +499,7 @@ public class PlaygroundController implements Initializable {
                             //Karten auf der Hand ausblenden, weil nur eine Monsterkarte pro Zug gespielt werden darf
                             setDisabledCardsOnHand();
                         }else{
-
+                            disableFightButton(c);
                         }
 
                         setActionOnFight(c);
