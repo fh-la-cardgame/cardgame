@@ -601,6 +601,7 @@ public class PlaygroundController implements Initializable {
 
                 if(curShield == 0){
                     StyleSetting.printWinWindow("Sie haben gewonnen");
+                    disableGridPlayground();
                 }
             }
         });
@@ -616,9 +617,14 @@ public class PlaygroundController implements Initializable {
 
                 if(curShield == 0){
                     StyleSetting.printWinWindow("Sie haben verloren");
+                    disableGridPlayground();
                 }
             }
         });
+    }
+
+    private void disableGridPlayground() {
+        gridPlayGround.setDisable(true);
     }
 
 
