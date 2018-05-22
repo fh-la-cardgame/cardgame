@@ -1,29 +1,12 @@
 package cardgame.ui;
 
 import cardgame.classes.Effect;
-import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import cardgame.classes.GameCard;
 import cardgame.classes.Type;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.StackPane;
 
 /**
  * Abbildung der Spielkarte als Controlelement der GUI
@@ -43,7 +26,7 @@ public class GamecardControl extends CardControl {
     private Button fight;
     /* Card Referenz */
     private GameCard card;
-
+  
 
     private GamecardControl(){
         this("","","","","",Type.human, new byte[1],null,null);
@@ -61,35 +44,62 @@ public class GamecardControl extends CardControl {
         this.card_black_shield = new Label(blackshield);
         this.card_white_shield = new Label(whiteshield);
         this.atk = new Label(atk);
-
+      
+        
+        /*Anzeige der LEBENS-SCHILDEFFEKTE*/
         if (effects != null && effects.length > 0) {
-            Label l = new Label("SCHWARZE SCHILDEFFEKTE:");
+            Label l = new Label("LEBENS-SCHILDEFFEKTE:");
             l.setId("boldtext_css");
             this.getgDescription().add(l);
+            
             for (int i = 0; i < effects.length; i++) {
                 if (effects[i] != null) {
-
+                  
+                    if(effects[i].getAffectedShield()>=0){
+                    Label s = new Label((effects[i].getAffectedShield()+1) + "/" + (effects.length+1));
+                    s.setId("boldtext_css");
+                    this.getgDescription().add(s);
                     this.getgDescription().add(new Label(effects[i].getDescription()));
+                    }
+                    else{
+                        Label s = new Label("Effekt tritt bei jedem verlorenen Lebensschild ein:");
+                        s.setId("boldtext_css");
+                        this.getgDescription().add(s);
+                        this.getgDescription().add(new Label(effects[i].getDescription()));
+                        i = i + 1;
+                    }              
                 }
-
             }
 
             this.getgDescription().add(new Label(""));
         }
-
+       
+        /*Anzeige der EVOLUTIONS-SCHILDEFFEKTE*/
         if (evoeffects != null && evoeffects.length > 0) {
-            Label l = new Label("EVO SCHILDEFFEKTE:");
+            Label l = new Label("EVOLUTIONS-SCHILDEFFEKTE:");
             l.setId("boldtext_css");
             this.getgDescription().add(l);
+            
             for (int i = 0; i < evoeffects.length; i++) {
                 if (evoeffects[i] != null) {
-
-                    this.getgDescription().add(new Label(evoeffects[i].getDescription()));
+                    
+                    if(evoeffects[i].getAffectedShield() >= 0){
+                    Label s = new Label((evoeffects[i].getAffectedShield()) + "/" + evoeffects.length); 
+                    s.setId("boldtext_css");
+                    this.getgDescription().add(s);
+                    this.getgDescription().add(new Label(evoeffects[i].getDescription())); 
+                    }
+                    else{
+                        Label s = new Label("Effekt tritt bei jedem gewonnen Evolutions-Schild ein:");
+                        s.setId("boldtext_css");
+                        this.getgDescription().add(s);
+                        this.getgDescription().add(new Label(evoeffects[i].getDescription()));
+                        break;
+                    }
+                    
                 }
 
             }
-
-            this.getgDescription().add(new Label("***************************************"));
         }
 
 
