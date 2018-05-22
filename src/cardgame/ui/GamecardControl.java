@@ -66,7 +66,8 @@ public class GamecardControl extends CardControl {
                         s.setId("boldtext_css");
                         this.getgDescription().add(s);
                         this.getgDescription().add(new Label(effects[i].getDescription()));
-                        i = i + 1;
+                        break;
+                        
                     }              
                 }
             }
