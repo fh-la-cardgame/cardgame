@@ -13,6 +13,8 @@ public class Effect {
       private final EffectType effectType;
       	/** Angabe der Staerke **/
       private final int effectNumber;
+      /** Angabe bei welchem Schild der Effekt wirkt**/
+      private final int affectedShield;
 	
 	
 	/**
@@ -20,12 +22,14 @@ public class Effect {
          * @param id Identifikationsnummer
          * @param description Effektbeschreibung
          * @param effectType Effekttyp (Verminderung, Erhöhung)
+         * @param affectedShield Betroffenes Schild
          */
-	public Effect(final int id, final String description, final EffectType effectType, final int effectNumber) {
+	public Effect(final int id, final String description, final EffectType effectType, final int effectNumber, final int affectedShield) {
 		this.id = id;
 		this.description = description;
         this.effectType = effectType;
         this.effectNumber = effectNumber;
+        this.affectedShield = affectedShield;
                 
 	}
         
@@ -34,7 +38,7 @@ public class Effect {
          * @param e 
          */
         public Effect(final Effect e){
-            this(e.id, e.description, e.effectType, e.effectNumber);
+            this(e.id, e.description, e.effectType, e.effectNumber, e.affectedShield);
         }
         /**
          * Anwendung des Effekts.
@@ -56,6 +60,10 @@ public class Effect {
     
     public int getEffectNumber(){
     	return effectNumber;
+    }
+    
+    public int getAffectedShield(){
+        return affectedShield;
     }
     
     @Override
