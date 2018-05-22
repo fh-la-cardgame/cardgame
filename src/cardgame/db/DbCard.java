@@ -8,18 +8,14 @@ import cardgame.classes.Shield;
 import cardgame.classes.SpecialCard;
 import cardgame.classes.Type;
 
-import java.awt.Image;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -87,6 +83,7 @@ public class DbCard {
                     evo = integerToGamecard(resStmt1.getInt(10));
                 }
 
+                
                 /** Ausfuerung des Joins(ueber Card_Effekt) um die Effekte der LifeShields einer Karte auszulesen. **/
                 prepStmt2 = c.prepareStatement("select e.eid, e.description, e.effect_type, e.effect_number, c_e.shield"+""
            		+ " from \"Effecte\" e, \"Card_Effect\" c_e, \"Gamecard\" g "
@@ -97,6 +94,8 @@ public class DbCard {
            		+ "?");
            prepStmt2.setInt(1, gameCardID);
            resStmt2 = prepStmt2.executeQuery();
+           int affectedShield = resStmt2.getInt(5);
+           
             /** Ausfuerung des Joins(ueber Card_Effekt) um die EvoShield- Effekte einer Karte auszulesen. **/
             //auslagern
            PreparedStatement selectCard_EvoEffect = c.prepareStatement("select e.eid, e.description, e.effect_type, e.effect_number, c_e.evo_shield"+""
@@ -111,7 +110,7 @@ public class DbCard {
              
                EffectType effectType;
                 Effect[] effects = new Effect[lifeShieldMax];
-                Effect[] evoEffects = new Effect[EVO_OBERGRENZE];
+                Effect[] evoEffects = new Effect[evoShieldMax];
                 
            effects = getEffects(lifeShieldMax, resStmt2);
            evoEffects = getEvoEffects(evoShieldMax, resStmt3);
@@ -140,7 +139,7 @@ public class DbCard {
             
             /** Ausfuerung des Joins(ueber Specialcard_Effekt) um die Effekte einer Specialkarte auszulesen. **/
                               
-                prepStmt2 = c.prepareStatement("select e.eid, e.description, e.effect_type, e.effect_number "
+                prepStmt2 = c.prepareStatement("select e.eid, e.description, e.effect_type, e.effect_number, ce.shield "
                                         + "from \"Effecte\" e, \"Specialcard_Effect\" ce, \"Specialcard\" s "
                                         + "where s.sid = " + specialCardID + "and e.eid = ce.eid "
                                         + "and ce.scid = s.sid");
@@ -156,8 +155,9 @@ public class DbCard {
                     String effectDescription = resStmt2.getString(2);
                     effectType = stringToEffectType(resStmt2.getString(3));
                     int effectNumber = resStmt2.getInt(4);
+                    int affectedShield = resStmt2.getInt(5);
                     
-                    effects_list.add(new Effect(effectID, effectDescription, effectType, effectNumber));
+                    effects_list.add(new Effect(effectID, effectDescription, effectType, effectNumber, affectedShield ));
                 }
                 cardList.add(new SpecialCard(specialCardID, specialCardName, specialCardDescription, 
                              stringToType(resStmt1.getString(4)), imageSpecialcard, effects_list));         
@@ -257,10 +257,10 @@ public class DbCard {
            
              EffectType effectType;
               Effect[] effects = new Effect[lifeShieldMax];
-              Effect[] evoEffects = new Effect[EVO_OBERGRENZE];
+              Effect[] evoEffects = new Effect[evoShieldMax];
               
          effects = getEffects(lifeShieldMax, resStmt2);
-         evoEffects = getEvoEffects(evoShieldMax,resStmt3);
+         evoEffects = getEvoEffects(evoShieldMax, resStmt3);
              
               result = new GameCard(gameCardID, gameCardName, gameCardDescription, monsterType, imageGamecard, attack, 
             		  	new Shield(lifeShieldCurrent, lifeShieldMax), new Shield(evoShieldCurrent, evoShieldMax), evo,
@@ -321,11 +321,11 @@ public class DbCard {
 
                 effect = stringToEffectType(eEffectType);
                 if (eShield != -1) {
-                    effects[eShield] = new Effect(eId, eDescription, effect, eEffect_number);
+                    effects[eShield] = new Effect(eId, eDescription, effect, eEffect_number, eShield);
                 } else {
                     int i = 0;
                     while (i < shield_max - 1) {
-                        effects[i] = new Effect(eId, eDescription, effect, eEffect_number);
+                        effects[i] = new Effect(eId, eDescription, effect, eEffect_number, eShield);
                         i++;
                     }
 
@@ -345,11 +345,11 @@ public class DbCard {
      * der Evo_Effekte.
      * @return ein Array aus Effekten.
      */
-    private Effect[] getEvoEffects(int shield_max, ResultSet resultEvoEffect) {
+    private Effect[] getEvoEffects(int evoShieldMax, ResultSet resultEvoEffect) {
         EffectType effect = null;
         Effect[] effects = null;
         try {					//shield_max -1
-            effects = new Effect[shield_max];
+            effects = new Effect[evoShieldMax];
             while (resultEvoEffect.next()) {			//effectType  e.description, e.effect_type, e.effect_number, c_e.evo_shield
                 int eId = resultEvoEffect.getInt(1);
                 String eDescription = resultEvoEffect.getString(2);
@@ -360,11 +360,11 @@ public class DbCard {
                 effect = stringToEffectType(eType);
                 //evo_shield
                 if (eEvo_Shield != -1) {
-                    effects[eEvo_Shield - 1] = new Effect(eId, eDescription, effect, eEffect_number);
+                    effects[eEvo_Shield - 1] = new Effect(eId, eDescription, effect, eEffect_number, eEvo_Shield);
                 } else {
                     int i = 0;
-                    while (i < shield_max) {
-                        effects[i] = new Effect(eId, eDescription, effect, eEffect_number);
+                    while (i < evoShieldMax) {
+                        effects[i] = new Effect(eId, eDescription, effect, eEffect_number, eEvo_Shield);
                         i++;
                     }
 
@@ -540,7 +540,7 @@ public class DbCard {
                 byte[] imageSpecialCard = resultCard.getBytes(5);
 
                 List<Effect> effects_list = new ArrayList<>();
-                selectSpecialcardEffect = c.prepareStatement("select e.eid, e.description, e.effect_type, e.effect_number "
+                selectSpecialcardEffect = c.prepareStatement("select e.eid, e.description, e.effect_type, e.effect_number, ce.shield "
                         + "from \"Effecte\" e, \"Specialcard_Effect\" ce, \"Specialcard\" "
                         + "where sid = ?"
                         + "and e.eid = ce.eid "
@@ -552,8 +552,9 @@ public class DbCard {
                     String eDescription = resultEffect.getString(2);
                     String eEffectType = resultEffect.getString(3);
                     short eEffect_number = resultEffect.getShort(4);
+                    int affectedShield = resultEffect.getInt(5);
 
-                    effects_list.add(new Effect(eId, eDescription, stringToEffectType(eEffectType), eEffect_number));
+                    effects_list.add(new Effect(eId, eDescription, stringToEffectType(eEffectType), eEffect_number, affectedShield));
                 }
                 deck.add(new SpecialCard(sId, sName, sDescription, stringToType(resultCard.getString(4)), imageSpecialCard, effects_list));
             }
@@ -660,7 +661,7 @@ public class DbCard {
                 String sDescription = resultCard.getString(3);
 
                 List<Effect> effects_list = new ArrayList<>();
-                selectSpecialcardEffect = c.prepareStatement("select e.eid, e.description, e.effect_type, e.effect_number "
+                selectSpecialcardEffect = c.prepareStatement("select e.eid, e.description, e.effect_type, e.effect_number, ce.shield "
                         + "from \"Effecte\" e, \"Specialcard_Effect\" ce, \"Specialcard\" "
                         + "where sid = ?"
                         + "and e.eid = ce.eid "
@@ -672,8 +673,9 @@ public class DbCard {
                     String eDescription = resultEffect.getString(2);
                     String eEffectType = resultEffect.getString(3);
                     short eEffect_number = resultEffect.getShort(4);
+                    int affectedShield = resultEffect.getInt(5);
 
-                    effects_list.add(new Effect(eId, eDescription, stringToEffectType(eEffectType), eEffect_number));
+                    effects_list.add(new Effect(eId, eDescription, stringToEffectType(eEffectType), eEffect_number, affectedShield));
                 }
                 deck.add(new SpecialCard(sId, sName, sDescription, stringToType(resultCard.getString(4)), null, effects_list));
             }
