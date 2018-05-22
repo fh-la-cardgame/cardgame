@@ -94,7 +94,7 @@ public class DbCard {
            		+ "?");
            prepStmt2.setInt(1, gameCardID);
            resStmt2 = prepStmt2.executeQuery();
-           int affectedShield = resStmt2.getInt(5);
+           
            
             /** Ausfuerung des Joins(ueber Card_Effekt) um die EvoShield- Effekte einer Karte auszulesen. **/
             //auslagern
