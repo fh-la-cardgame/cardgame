@@ -146,7 +146,7 @@ public class GameTest {
 	 * @throws GameEndException
 	 * @throws LogicException
 	 */
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = IndexOutOfBoundsException.class)
 	public void testPlayCard_GameCardNotInDeck() throws GameEndException, LogicException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
@@ -164,7 +164,7 @@ public class GameTest {
 	 * @throws GameEndException
 	 * @throws LogicException
 	 */
-	@Test(expected = NullPointerException.class)
+	@Test(expected = IndexOutOfBoundsException.class)
 	public void testPlayCard_isNull() throws GameEndException, LogicException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
@@ -181,7 +181,7 @@ public class GameTest {
 	 * @throws LogicException
 	 * @throws GameEndException
 	 */
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = IndexOutOfBoundsException.class)
 	public void testPlayCard_SpecialCardInsteadOfGameCard() throws LogicException, GameEndException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
@@ -223,7 +223,7 @@ public class GameTest {
 	 * @throws LogicException
 	 * @throws GameEndException
 	 */
-	@Test(expected = LogicException.class)
+	@Test(expected = IndexOutOfBoundsException.class)
 	public void testPlayCard_WrongPlayer() throws LogicException, GameEndException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
@@ -276,7 +276,7 @@ public class GameTest {
 	 * @throws LogicException
 	 * @throws GameEndException
 	 */
-	@Test(expected = RuntimeException.class)
+	@Test(expected = LogicException.class)
 	public void testPlayCard_FieldIsFull() throws LogicException, GameEndException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		GameCard card = null;
@@ -349,7 +349,7 @@ public class GameTest {
 	 * @throws LogicException
 	 * @throws GameEndException
 	 */
-	@Test(expected = NullPointerException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testPlaySpecialCard_EnemyNullSingleEffect() throws LogicException, GameEndException{
 		for(int i = 0; i < 3; i++){
 			Card swap = c2.get(c2.size()-(i+1));
@@ -411,7 +411,7 @@ public class GameTest {
 	 * @throws LogicException
 	 * @throws GameEndException
 	 */
-	@Test(expected = NullPointerException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testPlaySpecialCard_SpecialCardIsNull() throws LogicException, GameEndException{
 		Game game = new Game(p1, p2, d1, d2, true);
 		game.changePlayer(p1.getId());
