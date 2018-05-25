@@ -154,7 +154,10 @@ public class EmbeddedDB {
 			c2 = DbConnection.getPostgresConnection();
 		
 		
-		c.prepareStatement("CREATE TABLE Effecte (eid INT NOT NULL PRIMARY KEY, description VARCHAR(100), effect_type VARCHAR(40), effect_number INT)").executeUpdate();
+		c.prepareStatement("CREATE TABLE Effecte (eid INT NOT NULL PRIMARY KEY,"
+				+ " description VARCHAR(100),"
+				+ " effect_type VARCHAR(40),"
+				+ " effect_number INT)").executeUpdate();
 		
 		ResultSet rs0 = c2.prepareStatement("select * from \"Effecte\"").executeQuery();
 		while(rs0.next()){
@@ -804,60 +807,22 @@ public class EmbeddedDB {
 	    public boolean deleteAll(){
 	    	try {
 				c = DriverManager.getConnection(JDBC_URL);
-				c2 = DbConnection.getPostgresConnection();
 			
 				ResultSet rs;
 				c.prepareStatement("DROP TABLE CARD_EFFECT").executeUpdate();
 				c.prepareStatement("DROP TABLE SPECIALCARD_EFFECT").executeUpdate();
 				c.prepareStatement("DROP TABLE DECK_CARDS").executeUpdate();
-				c.prepareStatement("DROP TABLE EFFECTE").executeUpdate();
 				c.prepareStatement("DROP TABLE GAMECARD").executeUpdate();
 				c.prepareStatement("DROP TABLE SPECIALCARD").executeUpdate();
 				c.prepareStatement("DROP TABLE DECK").executeUpdate();
-				rs = c.prepareStatement("SELECT COUNT(*) FROM EFFECTE").executeQuery();
-				rs.next();
-				if(rs.getInt(1) != 0){
-					return false;
-				}
-				rs = c.prepareStatement("SELECT COUNT(*) FROM GAMECARD").executeQuery();
-				rs.next();
-				if(rs.getInt(1) != 0){
-					return false;
-				}
-				rs = c.prepareStatement("SELECT COUNT(*) FROM SPECIALCARD").executeQuery();
-				rs.next();
-				if(rs.getInt(1) != 0){
-					return false;
-				}
-				rs = c.prepareStatement("SELECT COUNT(*) FROM DECK").executeQuery();
-				rs.next();
-				if(rs.getInt(1) != 0){
-					return false;
-				}
-				rs = c.prepareStatement("SELECT COUNT(*) FROM CARD_EFFECT").executeQuery();
-				rs.next();
-				if(rs.getInt(1) != 0){
-					return false;
-				}
-				rs = c.prepareStatement("SELECT COUNT(*) FROM SPECIALCARD_EFFECT").executeQuery();
-				rs.next();
-				if(rs.getInt(1) != 0){
-					return false;
-				}
-				rs = c.prepareStatement("SELECT COUNT(*) FROM DECK_CARDS").executeQuery();
-				rs.next();
-				if(rs.getInt(1) != 0){
-					return false;
-				}
+				c.prepareStatement("DROP TABLE EFFECTE").executeUpdate();
 			
 			} catch (SQLException e) {
 				Logger.getLogger(EmbeddedDB.class.getName()).log(Level.SEVERE, null, e);
-			} catch (ClassNotFoundException e) {
-				Logger.getLogger(EmbeddedDB.class.getName()).log(Level.SEVERE, null, e);
-			}finally {
+			} finally {
 	            try {
 	                c.close();
-	                c2.close();
+
 	            } catch (SQLException ex) {
 	                Logger.getLogger(EmbeddedDB.class.getName()).log(Level.SEVERE, null, ex);
 	            }
@@ -875,7 +840,6 @@ public class EmbeddedDB {
 		public boolean deleteTable(String table){
 			try {
 				c = DriverManager.getConnection(JDBC_URL);
-				c2 = DbConnection.getPostgresConnection();
 				Objects.requireNonNull(table);
 				ResultSet rs;
 				c.prepareStatement("DROP TABLE "+table).executeUpdate();
@@ -886,9 +850,7 @@ public class EmbeddedDB {
 				}
 			} catch (SQLException e) {
 				Logger.getLogger(EmbeddedDB.class.getName()).log(Level.SEVERE, null, e);
-			} catch (ClassNotFoundException e) {
-				Logger.getLogger(EmbeddedDB.class.getName()).log(Level.SEVERE, null, e);
-			}finally {
+			} finally {
 	            try {
 	                c.close();
 	                c2.close();
