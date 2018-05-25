@@ -10,17 +10,19 @@ import cardgame.classes.Deck;
 import cardgame.classes.GameEndException;
 import cardgame.classes.Player;
 import cardgame.db.DbCard;
+import cardgame.db.EmbeddedDB;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class ConsolTest {
 
-	public static void main(String[] args) throws LogicException{
+	public static void main(String[] args) throws LogicException, ClassNotFoundException, SQLException{
 
 
-		DbCard db = new DbCard();
-		List<Card> c1 = db.getDeck("civitas diaboli");
-		List<Card> c2 = db.getDeck("Engel");
+		EmbeddedDB db = new EmbeddedDB();
+		List<Card> c1 = db.getDeck("Flora");
+		List<Card> c2 = db.getDeck("Flora");
 
 		Deck d1 = new Deck(1,"Alpha",c1);
 		Deck d2 = new Deck(2, "Beta", c2);
@@ -28,7 +30,7 @@ public class ConsolTest {
 		for (int i = 0; i < 1 ; i++) {
 			Game g = new Game(new Player(1, "Spieler1"), new Player(2, "Spieler2"), new Deck(d1), new Deck(d2), true);
 			KiPlayer p1 = new TestPlayerProtokoll(g, 1);
-			KiPlayer p2 = new MCTSPlayer(2,1,g);
+			KiPlayer p2 = new TestPlayerProtokoll(g, 2);
 			
 			if(KiPlayer.TIME_DELAY == 0 && KiPlayer.DELAY)
 				System.out.println("Spiel muss durch Eingaben fortgesetzt werden(delays)");
@@ -53,6 +55,7 @@ public class ConsolTest {
 					
 				} catch (LogicException e) {
 					System.out.println(e);
+					
 				}
 				if (!g.isGameRunning()) {
 					break;
