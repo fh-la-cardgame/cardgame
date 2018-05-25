@@ -804,11 +804,9 @@ public class EmbeddedDB {
 	     * @return Wenn alle Decks 0 Zeilen enthalten, dann true, sonst false.
 	     * @throws SQLException
 	     */
-	    public boolean deleteAll(){
+	    public void deleteAll(){
 	    	try {
 				c = DriverManager.getConnection(JDBC_URL);
-			
-				ResultSet rs;
 				c.prepareStatement("DROP TABLE CARD_EFFECT").executeUpdate();
 				c.prepareStatement("DROP TABLE SPECIALCARD_EFFECT").executeUpdate();
 				c.prepareStatement("DROP TABLE DECK_CARDS").executeUpdate();
@@ -827,7 +825,6 @@ public class EmbeddedDB {
 	                Logger.getLogger(EmbeddedDB.class.getName()).log(Level.SEVERE, null, ex);
 	            }
 	        }
-			return true;
 			
 		}
 		
@@ -837,27 +834,19 @@ public class EmbeddedDB {
 	     * @return
 	     * @throws SQLException
 	     */
-		public boolean deleteTable(String table){
+		public void deleteTable(String table){
 			try {
 				c = DriverManager.getConnection(JDBC_URL);
 				Objects.requireNonNull(table);
-				ResultSet rs;
 				c.prepareStatement("DROP TABLE "+table).executeUpdate();
-				rs = c.prepareStatement("SELECT COUNT(*) FROM "+table).executeQuery();
-				rs.next();
-				if(rs.getInt(1) != 0){
-					return false;
-				}
 			} catch (SQLException e) {
 				Logger.getLogger(EmbeddedDB.class.getName()).log(Level.SEVERE, null, e);
 			} finally {
 	            try {
 	                c.close();
-	                c2.close();
 	            } catch (SQLException ex) {
 	                Logger.getLogger(EmbeddedDB.class.getName()).log(Level.SEVERE, null, ex);
 	            }
 	        }
-			return true;
 		}
 }

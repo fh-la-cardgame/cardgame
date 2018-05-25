@@ -35,8 +35,8 @@ public class Cardgame {
     
     public static void main(String[] args) throws Exception {
     	EmbeddedDB db = new EmbeddedDB();
-    	//db.deleteTable("Deck_Cards");
-    	//if(!db.deleteAll())	System.out.println("Error: delete");
+//    	db.deleteTable("Deck_Cards");
+//    	db.deleteAll();
     	if(!db.updateEmbDB()) System.out.println("Error: update");
     	else System.out.println("Success");
     	
