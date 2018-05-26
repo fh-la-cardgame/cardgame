@@ -29,17 +29,23 @@ public class Music {
 			@Override
 			public void run() {
 				int counter = 0;
+				int old = -1;
 				while(true){
 					Clip clip;
 					try {
 						clip = AudioSystem.getClip();
 						AudioInputStream inputStream;
+						
 						if(ordered){
 							inputStream = AudioSystem.getAudioInputStream(new File(trackList.get(counter)));
 							counter = (counter+1) % trackList.size();
 						}else{
 							int choosen = new Random().nextInt(trackList.size());
+							if(old == choosen){
+								choosen = (choosen+1) % trackList.size();
+							}
 							inputStream = AudioSystem.getAudioInputStream(new File(trackList.get(choosen)));
+							old = choosen;
 						}
 						clip.open(inputStream);
 						clip.loop(0);
