@@ -499,7 +499,7 @@ public class EmbeddedDB {
         List<Card> deck = new ArrayList<>();
         try {
 			c = DriverManager.getConnection(JDBC_URL);
-			c2 = DbConnection.getPostgresConnection();
+//			c2 = DbConnection.getPostgresConnection();
 		
 		
 
@@ -604,12 +604,10 @@ public class EmbeddedDB {
            
     		} catch (SQLException e) {
     			Logger.getLogger(EmbeddedDB.class.getName()).log(Level.SEVERE, null, e);
-    		} catch (ClassNotFoundException e) {
-    			Logger.getLogger(EmbeddedDB.class.getName()).log(Level.SEVERE, null, e);
     		}finally {
                 try {
                     c.close();
-                    c2.close();
+//                    c2.close();
                 } catch (SQLException ex) {
                     Logger.getLogger(EmbeddedDB.class.getName()).log(Level.SEVERE, null, ex);
                 }
