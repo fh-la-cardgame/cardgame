@@ -28,7 +28,7 @@ public class MonteCarloTreeSearch {
     /**
      * Anzahl der Iterationen(Child_Nodes) in expand
      **/
-    private static final int ITERATIONS = 40;
+    private static final int ITERATIONS = 25;
 
     /**
      * Fuer Parallelesierung der Simulationen in simulation.
@@ -389,7 +389,10 @@ public class MonteCarloTreeSearch {
             }
         }
         //System.out.println("Transition:" + transition.toString());
-        if (g.changePlayer(enemyId)) {
+        int enemy;
+        if(self_id == myId) enemy = enemyId;
+        else enemy = myId;
+        if (g.changePlayer(enemy)) {
             newNode = new Node(n, true, g);
         } else {
             newNode = new Node(n, false, g);
@@ -418,7 +421,8 @@ public class MonteCarloTreeSearch {
             playersTurn = startNode.getGame().getPlayerWon();
         } else {
             /*Spieler mit dem man vergleicht*/
-            playersTurn = myId;
+            if(startNode.getGame().getPlayersTurn() == myId) playersTurn = enemyId;
+            else playersTurn = myId;
         }
 
         while (startNode != null) {
@@ -452,7 +456,6 @@ public class MonteCarloTreeSearch {
                 throw new RuntimeException(e);
             }
         }
-
         backPropagation(n, wins, simulations);
 
     }
