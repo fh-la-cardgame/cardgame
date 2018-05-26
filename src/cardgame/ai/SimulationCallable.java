@@ -54,7 +54,7 @@ public class SimulationCallable implements Callable<java.lang.Boolean> {
 
         int id = game.getPlayerWon();
 
-        if(id == node.getGame().getPlayersTurn()) {
+        if(id == myId) {
             node.result(true);
             return true;
         } else {
