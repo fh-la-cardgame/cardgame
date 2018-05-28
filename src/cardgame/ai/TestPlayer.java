@@ -160,12 +160,20 @@ public class TestPlayer implements KiPlayer {
 					}
 					
 					if(victim != null && game.getEnemyField(id).getCountBattlegroundMonster() != 0){
+						if(game.isGameRunning()){
 						game.attack(id, aggressor, victim);
+						}else{
+							return;
+						}
 						if(DELAY)
 					  		delay();
 						
 					}else if(game.getEnemyField(id).getCountBattlegroundMonster() == 0){
+						if(game.isGameRunning()){
 						game.attack(id, aggressor, null);
+						}else{
+							return;
+						}
 						if(DELAY)
 					  		delay();
 					}

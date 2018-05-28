@@ -166,13 +166,21 @@ public class TestPlayerProtokoll implements KiPlayer {
 					}
 					
 					if(victim != null && game.getEnemyField(id).getCountBattlegroundMonster() != 0){
+						if(game.isGameRunning()){
 						game.attack(id, aggressor, victim);
+						}else{
+							return;
+						}
 						
 						System.out.println("ANGRIFF: "+aggressor.getName()+"("+aggressor.getAtk()+")" +" vs " + victim.getName()+"("+victim.getAtk()+")");
 					}else if(game.getEnemyField(id).getCountBattlegroundMonster() == 0){
 						System.out.println("KONTROLLE: "+Arrays.asList(game.getEnemyField(id).getBattlegroundMonster()));
 						System.out.println("ANGRIFF: "+aggressor.getName() +" vs gegnerischer Spieler");
+						if(game.isGameRunning()){
 						game.attack(id, aggressor, null);
+						}else{
+							return;
+						}
 					}
 					System.out.println(game.getEnemyField(id).getCountBattlegroundMonster()+" - "+ game.getEnemyField(id).getPlayer().getShields().getCurrentShields());
 					System.out.println(game.getMyField(id).getCountBattlegroundMonster()+" - "+ game.getMyField(id).getPlayer().getShields().getCurrentShields());
