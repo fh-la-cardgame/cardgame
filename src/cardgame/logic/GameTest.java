@@ -41,7 +41,8 @@ public class GameTest {
 //		}	
 		
 	
-		DbCard db = new DbCard();
+//		DbCard db = new DbCard();
+		EmbeddedDB db = new EmbeddedDB();
 		List<Card> c1 = db.getDeckWithoutImage("TestDeck1");
 		List<Card> c2 = db.getDeckWithoutImage("TestDeck2");
 

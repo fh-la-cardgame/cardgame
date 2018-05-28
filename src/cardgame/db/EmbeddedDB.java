@@ -24,7 +24,7 @@ import cardgame.classes.Type;
 
 public class EmbeddedDB {
 	public static final String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
-	public static final String JDBC_URL = "jdbc:derby:cardgame;create=true";
+	public static final String JDBC_URL = "jdbc:derby:EmbDB;create=true";
 	private static Connection c;
 	private static Connection c2;
 	

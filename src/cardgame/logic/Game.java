@@ -184,6 +184,7 @@ public class Game {
             //Gegner verliert ein Schield
             Shield shield = getEnemyField(id).getPlayer().getShields();
             shield.dropShield();
+            Music.soundEffect("BrokenGlass");
 
             //Ueberpruefen ob gewonnen ???
             if (shield.getCurrentShields() == 0) {

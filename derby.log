@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Mon May 28 14:47:21 CEST 2018:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0163-a6c9-eb0a-000006fe5d40 
+on database directory C:\Users\David\git\cardgame2\EmbDB with class loader sun.misc.Launcher$AppClassLoader@73d16e93 
+Loaded from file:/C:/Users/David/git/cardgame2/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_151-b12
+user.dir=C:\Users\David\git\cardgame2
+os.name=Windows 10
+os.arch=amd64
+os.version=10.0
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
