@@ -23,12 +23,12 @@ public class MonteCarloTreeSearch {
     /**
      * Wurzel aus 2
      **/
-    private static final double C = Math.sqrt(2);
+    private static final double C = 0.8;
 
     /**
      * Anzahl der Iterationen(Child_Nodes) in expand
      **/
-    private static final int ITERATIONS = 25;
+    private static final int ITERATIONS = 200;
 
     /**
      * Fuer Parallelesierung der Simulationen in simulation.
@@ -74,29 +74,22 @@ public class MonteCarloTreeSearch {
         Node bestNode = root;
         long simulations = root.getSimulations();
         double bestValue;
-        double tempValue = 0.0;
+        double tempValue;
 
-
-        LinkedList<Node> stack = new LinkedList<>();
-        stack.add(root);
-        while (!stack.isEmpty()) {
-            Node current = stack.remove();
-            bestValue = -1;
+        while (!bestNode.isLeaf()) {
+            bestValue = Double.NEGATIVE_INFINITY;
+            Node current = bestNode;
             for (Node child : current.getChildren()) {
-                if (child.getWins() == 0 && child.getSimulations() == 0) {
+                if (child.getSimulations() == 0 && child.getWins() == 0) {
                     bestNode = child;
                     break;
                 }
-                tempValue = child.getWins(0) / (double) child.getSimulations() + C * Math.sqrt(Math.log(simulations) / child.getSimulations());
+                tempValue = child.getWins() / (double) child.getSimulations() + C * Math.sqrt(Math.log(simulations) / child.getSimulations());
                 if (tempValue > bestValue) {
                     bestValue = tempValue;
                     bestNode = child;
                 }
             }
-            if (bestNode.isLeaf()) {
-                break;
-            }
-            stack.add(bestNode);
         }
 
         if (bestNode.isTerminal()) {
@@ -114,12 +107,14 @@ public class MonteCarloTreeSearch {
      */
     public void expand(Node n) throws LogicException {
         Objects.requireNonNull(n);
-        Set<Node> setOfNodes = n.getChildren();
-
         //simulate this transition
-
-        Node new_Node = null;
-        for (int i = 0; i < ITERATIONS; i++) {
+        Node new_Node;
+        int iterations = n.getGame().getMyField(myId).getDeck().getCards().size() + n.getGame().getEnemyField(myId).getDeck().getCards().size() + 1;
+        iterations *= 2;
+        iterations += n.getGame().getMyField(myId).getCountBattlegroundMonster() * n.getGame().getEnemyField(myId).getCountBattlegroundMonster();
+        n.createArrayList(iterations);
+        Collection<Node> setOfNodes = n.getChildren();
+        for (int i = 0; i < iterations; i++) {
             new_Node = makeTransition(n);
             if (new_Node.isTerminal()) {
                 setOfNodes.clear();
@@ -390,7 +385,7 @@ public class MonteCarloTreeSearch {
         }
         //System.out.println("Transition:" + transition.toString());
         int enemy;
-        if(self_id == myId) enemy = enemyId;
+        if (self_id == myId) enemy = enemyId;
         else enemy = myId;
         if (g.changePlayer(enemy)) {
             newNode = new Node(n, true, g);
@@ -421,7 +416,7 @@ public class MonteCarloTreeSearch {
             playersTurn = startNode.getGame().getPlayerWon();
         } else {
             /*Spieler mit dem man vergleicht*/
-            if(startNode.getGame().getPlayersTurn() == myId) playersTurn = enemyId;
+            if (startNode.getGame().getPlayersTurn() == myId) playersTurn = enemyId;
             else playersTurn = myId;
         }
 

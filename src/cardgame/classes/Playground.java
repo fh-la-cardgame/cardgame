@@ -400,6 +400,6 @@ public class Playground {
 
     @Override
     public int hashCode() {
-        return Objects.hash(player, deck, countBattlegroundSpecials, countBattlegroundMonster);
+        return Objects.hash(deck, countBattlegroundSpecials, countBattlegroundMonster);
     }
 }

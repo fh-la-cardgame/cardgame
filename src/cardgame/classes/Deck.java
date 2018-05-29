@@ -93,11 +93,11 @@ public class Deck {
         if (o == null || getClass() != o.getClass()) return false;
         Deck deck = (Deck) o;
         //Prüft ob die gleichen Elemente enthalten sind !
-        List<Card> thisCards = new ArrayList<>(cards);
-        List<Card> thatCard = new ArrayList<>(deck.cards);
-        thatCard.sort(null);
-        thisCards.sort(null);
-        return thisCards.equals(thatCard);
+        //List<Card> thisCards = new ArrayList<>(cards);
+        //List<Card> thatCard = new ArrayList<>(deck.cards);
+        //thatCard.sort(null);
+        //thisCards.sort(null);
+        return cards.equals(deck.cards);
     }
     @Override
     public int hashCode() {
