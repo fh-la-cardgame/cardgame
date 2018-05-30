@@ -112,7 +112,7 @@ public class MonteCarloTreeSearch {
         int iterations = n.getGame().getMyField(myId).getDeck().getCards().size() + n.getGame().getEnemyField(myId).getDeck().getCards().size() + 1;
         iterations *= 2;
         iterations += n.getGame().getMyField(myId).getCountBattlegroundMonster() * n.getGame().getEnemyField(myId).getCountBattlegroundMonster();
-        n.createArrayList(iterations);
+        n.createChildrenCollection(iterations);
         Collection<Node> setOfNodes = n.getChildren();
         for (int i = 0; i < iterations; i++) {
             new_Node = makeTransition(n);

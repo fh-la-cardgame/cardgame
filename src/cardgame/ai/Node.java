@@ -77,7 +77,10 @@ public class Node {
     public void addSimulations(int simul){
         simulations += simul;
     }
-    
+
+    public void createChildrenCollection(int capacity){
+        this.children = new HashSet<>(capacity);
+    }
     /**
      * ARGUMENT WINNER NOCH DEFINIEREN!
      *
@@ -164,31 +167,16 @@ public class Node {
         this.parent = null;
     }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((transition == null) ? 0 : transition.hashCode());
-		return result;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Node node = (Node) o;
+        return Objects.equals(game, node.game);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Node other = (Node) obj;
-		if (transition == null) {
-			if (other.transition != null)
-				return false;
-		} else if (!transition.equals(other.transition))
-			return false;
-		return true;
-	}
-    
-    
-
+    @Override
+    public int hashCode() {
+        return Objects.hash(game);
+    }
 }
